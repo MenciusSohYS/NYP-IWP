@@ -11,6 +11,7 @@ public class GunScript : MonoBehaviour
     public WeaponParent WeaponScript;
     void Start()
     {
+
         prevposition = Input.mousePosition;
 
         Vector3 CenterPivot = Camera.main.WorldToScreenPoint(transform.position);
@@ -19,9 +20,9 @@ public class GunScript : MonoBehaviour
         transform.Rotate(new Vector3(0, 0, PrevAngle * Mathf.Rad2Deg));
 
 
-        ////find weaponscript
-        //WeaponScript = transform.GetChild(0).GetComponent<WeaponParent>();
-        //timerforshooting = 0;
+        //find weaponscript
+        WeaponScript = transform.GetChild(0).GetComponent<WeaponParent>();
+        timerforshooting = 0;
     }
     void Update()
     {
