@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class EnemyMechanics : MonoBehaviour
 {
     [SerializeField] int CurrentHealth;
+    [SerializeField] GameObject InsideThisRoom;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,5 +25,10 @@ public class EnemyMechanics : MonoBehaviour
             CurrentHealth -= MinusBy;
         else
             Destroy(gameObject);
+    }
+
+    public void AssignRoom (GameObject room)
+    {
+        InsideThisRoom = room;
     }
 }

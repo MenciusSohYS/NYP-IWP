@@ -25,7 +25,7 @@ public class GunScript : MonoBehaviour
         timerforshooting = 0;
 
         WeaponScript.SetFireRate(0.1f);
-        WeaponScript.SetDamage(10);
+        WeaponScript.SetDamage(7);
     }
     void Update()
     {

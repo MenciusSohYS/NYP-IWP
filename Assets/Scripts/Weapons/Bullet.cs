@@ -52,6 +52,16 @@ public class Bullet : MonoBehaviour
             collision.transform.GetComponent<EnemyMechanics>().MinusHP(DamageToDo);
             HitSomethingWithHealth = true;
         }
+        else if (collision.transform.tag == "HalfCover")
+        {
+            float tempdmg = DamageToDo;
+            tempdmg *= 0.5f;
+            DamageToDo = (int)tempdmg;
+            piercecapped = false;
+        }
+        else if (collision.transform.tag == "FullCover")
+        {
+        }
 
         if (HitSomethingWithHealth)
         {
