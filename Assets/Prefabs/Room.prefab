@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9144745359086476012}
   - component: {fileID: 6518267365221879166}
   - component: {fileID: -7130941141285165500}
+  - component: {fileID: 8387643129402298377}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -62,6 +63,7 @@ MonoBehaviour:
   EnemyCost: 0
   FCoverPrefab: {fileID: 8820514405288375605, guid: 93c38eca10f3e57429c6a1c9d6d0b1d3, type: 3}
   HCoverPrefab: {fileID: 8820514405288375605, guid: 3a73b126e940aba479d86bdb7caf16cd, type: 3}
+  RoomObjects: {fileID: 2196393389922210799}
   Covers: []
 --- !u!114 &-7130941141285165500
 MonoBehaviour:
@@ -79,6 +81,18 @@ MonoBehaviour:
   PreviousRoom: {fileID: 0}
   NextRoom: {fileID: 0}
   Coordinates: {x: 0, y: 0}
+--- !u!114 &8387643129402298377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 443287862054578753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c578a0a78bd2d34dbd1db4329c4ffdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1248869368260912074
 GameObject:
   m_ObjectHideFlags: 0
@@ -1447,7 +1461,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1718758803
   m_SortingLayer: -1
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2c768bf3cabf1834395e4ca4dc71728e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

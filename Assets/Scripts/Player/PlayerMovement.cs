@@ -20,7 +20,10 @@ public class PlayerMovement : MonoBehaviour
         Movement.x = Input.GetAxisRaw("Horizontal");
         Movement.y = Input.GetAxisRaw("Vertical");
 
-        rb.velocity = new Vector2(Movement.x * speed, Movement.y * speed);
+        if (Input.GetKey(KeyCode.LeftControl))
+            rb.velocity = new Vector2(Movement.x * speed * 0.5f, Movement.y * speed * 0.5f);
+        else
+            rb.velocity = new Vector2(Movement.x * speed, Movement.y * speed);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

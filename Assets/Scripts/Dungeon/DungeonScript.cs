@@ -20,9 +20,10 @@ public class DungeonScript : MonoBehaviour
     {
         Covers = new GameObject[10];
 
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 10; ++i) //create obstacles
         {
             bool allclear = true;
+            int randomnum = Random.Range(0, 2);
             float x = Random.Range(-14.5f, 14.5f);
             float y = Random.Range(-14.5f, 14.5f); //random position
 
@@ -40,8 +41,25 @@ public class DungeonScript : MonoBehaviour
             }
 
             if (allclear)
-                Covers[i] = Instantiate(HCoverPrefab, this.transform.position + new Vector3(x, y), Quaternion.identity);
+            {
+                if (randomnum == 0)
+                    Covers[i] = Instantiate(HCoverPrefab, this.transform.position + new Vector3(x, y), Quaternion.identity); //create object and push into array for future reference
+                else
+                    Covers[i] = Instantiate(FCoverPrefab, this.transform.position + new Vector3(x, y), Quaternion.identity); //create object and push into array for future reference
+
+                Covers[i].transform.SetParent(RoomObjects.transform); //set parent so that it doesnt mess up the scene and it actually stays as an object
+            }
         }
+
+
+        //for (int x = -13; x < 13; ++x)
+        //{
+        //    for (int y = -13; y < 13; ++y)
+        //    {
+        //        Debug.DrawLine(this.transform.position + new Vector3(y, x, 0), this.transform.position + new Vector3(y, x + 1, 0), Color.red, 100f);
+        //        Debug.DrawLine(this.transform.position + new Vector3(y, x, 0), this.transform.position + new Vector3(y + 1, x, 0), Color.red, 100f);
+        //    }
+        //}
     }
 
     public void UpdateRoom(int Side) //is there something there?
