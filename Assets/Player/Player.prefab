@@ -159,7 +159,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87ce401c4d4b8604a93ce81c71db70ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MapOfDungeon: 
 --- !u!114 &7285198168956690473
 MonoBehaviour:
   m_ObjectHideFlags: 0

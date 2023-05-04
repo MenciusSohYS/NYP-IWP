@@ -12,6 +12,7 @@ public class PathNode
     public int hCost; //cost from current node to last node
     public int fCost; //G+H
 
+    public bool IsWalkable;
     public PathNode PreviousNode;
 
     public PathNode(Grid<PathNode> Grid, int x, int y)
@@ -19,6 +20,7 @@ public class PathNode
         this.Grid = Grid;
         this.x = x;
         this.y = y;
+        IsWalkable = true;
     }
 
     public void CalculateFCost()
@@ -29,5 +31,11 @@ public class PathNode
     public override string ToString()
     {
         return x + "," + y;
+    }
+
+    public void SetIsWalkable()
+    {
+        IsWalkable = false;
+        Grid.TriggerGridObjectChanged(x, y);
     }
 }

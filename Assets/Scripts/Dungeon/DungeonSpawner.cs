@@ -26,7 +26,7 @@ public class DungeonSpawner : MonoBehaviour
         GameObject PrevRoom;
         Vector2 currentcoords = new Vector2(7, 7);
 
-        AmountOfRooms = 6; // Random.Range(5, 7); //randomise amount of rooms
+        AmountOfRooms = 1; // Random.Range(5, 7); //randomise amount of rooms
 
         PrevRoom = Instantiate(RoomPrefab, new Vector3(0, 0, 0), Quaternion.identity); //create the first room
         CurrRoom = PrevRoom;
@@ -81,7 +81,7 @@ public class DungeonSpawner : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Unable to create room above room: " + i);
+                            //Debug.Log("Unable to create room above room: " + i);
                             checkedspot[0] = true;
                             continue;
                         }
@@ -99,7 +99,7 @@ public class DungeonSpawner : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Unable to create room below room: " + i);
+                            //Debug.Log("Unable to create room below room: " + i);
                             checkedspot[1] = true;
                             continue;
                         }
@@ -116,12 +116,11 @@ public class DungeonSpawner : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Unable to create room right room: " + i);
+                            //Debug.Log("Unable to create room right room: " + i);
                             checkedspot[2] = true;
                             continue;
                         }
                     case 3:
-                        Debug.Log("turn left");
                         if (!checkedspot[3] && GridOfDungeon[(int)currentcoords.x - 1, (int)currentcoords.y] == 0)
                         {
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(-30, 0, 0), Quaternion.identity);
@@ -135,7 +134,7 @@ public class DungeonSpawner : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Unable to create room left room: " + i);
+                            //Debug.Log("Unable to create room left room: " + i);
                             checkedspot[3] = true;
                             continue;
                         }

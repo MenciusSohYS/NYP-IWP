@@ -14,7 +14,7 @@ public class DungeonScript : MonoBehaviour
     public GameObject HCoverPrefab;
     public GameObject RoomObjects;
 
-    [SerializeField] GameObject[] Covers; //an array of covers
+    public GameObject[] Covers; //an array of covers
     // Start is called before the first frame update
     void Start()
     {
@@ -24,8 +24,8 @@ public class DungeonScript : MonoBehaviour
         {
             bool allclear = true;
             int randomnum = Random.Range(0, 2);
-            float x = Random.Range(-14.5f, 14.5f);
-            float y = Random.Range(-14.5f, 14.5f); //random position
+            int x = Random.Range(-13, 13);
+            int y = Random.Range(-13, 13); //random position
 
             for (int j = 0; j < Covers.Length; ++j) //go through list to see if they can fit
             {
@@ -35,7 +35,7 @@ public class DungeonScript : MonoBehaviour
                 {
                     --i;
                     allclear = false;
-                    Debug.Log("not clear"); //if there is another box already in the area, dont put one down
+                    //Debug.Log("not clear"); //if there is another box already in the area, dont put one down, break out of the loop looking for other overlaps
                     break;
                 }
             }
@@ -51,15 +51,6 @@ public class DungeonScript : MonoBehaviour
             }
         }
 
-
-        //for (int x = -13; x < 13; ++x)
-        //{
-        //    for (int y = -13; y < 13; ++y)
-        //    {
-        //        Debug.DrawLine(this.transform.position + new Vector3(y, x, 0), this.transform.position + new Vector3(y, x + 1, 0), Color.red, 100f);
-        //        Debug.DrawLine(this.transform.position + new Vector3(y, x, 0), this.transform.position + new Vector3(y + 1, x, 0), Color.red, 100f);
-        //    }
-        //}
     }
 
     public void UpdateRoom(int Side) //is there something there?

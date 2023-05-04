@@ -61,6 +61,7 @@ GameObject:
   - component: {fileID: 3976803660538290652}
   - component: {fileID: 1747450909205694629}
   - component: {fileID: -3268501826042247732}
+  - component: {fileID: 3274407190642926928}
   m_Layer: 0
   m_Name: Basic Ranged
   m_TagString: Enemy
@@ -149,6 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentHealth: 0
+  InsideThisRoom: {fileID: 0}
 --- !u!58 &1747450909205694629
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -186,6 +188,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3274407190642926928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7888168876331056701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec434e49cf88c08408546a029a490018, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7872820770715629084
 PrefabInstance:
   m_ObjectHideFlags: 0

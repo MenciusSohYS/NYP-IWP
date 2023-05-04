@@ -8,29 +8,56 @@ public class PathFinding
     private const int COST_TO_MOVE_DIAGONALLY = 14;
     //cost to move the object (using pythagoras theorem)
 
+    public static PathFinding Instance { get; private set; }
     private Grid<PathNode> Grid;
     private List<PathNode> OpenList;
     private List<PathNode> ClosedList;
 
-    public PathFinding(int width, int height, Vector3 Where)
+    public PathFinding(int width, int height, int OriginPointX, int OriginPointY, Vector3 Where)
     {
-        Grid = new Grid<PathNode>(width * 2, height * 2, 1f, Where, (Grid<PathNode> g, int x, int y) => new PathNode(g, x, y)); //create the path as well as nodes
+        Instance = this;
+        Grid = new Grid<PathNode>(width, height, 1f, OriginPointX, OriginPointY, Where, (Grid<PathNode> g, int x, int y) => new PathNode(g, x, y)); //create the grid as well as nodes
     }
+    public List<Vector3> FindPath(Vector3 StartPos, Vector3 EndPos) //translate node to list of positions
+    {
+        Grid.GetXY(StartPos, out int StartX, out int StartY); //find start location
+        Grid.GetXY(EndPos, out int EndX, out int EndY); //find end location
 
+        //Debug.Log("Moving from: X: " + StartX + ", Y: " + StartY + "\tTo X: " + EndX + ", Y: " + EndY);
+
+        List<PathNode> path = FindPath(StartX + 14, StartY + 14, EndX, EndY);
+
+        if (path == null) //has an error
+        {
+            //Debug.Log("PATH IS EMPTY");
+            return null;
+        }
+        else //convert everything
+        {
+            //Debug.Log("CONVERTING");
+            List<Vector3> PathOfVectors = new List<Vector3>();
+            foreach (PathNode PNode in path)
+            {
+                PathOfVectors.Add(new Vector3(PNode.x - 14, PNode.y - 14) * Grid.GetCellSize());
+            }
+            return PathOfVectors;
+        }
+    }
     public List<PathNode> FindPath(int StartX, int StartY, int EndX, int EndY)
     {
         PathNode StartNode = Grid.GetGridObject(StartX, StartY); //find start location
-        PathNode EndNode = Grid.GetGridObject(EndX, EndY); //find end location
+        PathNode EndNode = Grid.GetGridObject(EndX + 14, EndY + 14); //find end location
+
+
+        //Debug.Log("Moving from: X: " + StartNode.x + ", Y: " + StartNode.y + "\tTo X: " + EndNode.x + ", Y: " + EndNode.y);
 
         if (StartNode == null || EndNode == null)
         {
-            Debug.Log(StartNode);
-            Debug.Log(EndNode);
+            //Debug.Log("Start: " +StartNode);
+            //Debug.Log("End: " + EndNode);
             // Invalid Path
             return null;
         }
-
-        Debug.Log(StartNode);
 
         OpenList = new List<PathNode> { StartNode };
         ClosedList = new List<PathNode>();
@@ -71,23 +98,29 @@ public class PathFinding
                 {
                     continue;
                 }
-                else
+                if (NeighbourNode != null)
                 {
-                    //find out if the new gcost is cheaper than neighbour
-                    int TempGCost = CurrentNode.gCost + CalculateDistanceCost(CurrentNode, NeighbourNode);
-                    if (TempGCost < NeighbourNode.gCost)
+                    if (!NeighbourNode.IsWalkable)
                     {
-                        NeighbourNode.PreviousNode = CurrentNode;
+                        Debug.Log("Not walkable");
+                        ClosedList.Add(NeighbourNode);
+                        continue;
+                    }
+                }
 
-                        //repeat of the one above but for neighbour
-                        NeighbourNode.gCost = TempGCost;
-                        NeighbourNode.hCost = CalculateDistanceCost(NeighbourNode, EndNode);
-                        NeighbourNode.CalculateFCost();
+                int TempGCost = CurrentNode.gCost + CalculateDistanceCost(CurrentNode, NeighbourNode);//find out if the new gcost is cheaper than neighbour
+                if (TempGCost < NeighbourNode.gCost)
+                {
+                    NeighbourNode.PreviousNode = CurrentNode;
 
-                        if (!OpenList.Contains(NeighbourNode))
-                        {
-                            OpenList.Add(NeighbourNode);
-                        }
+                    //find new neighbour and see if its shorter
+                    NeighbourNode.gCost = TempGCost;
+                    NeighbourNode.hCost = CalculateDistanceCost(NeighbourNode, EndNode);
+                    NeighbourNode.CalculateFCost();
+
+                    if (!OpenList.Contains(NeighbourNode))
+                    {
+                        OpenList.Add(NeighbourNode);
                     }
                 }
             }
@@ -136,7 +169,7 @@ public class PathFinding
         return neightbourlist;
     }
 
-    private PathNode GetNode(int x, int y)
+    public PathNode GetNode(int x, int y)
     {
         return Grid.GetGridObject(x, y);
     }

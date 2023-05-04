@@ -17,7 +17,7 @@ public class Grid<TGridObject> {
     private Vector3 OriginalPosition; //start pos
     private TGridObject[,] GridArray; //array to reference
 
-    public Grid(int Width, int Height, float CellSize, Vector3 OriginalPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
+    public Grid(int Width, int Height, float CellSize, int OriginPointX, int OriginPointY, Vector3 OriginalPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
         this.Width = Width;
         this.Height = Height;
         this.CellSize = CellSize;
@@ -25,7 +25,7 @@ public class Grid<TGridObject> {
 
         GridArray = new TGridObject[Width, Height];
 
-        for (int x = 0; x < GridArray.GetLength(0); ++x) 
+        for (int x = 0; x < GridArray.GetLength(0); ++x)
         {
             for (int y = 0; y < GridArray.GetLength(1); ++y) 
             {
@@ -40,8 +40,8 @@ public class Grid<TGridObject> {
             {
                 for (int y = 0; y < GridArray.GetLength(1); ++y)
                 {
-                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.red, 100f);
-                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.red, 100f);
+                    Debug.DrawLine(GetWorldPosition(x - 14, y - 14), GetWorldPosition(x - 14, y + 1 - 14), Color.red, 100f);
+                    Debug.DrawLine(GetWorldPosition(x - 14, y - 14), GetWorldPosition(x + 1 - 14, y - 14), Color.red, 100f);
                 }
             }
         }
@@ -78,8 +78,10 @@ public class Grid<TGridObject> {
     }
 
     public void TriggerGridObjectChanged(int x, int y) {
-        if (OnGridObjectChanged != null) 
+        if (OnGridObjectChanged != null)
+        {
             OnGridObjectChanged(this, new OnGridObjectChangedEventArgs { x = x, y = y });
+        }
     }
 
     public void SetGridObject(Vector3 worldPosition, TGridObject value) {
@@ -104,4 +106,5 @@ public class Grid<TGridObject> {
         GetXY(worldPosition, out x, out y);
         return GetGridObject(x, y);
     }
+
 }

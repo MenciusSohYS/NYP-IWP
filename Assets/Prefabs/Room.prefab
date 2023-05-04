@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9144745359086476012}
   - component: {fileID: 6518267365221879166}
   - component: {fileID: -7130941141285165500}
-  - component: {fileID: 8387643129402298377}
+  - component: {fileID: 1222945619038125799}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -81,7 +81,7 @@ MonoBehaviour:
   PreviousRoom: {fileID: 0}
   NextRoom: {fileID: 0}
   Coordinates: {x: 0, y: 0}
---- !u!114 &8387643129402298377
+--- !u!114 &1222945619038125799
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,6 +93,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c578a0a78bd2d34dbd1db4329c4ffdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Origin: {x: 0, y: 0, z: 0}
+  testEnemy: {fileID: 7888168876331056701, guid: 86d6e4f15b20b4e4885f5deacdab501c, type: 3}
+  Sqare: {fileID: 8884974301991653678, guid: c443bd220463607439352caf98f97916, type: 3}
+  ThisEnemy: {fileID: 0}
+  RoomDScript: {fileID: 0}
 --- !u!1 &1248869368260912074
 GameObject:
   m_ObjectHideFlags: 0
