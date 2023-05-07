@@ -33,9 +33,9 @@ public class PathNode
         return x + "," + y;
     }
 
-    public void SetIsWalkable()
+    public void SetIsWalkable(bool setto)
     {
-        IsWalkable = false;
+        IsWalkable = setto;
         Grid.TriggerGridObjectChanged(x, y);
     }
 }

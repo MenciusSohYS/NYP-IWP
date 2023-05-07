@@ -6,6 +6,7 @@ public class DungeonSpawner : MonoBehaviour
 {
     [SerializeField] int AmountOfRooms;
     public GameObject RoomPrefab;
+    public GameObject StartRoomPrefab;
     public GameObject CorridorPrefab;
     [SerializeField] int [,] GridOfDungeon;
     [SerializeField] int[] TestMap;
@@ -26,9 +27,9 @@ public class DungeonSpawner : MonoBehaviour
         GameObject PrevRoom;
         Vector2 currentcoords = new Vector2(7, 7);
 
-        AmountOfRooms = 1; // Random.Range(5, 7); //randomise amount of rooms
+        AmountOfRooms = Random.Range(5, 7); //randomise amount of rooms
 
-        PrevRoom = Instantiate(RoomPrefab, new Vector3(0, 0, 0), Quaternion.identity); //create the first room
+        PrevRoom = Instantiate(StartRoomPrefab, new Vector3(0, 0, 0), Quaternion.identity); //create the first room
         CurrRoom = PrevRoom;
         PrevRoom.GetComponent<RoomHandler>().SetRoomCoordinates(currentcoords); //tell it where it is on the map
 
@@ -166,10 +167,10 @@ public class DungeonSpawner : MonoBehaviour
                 //Debug.Log("Room " + i + " created");
                 
                 LetRoomsKnow(LocationOfNewRoomRelativeToCurrent, PrevRoom, CurrRoom); //let them know their parent and children
-                corridor.GetComponent<CorridorScript>().AssignNext(CurrRoom); //tell the corridor who is infront
-                corridor.GetComponent<CorridorScript>().AssignPrev(PrevRoom); //tell the corridor who is behind
+                corridor.GetComponent<CorridorScript>().AssignNeighbours(CurrRoom, PrevRoom, LocationOfNewRoomRelativeToCurrent); //tell the corridor who is infront and tell the corridor who is behind
                 GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y] = 1; //tell the list that the area is occupied
-
+                
+                CurrRoom.GetComponent<TestGrid>().enabled = false;
 
                 PrevRoom = CurrRoom;
             }

@@ -9,6 +9,8 @@ public class CanvasScript : MonoBehaviour
     public GameObject Player;
     public Slider Health;
     public Slider BGHP; //background hpbar
+
+    [SerializeField] TextMeshProUGUI Coin;
     // Start is called before the first frame update
     void Awake()
     {
@@ -38,5 +40,9 @@ public class CanvasScript : MonoBehaviour
     public void SetCurrentHP(int Curr)
     {
         Health.value = Curr;
+    }
+    public void SetCoins(int Coins)
+    {
+        Coin.text = Coins.ToString();
     }
 }

@@ -40,7 +40,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3649195263381020450}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 022e12697a7aa2547a5271d6b9911979, type: 3}
   m_Name: 
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7888168876331056701}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d175d2e93e7185642bdcf6f9d3f159a5, type: 3}
   m_Name: 
@@ -195,11 +195,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7888168876331056701}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec434e49cf88c08408546a029a490018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathVectorList: []
+  Player: {fileID: 0}
+  SquarePrefab: {fileID: 8884974301991653678, guid: c443bd220463607439352caf98f97916, type: 3}
+  Room: {fileID: 0}
 --- !u!1001 &7872820770715629084
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -210,10 +214,6 @@ PrefabInstance:
     - target: {fileID: 2325470093786714973, guid: d45660560b585f047a1ec68969e76fef, type: 3}
       propertyPath: m_Name
       value: Revolver
-      objectReference: {fileID: 0}
-    - target: {fileID: 2325470093786714973, guid: d45660560b585f047a1ec68969e76fef, type: 3}
-      propertyPath: m_Layer
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7814508018976467385, guid: d45660560b585f047a1ec68969e76fef, type: 3}
       propertyPath: m_Layer

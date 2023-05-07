@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class PlayerMechanics : MonoBehaviour
 {
-    private int MaxHealth;
-    private int CurrentHealth;
-    private GameObject Canvas;
+    [SerializeField] int MaxHealth;
+    [SerializeField] int CurrentHealth;
+    [SerializeField] int Currency;
+
+    [SerializeField] CanvasScript Canvas;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         MaxHealth = 200;
         CurrentHealth = 150;
 
-        Canvas = GameObject.FindGameObjectWithTag("Canvas");
-        Canvas.GetComponent<CanvasScript>().MaxNCurrentHP(MaxHealth, CurrentHealth);
+        Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
+        Canvas.MaxNCurrentHP(MaxHealth, CurrentHealth);
     }
 
     // Update is called once per frame
@@ -26,7 +31,7 @@ public class PlayerMechanics : MonoBehaviour
     public void MinusHP(int howmuchtominus)
     {
         CurrentHealth -= howmuchtominus;
-        Canvas.GetComponent<CanvasScript>().SetCurrentHP(CurrentHealth);
+        Canvas.SetCurrentHP(CurrentHealth);
     }
 
     public int GetMaxHP()
@@ -36,5 +41,10 @@ public class PlayerMechanics : MonoBehaviour
     public int GetCurrentHP()
     {
         return CurrentHealth;
+    }
+    public void SetCoins(int AddHowMuch)
+    {
+        Currency += AddHowMuch;
+        Canvas.SetCoins(Currency);
     }
 }

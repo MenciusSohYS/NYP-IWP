@@ -10,6 +10,7 @@ public class TestGrid : MonoBehaviour
     public GameObject Sqare;
     [SerializeField] GameObject ThisEnemy;
     [SerializeField] DungeonScript RoomDScript;
+    [SerializeField] List<GameObject> ListOfUnwalkables;
 
     //add width and height of room here
     private void Start()
@@ -57,7 +58,8 @@ public class TestGrid : MonoBehaviour
                     int X = (int)RoomDScript.Covers[i].transform.position.x + 14;
                     int Y = (int)RoomDScript.Covers[i].transform.position.y + 14;
 
-                    PathFind.GetNode(X, Y).SetIsWalkable();
+                    //ListOfUnwalkables.Add(Instantiate(Sqare, RoomDScript.Covers[i].transform.position, Quaternion.identity));
+                    PathFind.GetNode(X, Y).SetIsWalkable(false);
                 }
             }
         }

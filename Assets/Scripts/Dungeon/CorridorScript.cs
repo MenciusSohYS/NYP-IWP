@@ -6,17 +6,30 @@ public class CorridorScript : MonoBehaviour
 {
     [SerializeField] GameObject PreviousRoom;
     [SerializeField] GameObject NextRoom;
+    [SerializeField] int Orientation;
     [SerializeField] GameObject Entry;
     [SerializeField] GameObject Exit;
     // Start is called before the first frame update
 
-    public void AssignPrev(GameObject Prev)
+    public void AssignNeighbours(GameObject Next, GameObject Prev, int Where)
     {
         PreviousRoom = Prev;
+        NextRoom = Next;
+        Orientation = Where;
     }
 
-    public void AssignNext(GameObject Next)
+    public int ReturnOrientation()
     {
-        NextRoom = Next;
+        return Orientation;
+    }
+
+    public void RevealNextRoom()
+    {
+        NextRoom.GetComponent<DungeonScript>().RemoveFog();
+    }
+
+    public void EnableEnemyAI()
+    {
+        NextRoom.GetComponent<DungeonScript>().EnableEnemies();
     }
 }
