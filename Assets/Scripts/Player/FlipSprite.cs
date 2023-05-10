@@ -27,13 +27,19 @@ public class FlipSprite : MonoBehaviour
 
         if (MouseX < Screen.width / 2 && Flipped == false)
         {
-            transform.Rotate(0, 180, 0);
+            for (int i = 0; i < transform.childCount; ++i)
+            {
+                transform.GetChild(i).Rotate(0, 180, 0);
+            }
             Flipped = true;
             //Debug.Log("Flipped");
         }
         else if (MouseX >= Screen.width / 2 && Flipped == true)
         {
-            transform.Rotate(0, 180, 0);
+            for (int i = 0; i < transform.childCount; ++i)
+            {
+                transform.GetChild(i).Rotate(0, 180, 0);
+            }
             Flipped = false;
             //Debug.Log("Not Flipped");
         }

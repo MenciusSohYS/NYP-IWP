@@ -152,6 +152,13 @@ public class DungeonScript : MonoBehaviour
                 walls[SidesWithCorridors[i]].SetActive(true);
             }
         }
+
+        //fix minimap cam to the room
+        GameObject MiniMap = GameObject.FindGameObjectWithTag("MiniMap");
+        MiniMap.GetComponent<CameraScript>().StopCamera();
+        MiniMap.transform.position = this.transform.position + new Vector3(0, 0, -10);
+        MiniMap.GetComponent<Camera>().orthographicSize = 17.5f;
+        MiniMap.GetComponent<Camera>().backgroundColor = Color.white;
     }
 
     public void RemoveEnemyFromList(GameObject Enemy)
@@ -165,6 +172,12 @@ public class DungeonScript : MonoBehaviour
                 doors[SidesWithCorridors[i]].SetActive(true);
                 walls[SidesWithCorridors[i]].SetActive(false);
             }
+
+            //fix map cam to player
+            GameObject MiniMap = GameObject.FindGameObjectWithTag("MiniMap");
+            MiniMap.GetComponent<CameraScript>().ResumeCamera();
+            MiniMap.GetComponent<Camera>().orthographicSize = 30f;
+            MiniMap.GetComponent<Camera>().backgroundColor = Color.black;
         }
     }
 }

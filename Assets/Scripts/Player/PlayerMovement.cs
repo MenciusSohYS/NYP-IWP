@@ -25,8 +25,4 @@ public class PlayerMovement : MonoBehaviour
         else
             rb.velocity = new Vector2(Movement.x * speed, Movement.y * speed);
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-    }
 }

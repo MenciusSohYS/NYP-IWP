@@ -10,9 +10,13 @@ public class EnemyRangedScript : MonoBehaviour
     public Transform BulletSpawner;
     private GameObject Player;
     public WeaponParent WeaponScript;
+    private bool Reloading;
+    private float ReloadTimer;
     void Start()
     {
-        timerforshooting = 0;
+        Reloading = false;
+        ReloadTimer = 0f;
+
         Player = GameObject.FindGameObjectWithTag("Player");
         timerforshooting = 0;
 
@@ -22,13 +26,15 @@ public class EnemyRangedScript : MonoBehaviour
 
         float PrevAngle = Mathf.Atan2(CenterPivot.x - prevposition.x, prevposition.y - CenterPivot.y);
         transform.Rotate(new Vector3(0, 0, PrevAngle * Mathf.Rad2Deg));
+
+        WeaponScript = transform.GetChild(0).GetComponent<WeaponParent>();
     }
     void Update()
     {
+        timerforshooting -= Time.deltaTime;
+        WeaponScript.SetWeaponHeat(Time.deltaTime);
         //Follow player
         {
-
-            timerforshooting -= Time.deltaTime;
 
             Vector3 CenterPivot = transform.parent.position;
 
@@ -55,9 +61,28 @@ public class EnemyRangedScript : MonoBehaviour
         }
 
         //shooting part
-        if (timerforshooting <= 0)
+        if (Reloading)
         {
-            timerforshooting = WeaponScript.Attack(BulletSpawner, Bullet, false);
+            transform.GetChild(0).Rotate(0, 0, 3);
+        }
+
+        if (timerforshooting <= 0 && WeaponScript.ReturnCurrentMag() > 0) //if the player is shooting, can shoot after fire rate cool down and has more than 1 bullet
+        {
+            timerforshooting = WeaponScript.Attack(BulletSpawner, Bullet, false); //shoot
+            if (WeaponScript.ReturnCurrentMag() <= 0) //if no more bullets, start the reload
+            {
+                Reloading = true;
+                ReloadTimer = WeaponScript.GetReloadTime();
+            }
+        }
+        else if (Reloading)
+        {
+            ReloadTimer = WeaponScript.DoReload(ReloadTimer, Time.deltaTime); //push the calculation to the gun for storing and dynamic reload
+            if (ReloadTimer <= 0)
+            {
+                transform.GetChild(0).localRotation = Quaternion.Euler(0, 0, 90);
+                Reloading = false; //completed reload
+            }
         }
     }
 }

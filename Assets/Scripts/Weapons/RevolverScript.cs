@@ -5,7 +5,12 @@ public class RevolverScript : WeaponParent
 
     public RevolverScript()
     {
-        Damage = 2;
-        FireRate = 2f;
+        Damage = 10;
+        FireRate = 0.5f;
+        Spread = 0.1f;
+        BulletsRemaining = 6;
+        MaxMagSize = 6;
+        ReloadTime = 1f;
+        HeatMax = 0.5f;
     }
 }

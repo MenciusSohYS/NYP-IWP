@@ -9,11 +9,12 @@ TagManager:
   - HalfCover
   - Fullcover
   - RoomObj
+  - MiniMap
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Projectile
   - Water
   - UI
   - Fog

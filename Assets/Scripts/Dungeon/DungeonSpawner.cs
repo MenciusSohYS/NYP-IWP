@@ -36,7 +36,7 @@ public class DungeonSpawner : MonoBehaviour
 
         GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y] = 1; //tell the list its already occupied
 
-        Debug.Log("room 0 created");
+        GameObject.Find("Canvas").GetComponent<CanvasScript>().SetText("Level 1", 1);
 
 
         for (int i = 1; i < AmountOfRooms; ++i) //for loop to create everything

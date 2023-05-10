@@ -21,7 +21,7 @@ public class CorridorExit : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         //player exited corridor, start the enemy ai
-        Debug.Log(collision.transform.tag);
+        //Debug.Log(collision.transform.tag);
         if (collision.transform.tag == "Player")
         {
             bool ExitedCorrectly = false;
@@ -61,7 +61,8 @@ public class CorridorExit : MonoBehaviour
 
             if (ExitedCorrectly)
             {
-                Debug.Log("Player exited corridor and entered room");
+                //Debug.Log("Player exited corridor and entered room");
+                collision.transform.GetComponent<PlayerMechanics>().AnnounceRoomEntered();
                 transform.parent.parent.GetComponent<CorridorScript>().EnableEnemyAI();
             }
         }
