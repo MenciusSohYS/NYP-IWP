@@ -35,7 +35,6 @@ public class EnemyRangedScript : MonoBehaviour
         WeaponScript.SetWeaponHeat(Time.deltaTime);
         //Follow player
         {
-
             Vector3 CenterPivot = transform.parent.position;
 
             float PrevAngle = Mathf.Atan2(CenterPivot.x - prevposition.x, prevposition.y - CenterPivot.y);

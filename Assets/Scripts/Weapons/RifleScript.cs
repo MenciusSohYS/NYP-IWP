@@ -8,9 +8,9 @@ public class RifleScript : WeaponParent
         Damage = 2;
         FireRate = 0.1f;
         Spread = 0.5f;
-        MaxMagSize = 30;
-        BulletsRemaining = 30;
-        ReloadTime = 2f;
+        MaxMagSize = 300;
+        BulletsRemaining = 300;
+        ReloadTime = MaxMagSize * 0.1f;
         HeatMax = 1f;
     }
 }

@@ -32,13 +32,16 @@ public class GunScript : MonoBehaviour
         PlayerMechanicsScript = transform.parent.GetComponent<PlayerMechanics>();
         PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
 
-        WeaponScript.SetFireRate(0.1f);
+        //WeaponScript.SetFireRate(0.1f);
         WeaponScript.SetDamage(7);
     }
     void Update()
     {
         timerforshooting -= Time.deltaTime;
         WeaponScript.SetWeaponHeat(Time.deltaTime);
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0, -WeaponScript.ReturnWeaponHeat(), -WeaponScript.ReturnWeaponHeat(), 0) + new Color(1, 1, 1, 1);
+
+
         //Follow mouse
         {
             Vector3 CenterPivot = Camera.main.WorldToScreenPoint(transform.position);

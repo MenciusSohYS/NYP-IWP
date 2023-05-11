@@ -52,4 +52,14 @@ public class RoomHandler : MonoBehaviour
     {
         Coordinates = currentcoords;
     }
+
+    public GameObject ReturnPreviousRoom()
+    {
+        return PreviousRoom;
+    }
+
+    public Vector2 ReturnCoords()
+    {
+        return Coordinates;
+    }
 }

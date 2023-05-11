@@ -10,7 +10,7 @@ public class RevolverScript : WeaponParent
         Spread = 0.1f;
         BulletsRemaining = 6;
         MaxMagSize = 6;
-        ReloadTime = 1f;
+        ReloadTime = MaxMagSize * 0.1f;
         HeatMax = 0.5f;
     }
 }

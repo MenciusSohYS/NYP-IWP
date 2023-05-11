@@ -80,4 +80,9 @@ public class WeaponParent : MonoBehaviour
         }
         CurrentHeat -= Time.deltaTime * 0.5f;
     }
+
+    public float ReturnWeaponHeat()
+    {
+        return CurrentHeat;
+    }
 }

@@ -10,6 +10,7 @@ public class DungeonSpawner : MonoBehaviour
     public GameObject CorridorPrefab;
     [SerializeField] int [,] GridOfDungeon;
     [SerializeField] int[] TestMap;
+    [SerializeField] GameObject[] FinalRooms;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +28,9 @@ public class DungeonSpawner : MonoBehaviour
         GameObject PrevRoom;
         Vector2 currentcoords = new Vector2(7, 7);
 
-        AmountOfRooms = Random.Range(5, 7); //randomise amount of rooms
+        AmountOfRooms = Random.Range(8, 10); //randomise amount of rooms
+
+        int changedirections = (int)(AmountOfRooms * 0.5f);
 
         PrevRoom = Instantiate(StartRoomPrefab, new Vector3(0, 0, 0), Quaternion.identity); //create the first room
         CurrRoom = PrevRoom;
@@ -50,12 +53,13 @@ public class DungeonSpawner : MonoBehaviour
             for (int z = 0; z < checkedspot.Length; ++z) //have not checked spot
                 checkedspot[z] = false;
 
+
             GameObject corridor = PrevRoom;
             while (!CanMakeRoomHere) //will keep running loop until we have no more rooms
             {
                 //testing
                 {
-                    //if (i < 8)
+                    //if (i < 11)
                     //{
                     //    LocationOfNewRoomRelativeToCurrent = TestMap[i];
                     //}
@@ -63,7 +67,48 @@ public class DungeonSpawner : MonoBehaviour
                     //{
                     //}
                 }
+
                 LocationOfNewRoomRelativeToCurrent = Random.Range(0, 4);
+
+                //check if it hit the boundaries
+
+                switch (LocationOfNewRoomRelativeToCurrent)
+                {
+                    case 0:
+                        if ((int)currentcoords.y + 1 > 14)
+                        {
+                            LocationOfNewRoomRelativeToCurrent = 5;
+                            checkedspot[0] = true;
+                        }
+                        break;
+                    case 1:
+                        if ((int)currentcoords.y - 1 < 0)
+                        {
+                            LocationOfNewRoomRelativeToCurrent = 5;
+                            checkedspot[1] = true;
+                        }
+                        break;
+                    case 2:
+                        if ((int)currentcoords.x + 1 > 14)
+                        {
+                            LocationOfNewRoomRelativeToCurrent = 5;
+                            checkedspot[2] = true;
+                        }
+                        break;
+                    case 3:
+                        if ((int)currentcoords.x - 1 < 0)
+                        {
+                            LocationOfNewRoomRelativeToCurrent = 5;
+                            checkedspot[3] = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                //check all boxes
+
+
 
                 //check if we can make a room at this place
                 switch (LocationOfNewRoomRelativeToCurrent)//see where we can place a room
@@ -154,7 +199,7 @@ public class DungeonSpawner : MonoBehaviour
                         }
                     }
 
-                    if (havecheckedhowmany >= 3) //if checked all 4 corners
+                    if (havecheckedhowmany == 4) //if checked all 4 corners
                     {
                         Debug.Log("Checked all sides");
                         i = 100;
@@ -162,6 +207,8 @@ public class DungeonSpawner : MonoBehaviour
                     }
                 }
             }
+
+
             if (i != 100)
             {
                 //Debug.Log("Room " + i + " created");
@@ -173,6 +220,30 @@ public class DungeonSpawner : MonoBehaviour
                 CurrRoom.GetComponent<TestGrid>().enabled = false;
 
                 PrevRoom = CurrRoom;
+                PrevRoom.GetComponent<RoomHandler>().SetRoomCoordinates(currentcoords);
+
+                //checking deadend
+                {
+                    if (!CheckIfThereIsAnythingThere(currentcoords) || i == changedirections)
+                    {
+                        Debug.Log("Found dead end!"); //found dead end
+
+                        bool nodeadends = false;
+                        while (!nodeadends)
+                        {
+                            int BackTrackHowMuch = Random.Range(2, i - 1); //randomly back track
+
+                            for (int j = 0; j < BackTrackHowMuch; ++j)
+                            {
+                                PrevRoom = PrevRoom.GetComponent<RoomHandler>().ReturnPreviousRoom(); //keep backtracking until the wanted value
+                            }
+
+                            currentcoords = PrevRoom.GetComponent<RoomHandler>().ReturnCoords(); //match the coords of the new room
+
+                            nodeadends = CheckIfThereIsAnythingThere(currentcoords);
+                        }
+                    }
+                }
             }
         }
     }
@@ -193,5 +264,107 @@ public class DungeonSpawner : MonoBehaviour
             CurrentRoom.GetComponent<RoomHandler>().AssignRoomTo(LocationOfNewRoomRelativeToCurrent - 1, PreviousRoom);
 
         // 1 or 3 will be west or north so just need to minus 1 for both of them as its the opposite (vice versa for 0 or 2 but plus instead of minus)
+    }
+
+    bool CheckIfThereIsAnythingThere(Vector2 currentcoords)
+    {
+        //Debug.Log(currentcoords);
+        bool[] IsThisDeadEnd = new bool[4];
+        int IsThisAreaOccupied = 0;
+
+        for (int j = 0; j < IsThisDeadEnd.Length; ++j)
+        {
+            IsThisDeadEnd[j] = false;
+        }
+
+        //now check to see if this final room is a dead end
+        if ((int)currentcoords.y + 1 > 14)
+        {
+            IsThisDeadEnd[0] = true;
+            IsThisAreaOccupied++;
+        }
+        if ((int)currentcoords.y - 1 < 0)
+        {
+            IsThisDeadEnd[1] = true;
+            IsThisAreaOccupied++;
+        }
+        if ((int)currentcoords.x + 1 > 14)
+        {
+            IsThisDeadEnd[2] = true;
+            IsThisAreaOccupied++;
+        }
+        if ((int)currentcoords.x - 1 < 0)
+        {
+            IsThisDeadEnd[3] = true;
+            IsThisAreaOccupied++;
+        }
+
+        //if (IsThisAreaOccupied > 0)
+        //{
+        //    Debug.Log("Hit grid limit " + IsThisAreaOccupied);
+        //}
+
+        //see if any adjacent room is occupied
+        for (int j = 0; j < IsThisDeadEnd.Length; ++j)
+        {
+            if (!IsThisDeadEnd[j])
+            {
+                switch (j)
+                {
+                    case 0:
+                        if (GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y + 1] == 1)
+                        {
+                            IsThisAreaOccupied++;
+                            //Debug.Log("Top is occupied, current room is number: " + i);
+                            //if (i == 9)
+                            //{
+                            //    Debug.Log(IsThisAreaOccupied);
+                            //}
+                        }
+                        break;
+                    case 1:
+                        if (GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y - 1] == 1)
+                        {
+                            IsThisAreaOccupied++;
+                            //Debug.Log("Bottom is occupied, current room is number: " + i);
+                            //if (i == 9)
+                            //{
+                            //    Debug.Log(IsThisAreaOccupied);
+                            //}
+                        }
+                        break;
+                    case 2:
+                        if (GridOfDungeon[(int)currentcoords.x + 1, (int)currentcoords.y] == 1)
+                        {
+                            IsThisAreaOccupied++;
+                            //Debug.Log("Right is occupied, current room is number: " + i);
+                            //if (i == 9)
+                            //{
+                            //    Debug.Log(IsThisAreaOccupied);
+                            //}
+                        }
+                        break;
+                    case 3:
+                        if (GridOfDungeon[(int)currentcoords.x - 1, (int)currentcoords.y] == 1)
+                        {
+                            IsThisAreaOccupied++;
+                            //Debug.Log("Left is occupied, current room is number: " + i);
+                            //if (i == 9)
+                            //{
+                            //    Debug.Log(IsThisAreaOccupied);
+                            //}
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        if (IsThisAreaOccupied >= 4)
+            return false;
+        else
+            return true;
+
     }
 }

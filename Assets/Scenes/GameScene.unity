@@ -171,7 +171,8 @@ MonoBehaviour:
   RoomPrefab: {fileID: 443287862054578753, guid: 79d59c8ba7567dd40951fec27ae99390, type: 3}
   StartRoomPrefab: {fileID: 443287862054578753, guid: f4f9f22de5a44ca4a9549f5efdf660bc, type: 3}
   CorridorPrefab: {fileID: 443287862054578753, guid: 36a5b106c436ab747a8c5dcdfda1b442, type: 3}
-  TestMap: 0000000000000000010000000100000002000000020000000300000000000000
+  TestMap: 0000000000000000020000000200000002000000010000000100000003000000030000000000000002000000
+  FinalRooms: []
 --- !u!1 &213076303
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +241,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1401737926
+--- !u!1001 &527274752
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2

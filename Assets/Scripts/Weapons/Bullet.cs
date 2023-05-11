@@ -44,8 +44,7 @@ public class Bullet : MonoBehaviour
 
         if (collision.transform.tag == "Player" && !PlayerFriendly)
         {
-            collision.transform.GetComponent<PlayerMechanics>().MinusHP(DamageToDo);
-            HitSomethingWithHealth = true;
+            HitSomethingWithHealth = collision.transform.GetComponent<PlayerMechanics>().MinusHP(DamageToDo);
             collision.GetComponent<Rigidbody2D>().AddForce(rb.velocity * 5);
         }
         else if (collision.transform.tag == "Enemy" && PlayerFriendly)
