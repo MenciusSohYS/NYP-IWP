@@ -9,12 +9,24 @@ using System.IO;
 public static class TxtHandler
 {
     public static string TextToWrite = "Default Text for TextToWrite";
-    public static string CurrencyToWrite = "C123";
+    public static string CurrencyToWrite = "C0";
     public static string path = @"PlayerStats.txt"; //set path
+    public static bool UnlockedMercenary = false;
+    public static bool UnlockedBounty = true;
 
     public static void CreateTextFile()
     {
-        File.WriteAllText(path, CurrencyToWrite + Environment.NewLine); //write if it doesnt exist
+        string TempText = "";
+
+        if (UnlockedMercenary)
+            TempText += "M1" + Environment.NewLine;
+        //add more to check for other characters
+
+        TempText += CurrencyToWrite + Environment.NewLine;
+        //add the currency to the string and push it
+
+        File.WriteAllText(path, TempText);
+        //write if it doesnt exist
 
         //dont need this right now
         {
@@ -36,7 +48,7 @@ public static class TxtHandler
 
     public static int FindOneIntValue(char WhatToFind)
     {
-        int currency = 0;
+        int IntToReturn = 0;
 
         string[] filedata = File.ReadAllLines(path);
 
@@ -51,9 +63,11 @@ public static class TxtHandler
 
         for (int i = 0; i < filedata.Length; ++i) //search the lines
         {
-            for (int j = 0; j < filedata[i].Length; ++i) //search the row of each line
+            //Debug.Log(filedata[i]);
+            for (int j = 0; j < filedata[i].Length; ++j) //search the row of each line
             {
-                if (filedata[i][j] == WhatToFind) //look for whattofind which will mean currency
+                //Debug.Log("i: " + i + " j: " + j);
+                if (filedata[i][j] == WhatToFind) //look for whattofind which will mean the letter that is associated with the line
                 {
                     if (filedata[i].Length == j + 1)  //check if whattofind is the last element
                     {
@@ -68,7 +82,7 @@ public static class TxtHandler
             }
         }
 
-        string CurrencyAsString = "";
+        string IntAsString = "";
 
         for (int i = whichlocation; i < filedata[whichline].Length; ++i)
         {
@@ -77,11 +91,21 @@ public static class TxtHandler
                 Debug.Log("Non-number detected, should only have numbers: " + filedata[whichline][i]);
                 return 0;
             }
-            CurrencyAsString += filedata[whichline][i]; //if its valid, add it to the back of the string
+            IntAsString += filedata[whichline][i]; //if its valid, add it to the back of the string
         }
+        if (IntAsString == "")
+            return 0;
 
-        currency = int.Parse(CurrencyAsString); //convert the string to int and return it
+        IntToReturn = int.Parse(IntAsString); //convert the string to int and return it
 
-        return currency;
+        return IntToReturn;
+    }
+
+    public static void CheckForCharacters()
+    {
+        if (FindOneIntValue('M') != 0)
+        {
+            UnlockedMercenary = true;
+        }
     }
 }

@@ -11,10 +11,24 @@ public class DungeonSpawner : MonoBehaviour
     [SerializeField] int [,] GridOfDungeon;
     [SerializeField] int[] TestMap;
     [SerializeField] GameObject[] FinalRooms;
+    public GameObject[] PlayerPrefabs;
 
     // Start is called before the first frame update
     void Start()
     {
+        for (int i = 0; i < PlayerPrefabs.Length; ++i)
+        {
+            if (PlayerPrefabs[i].name == Globalvariables.Playerprefabname)
+            {
+                GameObject PlayerGO = Instantiate(PlayerPrefabs[i], new Vector3(0, 0, 0), Quaternion.identity);
+                GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>().SetPlayer(PlayerGO);
+                GameObject.FindGameObjectWithTag("MiniMap").GetComponent<CameraScript>().SetPlayer(PlayerGO);
+                break;
+            }
+        }
+        
+
+
         GridOfDungeon = new int[15, 15];
         for (int i = 0; i < 15; ++i)
         {

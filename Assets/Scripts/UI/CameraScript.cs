@@ -10,7 +10,8 @@ public class CameraScript : MonoBehaviour
     void Start()
     {
         PauseCamera = false;
-        Player = GameObject.FindGameObjectWithTag("Player");
+        if (Player == null)
+            Player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
@@ -29,5 +30,11 @@ public class CameraScript : MonoBehaviour
     public void ResumeCamera()
     {
         PauseCamera = false;
+    }
+
+    public void SetPlayer(GameObject SetThis)
+    {
+        //Debug.Log("Setting player");
+        Player = SetThis;
     }
 }
