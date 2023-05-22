@@ -8,10 +8,13 @@ public class DungeonSpawner : MonoBehaviour
     public GameObject RoomPrefab;
     public GameObject StartRoomPrefab;
     public GameObject CorridorPrefab;
+    public GameObject BossRoomPrefab;
+    public GameObject UpgradeRoomPrefab;
     [SerializeField] int [,] GridOfDungeon;
     [SerializeField] int[] TestMap;
-    [SerializeField] GameObject[] FinalRooms;
     public GameObject[] PlayerPrefabs;
+    [SerializeField] List<GameObject> EndRooms;
+    public GameObject[] Buffs;
 
     // Start is called before the first frame update
     void Start()
@@ -25,8 +28,7 @@ public class DungeonSpawner : MonoBehaviour
                 GameObject.FindGameObjectWithTag("MiniMap").GetComponent<CameraScript>().SetPlayer(PlayerGO);
                 break;
             }
-        }
-        
+        }       
 
 
         GridOfDungeon = new int[15, 15];
@@ -42,9 +44,11 @@ public class DungeonSpawner : MonoBehaviour
         GameObject PrevRoom;
         Vector2 currentcoords = new Vector2(7, 7);
 
-        AmountOfRooms = Random.Range(8, 10); //randomise amount of rooms
+        AmountOfRooms = Random.Range(8, 11); //randomise amount of rooms
 
-        int changedirections = (int)(AmountOfRooms * 0.5f);
+        int changedirections = (int)((AmountOfRooms - 1) * 0.5f); //when to branch off
+
+        int UpgradeRoomLocation = Random.Range(1, AmountOfRooms - 2);
 
         PrevRoom = Instantiate(StartRoomPrefab, new Vector3(0, 0, 0), Quaternion.identity); //create the first room
         CurrRoom = PrevRoom;
@@ -53,7 +57,7 @@ public class DungeonSpawner : MonoBehaviour
 
         GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y] = 1; //tell the list its already occupied
 
-        GameObject.Find("Canvas").GetComponent<CanvasScript>().SetText("Level 1", 1);
+        GameObject.Find("Canvas").GetComponent<CanvasScript>().SetText("Level " + Globalvariables.CurrentLevel.ToString(), 1);
 
 
         for (int i = 1; i < AmountOfRooms; ++i) //for loop to create everything
@@ -120,10 +124,16 @@ public class DungeonSpawner : MonoBehaviour
                         break;
                 }
 
+                //change room according to which one it should be now, there are 3 so far, boss, normal and upgrades
+                GameObject CreateThisRoom;
+
+                if (i == UpgradeRoomLocation)
+                    CreateThisRoom = UpgradeRoomPrefab;
+                else if (i != AmountOfRooms - 1)
+                    CreateThisRoom = RoomPrefab;
+                else
+                    CreateThisRoom = BossRoomPrefab;
                 //check all boxes
-
-
-
                 //check if we can make a room at this place
                 switch (LocationOfNewRoomRelativeToCurrent)//see where we can place a room
                 {
@@ -133,8 +143,8 @@ public class DungeonSpawner : MonoBehaviour
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(0, 30, 0), Quaternion.identity);
                             corridor.transform.Rotate(0, 0, 90);
 
+                            CurrRoom = Instantiate(CreateThisRoom, PrevRoom.transform.position + new Vector3(0, 60, 0), Quaternion.identity); //create room
 
-                            CurrRoom = Instantiate(RoomPrefab, PrevRoom.transform.position + new Vector3(0, 60, 0), Quaternion.identity); //create room
                             CanMakeRoomHere = true; //can make a room at this location
                             currentcoords += new Vector2(0, 1); //set the new co ordinates
                             break;
@@ -151,8 +161,8 @@ public class DungeonSpawner : MonoBehaviour
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(0, -30, 0), Quaternion.identity);
                             corridor.transform.Rotate(0, 0, -90);
 
+                            CurrRoom = Instantiate(CreateThisRoom, PrevRoom.transform.position + new Vector3(0, -60, 0), Quaternion.identity); //create room
 
-                            CurrRoom = Instantiate(RoomPrefab, PrevRoom.transform.position + new Vector3(0, -60, 0), Quaternion.identity);
                             CanMakeRoomHere = true;
                             currentcoords -= new Vector2(0, 1);
                             break;
@@ -168,8 +178,8 @@ public class DungeonSpawner : MonoBehaviour
                         {
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(30, 0, 0), Quaternion.identity);
 
+                            CurrRoom = Instantiate(CreateThisRoom, PrevRoom.transform.position + new Vector3(60, 0, 0), Quaternion.identity); //create room
 
-                            CurrRoom = Instantiate(RoomPrefab, PrevRoom.transform.position + new Vector3(60, 0, 0), Quaternion.identity);
                             CanMakeRoomHere = true;
                             currentcoords += new Vector2(1, 0);
                             break;
@@ -186,8 +196,8 @@ public class DungeonSpawner : MonoBehaviour
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(-30, 0, 0), Quaternion.identity);
                             corridor.transform.Rotate(0, 0, 180);
 
+                            CurrRoom = Instantiate(CreateThisRoom, PrevRoom.transform.position + new Vector3(-60, 0, 0), Quaternion.identity); //create boss room
 
-                            CurrRoom = Instantiate(RoomPrefab, PrevRoom.transform.position + new Vector3(-60, 0, 0), Quaternion.identity);
                             CanMakeRoomHere = true;
                             currentcoords -= new Vector2(1, 0);
                             break;
@@ -202,28 +212,28 @@ public class DungeonSpawner : MonoBehaviour
                         break;
                 }
 
-                //check if all positions have been checked, if yes, break from loop
+                //check if all positions have been checked, if yes, break from loop (no need this anymore)
                 {
-                    int havecheckedhowmany = 0;
-                    for (int z = 0; z < checkedspot.Length; ++z)
-                    {
-                        if (checkedspot[z])
-                        {
-                            ++havecheckedhowmany;
-                        }
-                    }
+                //    int havecheckedhowmany = 0;
+                //    for (int z = 0; z < checkedspot.Length; ++z)
+                //    {
+                //        if (checkedspot[z])
+                //        {
+                //            ++havecheckedhowmany;
+                //        }
+                //    }
 
-                    if (havecheckedhowmany == 4) //if checked all 4 corners
-                    {
-                        Debug.Log("Checked all sides");
-                        i = 100;
-                        CanMakeRoomHere = true;
-                    }
+                //    if (havecheckedhowmany == 4) //if checked all 4 corners
+                //    {
+                //        Debug.Log("Checked all sides");
+                //        i = 100;
+                //        CanMakeRoomHere = true;
+                //    }
                 }
             }
 
 
-            if (i != 100)
+            //letting room know which is where
             {
                 //Debug.Log("Room " + i + " created");
                 
@@ -231,17 +241,34 @@ public class DungeonSpawner : MonoBehaviour
                 corridor.GetComponent<CorridorScript>().AssignNeighbours(CurrRoom, PrevRoom, LocationOfNewRoomRelativeToCurrent); //tell the corridor who is infront and tell the corridor who is behind
                 GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y] = 1; //tell the list that the area is occupied
                 
-                CurrRoom.GetComponent<TestGrid>().enabled = false;
+                if (i != UpgradeRoomLocation) //if the room is not a upgrade room (or rooms without enemies, you do not need grids for pathfinding)
+                    CurrRoom.GetComponent<TestGrid>().enabled = false;
 
                 PrevRoom = CurrRoom;
                 PrevRoom.GetComponent<RoomHandler>().SetRoomCoordinates(currentcoords);
 
                 //checking deadend
                 {
-                    if (!CheckIfThereIsAnythingThere(currentcoords) || i == changedirections)
+                    if (i == AmountOfRooms - 2)
+                    {
+                        EndRooms.Add(PrevRoom); //add last room
+                        bool checkingfordeadends = false;
+
+                        while (!checkingfordeadends) //check list until the room location is fine
+                        {
+                            //randomise locations the boss could spawn in
+                            int randomnumberforbossroom = Random.Range(0, EndRooms.Count);
+
+                            PrevRoom = EndRooms[randomnumberforbossroom];
+                            currentcoords = PrevRoom.GetComponent<RoomHandler>().ReturnCoords(); //match the coords of the new room
+
+                            checkingfordeadends = CheckIfThereIsAnythingThere(currentcoords);
+                        }
+                    }
+                    else if (!CheckIfThereIsAnythingThere(currentcoords) || i == changedirections)
                     {
                         Debug.Log("Found dead end!"); //found dead end
-
+                        EndRooms.Add(PrevRoom);
                         bool nodeadends = false;
                         while (!nodeadends)
                         {

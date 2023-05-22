@@ -32,4 +32,9 @@ public class CorridorScript : MonoBehaviour
     {
         NextRoom.GetComponent<DungeonScript>().EnableEnemies();
     }
+
+    public int GetEnemyCount()
+    {
+        return NextRoom.GetComponent<DungeonScript>().GetEnemyCount();
+    }
 }

@@ -10,6 +10,7 @@ public class CharacterSelectScript : MonoBehaviour
     [SerializeField] GameObject[] Characters;
     [SerializeField] int CurrentIndex;
     public GameObject Camera;
+    private GameObject Trader;
     public TextMeshProUGUI Description;
     public TextMeshProUGUI Coins;
     public GameObject Lock;
@@ -23,12 +24,14 @@ public class CharacterSelectScript : MonoBehaviour
         CurrentCost = 0; //cost of buying the character
         FadeOut = false; //fade of the notification text
         ConfirmPurchase = false; //for the buying of characters
-        TxtHandler.CheckForCharacters(); //check what characters the player owns
+        //PlayFabHandler.GetPlayerInventory();
+        //TxtHandler.CheckForCharacters(); //check what characters the player owns
         CurrentIndex = 0; //start from zero
         Characters = GameObject.FindGameObjectsWithTag("Player");
+        Trader = GameObject.FindGameObjectWithTag("Trader");
         Camera.transform.position = Characters[0].transform.position - new Vector3(0, 0, 5); //shift the camera to where ever the first character is
         WriteText(); //lock camera to the first player the game can find and write its description
-        Coins.text = TxtHandler.FindOneIntValue('C').ToString();
+        Coins.text = PlayFabHandler.Coins.ToString();
     }
 
     // Update is called once per frame
@@ -74,13 +77,16 @@ public class CharacterSelectScript : MonoBehaviour
             if (i != CurrentIndex)
                 Destroy(Characters[i]);
         }
+
+        //if player chooses the character, destroy all the others and enable the chosen's scripts
+        //then set the camera to follow it
         Characters[CurrentIndex].GetComponent<AudioListener>().enabled = true;
         Characters[CurrentIndex].GetComponent<PlayerMovement>().enabled = true;
         Camera.GetComponent<Camera>().fieldOfView = 80;
         Camera.GetComponent<CameraScript>().enabled = true;
         Camera.GetComponent<CameraScript>().SetPlayer(Characters[CurrentIndex]);
-        //if player chooses the character, destroy all the others and enable the chosen's scripts
-        //then set the camera to follow it
+        //set trader's player
+        Trader.GetComponent<TraderScript>().SetPlayer(Characters[CurrentIndex]);
 
         Description.transform.parent.gameObject.SetActive(false);//disable the panel
         Notification.gameObject.SetActive(false); //disable the notification text
@@ -88,7 +94,7 @@ public class CharacterSelectScript : MonoBehaviour
         {
             if (transform.GetChild(i).GetComponent<Button>() != null)
             {
-                transform.GetChild(i).gameObject.SetActive(false); //find eac child in canvas and disable all those that has a button variable
+                transform.GetChild(i).gameObject.SetActive(false); //find each child in canvas and disable all those that has a button variable
             }
         }
 
@@ -110,14 +116,15 @@ public class CharacterSelectScript : MonoBehaviour
         ConfirmPurchase = false;
         if (int.Parse(Coins.text) >= CurrentCost)
         {
-            TxtHandler.CurrencyToWrite = "C" + (int.Parse(Coins.text) - CurrentCost).ToString(); //deduct and change currency
+            PlayFabHandler.BuyCharacter(Characters[CurrentIndex].name, CurrentCost);
+
+            Coins.text = (int.Parse(Coins.text) - CurrentCost).ToString(); //update the currency
 
             DoUnlock(Characters[CurrentIndex].name); //unlock the character and update the files
 
             Lock.SetActive(false); //unlock the UI
             FadeOut = true; //fade out the purchase message
             Notification.text = "Purchased";
-            Coins.text = TxtHandler.CurrencyToWrite; //update the currency
         }
         else
         {
@@ -133,13 +140,13 @@ public class CharacterSelectScript : MonoBehaviour
         if (Characters[CurrentIndex].name == "BountyHunter")
         {
             Description.text = "Bounty Hunter, starts with a revolver that deals high damage but low ammo capacity"; //description of class
-            Lock.SetActive(!TxtHandler.UnlockedBounty); //unlock or lock the button depending on if the player has unlocked the character
+            Lock.SetActive(!PlayFabHandler.UnlockedBounty); //unlock or lock the button depending on if the player has unlocked the character
             CurrentCost = 100; //set cost of this character
         }
         else if (Characters[CurrentIndex].name == "Mercenary")
         {
             Description.text = "Mercenary, starts with a rifle with high fire rate and magazine capacity, but has a wide spray and a long reload";
-            Lock.SetActive(!TxtHandler.UnlockedMercenary);
+            Lock.SetActive(!PlayFabHandler.UnlockedMercenary);
             CurrentCost = 150;
         }
     }
@@ -147,9 +154,28 @@ public class CharacterSelectScript : MonoBehaviour
     void DoUnlock(string name)
     {
         if (name == "Mercenary")
-            TxtHandler.UnlockedMercenary = true;
+            PlayFabHandler.UnlockedMercenary = true;
+    }
 
+    public void ShowMessage(string message)
+    {
+        Notification.color = Notification.color + new Color(0, 0, 0, 1);
+        Notification.gameObject.SetActive(true);
+        Notification.text = message;
+    }
+    public void HideMessage()
+    {
+        Notification.gameObject.SetActive(false);
+    }
 
-        TxtHandler.CreateTextFile();
+    public void BackButton()
+    {
+        GetComponent<ShopScript>().ShopPanel.SetActive(false);
+        Characters[CurrentIndex].GetComponent<PlayerMovement>().enabled = true;
+    }
+
+    public void UpdateCoins(int AmountToMinus)
+    {
+        Coins.text = (int.Parse(Coins.text) - AmountToMinus).ToString();
     }
 }

@@ -10,6 +10,7 @@ public class CanvasScript : MonoBehaviour
     public Slider Health;
     public TextMeshProUGUI Alertmessage;
     public Slider BGHP; //background hpbar
+    public TextMeshProUGUI HPNumber;
 
     [SerializeField] TextMeshProUGUI Coin;
     [SerializeField] TextMeshProUGUI AmmoText;
@@ -59,10 +60,11 @@ public class CanvasScript : MonoBehaviour
         AmmoIndicator.position = Camera.main.ScreenToWorldPoint(positionToMove + Offset);
     }
 
-    public void MaxNCurrentHP(int Max, int Curr)
+    public void SetMaxNCurrentHP(int Max, int Curr)
     {
         Health.maxValue = Max;
         Health.value = Curr;
+        HPNumber.text = Health.value.ToString() + "/" + Health.maxValue.ToString();
         BGHP.maxValue = Max;
         BGHP.value = Curr;
     }
@@ -70,10 +72,16 @@ public class CanvasScript : MonoBehaviour
     public void SetCurrentHP(int Curr)
     {
         Health.value = Curr;
+        HPNumber.text = Health.value.ToString() + "/" + Health.maxValue.ToString();
     }
     public void SetCoins(int Coins)
     {
         Coin.text = Coins.ToString();
+    }
+
+    public int GetCoins()
+    {
+        return int.Parse(Coin.text);
     }
 
     public void SetText(string TextToSetTo, int MakeDarker)
@@ -92,8 +100,7 @@ public class CanvasScript : MonoBehaviour
     public void SendScore()
     {
         Debug.Log("C" + Coin.text);
-        TxtHandler.CurrencyToWrite = "C" + Coin.text;
-        TxtHandler.CreateTextFile();
+        PlayFabHandler.UpdateMoney(int.Parse(Coin.text) - PlayFabHandler.Coins); //push the update money to playfab
     }
 
     public void UpdateAmmo(int Ammo)

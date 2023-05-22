@@ -10,6 +10,11 @@ TagManager:
   - Fullcover
   - RoomObj
   - MiniMap
+  - Room
+  - BossRoom
+  - UpgradeRoom
+  - Trader
+  - LobbyCanvas
   layers:
   - Default
   - TransparentFX

@@ -18,13 +18,13 @@ public class PlayerMechanics : MonoBehaviour
     {
         InvulnTime = 0;
         Currency = 0;
-        MaxHealth = 200;
-        CurrentHealth = 150;
+        MaxHealth = Globalvariables.MaxHP;
+        CurrentHealth = Globalvariables.CurrentHP;
 
         Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
-        Canvas.MaxNCurrentHP(MaxHealth, CurrentHealth);
+        Canvas.SetMaxNCurrentHP(MaxHealth, CurrentHealth);
 
-        SetCoins(TxtHandler.FindOneIntValue('C'));
+        SetCoins(PlayFabHandler.Coins);
     }
 
     // Update is called once per frame
@@ -90,5 +90,22 @@ public class PlayerMechanics : MonoBehaviour
             Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
 
         Canvas.UpdateAmmo(Ammo);
+    }
+
+    public void IncreaseMaxHP(int ByHowMuch)
+    {
+        MaxHealth += ByHowMuch;
+        CurrentHealth += ByHowMuch;
+        Canvas.SetMaxNCurrentHP(MaxHealth, CurrentHealth);
+    }
+
+    public void IncreaseFireRate(float byhowmuch)
+    {
+        transform.GetChild(0).GetComponent<GunScript>().ChangeFireRate(byhowmuch);
+    }
+
+    public void MessagePlayer(string Message)
+    {
+        Canvas.SetText(Message, 1);
     }
 }

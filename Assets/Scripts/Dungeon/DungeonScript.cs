@@ -13,7 +13,8 @@ public class DungeonScript : MonoBehaviour
 
     public GameObject FCoverPrefab; //prefabs
     public GameObject HCoverPrefab;
-    public GameObject BasicRangedEnemy;
+    public GameObject WeaponWorkbenchPrefab;
+    public GameObject[] EnemyList;
 
     //containers
     public GameObject RoomObjects;
@@ -30,7 +31,8 @@ public class DungeonScript : MonoBehaviour
     {
         Covers = new GameObject[10];
 
-        if (transform.position != new Vector3(0, 0, 0))
+        //if its a normal room
+        if (transform.tag == "Room")
         {
             for (int i = 0; i < 10; ++i) //create obstacles
             {
@@ -63,7 +65,7 @@ public class DungeonScript : MonoBehaviour
                 }
             }
 
-            EnemyCost = 5;
+            EnemyCost = 5 * (Globalvariables.CurrentLevel); //change max amount of enemies by cost here
             //creation of enemies
             while (EnemyCost > 0)
             {
@@ -110,15 +112,26 @@ public class DungeonScript : MonoBehaviour
                     }
                 }
                 //create enemy
-                GameObject CreateThis = BasicRangedEnemy;
+                
 
-                if (RandomEnemyNumber == 1)
-                    CreateThis = BasicRangedEnemy;
-
-                Enemies.Add(Instantiate(CreateThis, this.transform.position + new Vector3(x, y), Quaternion.identity));
+                Enemies.Add(Instantiate(EnemyList[RandomEnemyNumber - 1], this.transform.position + new Vector3(x, y), Quaternion.identity));
                 EnemyCost -= RandomEnemyNumber;
-                Enemies[Enemies.Count - 1].transform.SetParent(RoomEnemies.transform); //put enemeis inside of the room's container, for easier reference
+                Enemies[Enemies.Count - 1].transform.SetParent(RoomEnemies.transform); //put enemies inside of the room's container, for easier reference
             }
+        }
+        else if (transform.tag == "BossRoom")
+        {
+            //if its a boss room
+            //create the boss
+            int randomboss = Random.Range(0, EnemyList.Length); //randomise him
+            Enemies.Add(Instantiate(EnemyList[randomboss], transform.position, Quaternion.identity)); //create and add him to the list
+            //Enemies[0].GetComponent<EnemyMechanics>().MultiplyHP(10);
+            Enemies[0].GetComponent<EnemyMechanics>().AlterCost(90);
+            Enemies[0].transform.SetParent(RoomEnemies.transform);
+        }
+        else if (transform.tag == "UpgradeRoom")
+        {
+            Instantiate(WeaponWorkbenchPrefab, transform.position + new Vector3(0, 0, -0.1f), Quaternion.identity);
         }
     }
 
@@ -136,21 +149,18 @@ public class DungeonScript : MonoBehaviour
 
     public void EnableEnemies() //enable enemy ai and also shut the doors so the player cannot escape
     {
-        if (Enemies.Count > 0)
+        for (int i = 0; i < Enemies.Count; ++i)
         {
-            for (int i = 0; i < Enemies.Count; ++i)
-            {
-                Enemies[i].GetComponent<EnemyMovement>().enabled = true;
-                Enemies[i].GetComponent<EnemyMechanics>().enabled = true;
-                Enemies[i].transform.GetChild(0).GetComponent<EnemyRangedScript>().enabled = true;
-                Enemies[i].GetComponent<EnemyMechanics>().AssignRoom(gameObject);
-            }
+            Enemies[i].GetComponent<EnemyMovement>().enabled = true;
+            Enemies[i].GetComponent<EnemyMechanics>().enabled = true;
+            Enemies[i].transform.GetChild(0).GetComponent<EnemyRangedScript>().enabled = true;
+            Enemies[i].GetComponent<EnemyMechanics>().AssignRoom(gameObject);
+        }
 
-            for (int i = 0; i < SidesWithCorridors.Count; ++i)
-            {
-                doors[SidesWithCorridors[i]].SetActive(false);
-                walls[SidesWithCorridors[i]].SetActive(true);
-            }
+        for (int i = 0; i < SidesWithCorridors.Count; ++i)
+        {
+            doors[SidesWithCorridors[i]].SetActive(false);
+            walls[SidesWithCorridors[i]].SetActive(true);
         }
 
         //fix minimap cam to the room
@@ -159,6 +169,7 @@ public class DungeonScript : MonoBehaviour
         MiniMap.transform.position = this.transform.position + new Vector3(0, 0, -10);
         MiniMap.GetComponent<Camera>().orthographicSize = 17.5f;
         MiniMap.GetComponent<Camera>().backgroundColor = Color.white;
+
     }
 
     public void RemoveEnemyFromList(GameObject Enemy)
@@ -178,6 +189,13 @@ public class DungeonScript : MonoBehaviour
             MiniMap.GetComponent<CameraScript>().ResumeCamera();
             MiniMap.GetComponent<Camera>().orthographicSize = 30f;
             MiniMap.GetComponent<Camera>().backgroundColor = Color.black;
+
+            PlayFabHandler.UpdateMoney(GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>().GetCoins() - PlayFabHandler.Coins); //push the update money to playfab
         }
+    }
+
+    public int GetEnemyCount()
+    {
+        return Enemies.Count;
     }
 }

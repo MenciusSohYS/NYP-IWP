@@ -9,12 +9,13 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     [SerializeField] float Rolling;
     [SerializeField] Vector2 MovementAxisForRolling;
+    private bool rollingleft;
     // Start is called before the first frame update
     void Start()
     {
         speed = 12;
         Rolling = 0;
-
+        rollingleft = true;
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -33,6 +34,11 @@ public class PlayerMovement : MonoBehaviour
                 MovementAxisForRolling.x = Mathf.Cos(radians);
                 MovementAxisForRolling.y = Mathf.Sin(radians);
                 Rolling = 0.5f;
+
+                if (transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().flipY)
+                    rollingleft = true;
+                else
+                    rollingleft = false;
             }
             else if (Input.GetKey(KeyCode.LeftControl))
                 rb.velocity = new Vector2(Movement.x * speed * 0.5f, Movement.y * speed * 0.5f);
@@ -41,8 +47,17 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            if (rollingleft)
+                transform.Rotate(0, 0, 5);
+            else
+                transform.Rotate(0, 0, -5);
+
             Rolling -= Time.deltaTime;
             rb.velocity = new Vector2(MovementAxisForRolling.x * speed * 2, MovementAxisForRolling.y * speed * 2);
+            if (Rolling <= 0)
+            {
+                transform.localRotation = Quaternion.Euler(0, 0, 0);
+            }
         }
 
     }

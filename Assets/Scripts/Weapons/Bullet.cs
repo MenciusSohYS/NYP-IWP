@@ -8,9 +8,11 @@ public class Bullet : MonoBehaviour
     [SerializeField] int DamageToDo;
     public bool PlayerFriendly;
     [SerializeField] GameObject DamageNumber;
+    public int VelocityOfBullet;
     // Start is called before the first frame update
     private void Start()
     {
+        VelocityOfBullet = 30;
         rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, 3.0f);
     }
@@ -18,7 +20,7 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        rb.velocity = transform.up * 30;
+        rb.velocity = transform.up * VelocityOfBullet;
     }
 
     public void ShotBy(bool ByPlayer)
@@ -35,12 +37,20 @@ public class Bullet : MonoBehaviour
     {
         DamageToDo = Dmg;
     }
+    public void AssignVelocity(int Velocity)
+    {
+        VelocityOfBullet = Velocity;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         bool HitSomethingWithHealth = false;
         bool piercecapped = true; //if have pierce cap do make this false
 
+        if (collision.transform.name.Contains("Bullet"))
+        {
+            return;
+        }
 
         if (collision.transform.tag == "Player" && !PlayerFriendly)
         {

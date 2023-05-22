@@ -129,9 +129,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c479d1f56429c42a9c485f87e4a697, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bullet: {fileID: 5057738742393006419, guid: 8e9701ed65a5ab84690920d38ca65257, type: 3}
+  Bullets:
+  - {fileID: 5057738742393006419, guid: 8e9701ed65a5ab84690920d38ca65257, type: 3}
+  - {fileID: 5057738742393006419, guid: c3f8a82bc231c3143b6495458e3187ce, type: 3}
   BulletSpawner: {fileID: 1741950278577782543}
   WeaponScript: {fileID: 0}
+  CurrentUpgrade: 0
   PlayerMechanicsScript: {fileID: 0}
 --- !u!1 &3801289705830727392
 GameObject:
