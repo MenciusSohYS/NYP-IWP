@@ -31,7 +31,7 @@ public class InputfieldScript : MonoBehaviour
 
         if (parsedValue >= MinimumNumber && parsedValue <= 5) //if its within the fields
         {
-            itemScript.ChangeItemTotalCost(parsedValue - MinimumNumber); //if not
+            itemScript.ChangeItemTotalCost(parsedValue - MinimumNumber); //change the item total cost (display it to user)
             return;
         }
         else

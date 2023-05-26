@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c479d1f56429c42a9c485f87e4a697, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bullet: {fileID: 5057738742393006419, guid: 8e9701ed65a5ab84690920d38ca65257, type: 3}
+  Bullets: []
   BulletSpawner: {fileID: 0}
   WeaponScript: {fileID: 0}
   PlayerMechanicsScript: {fileID: 0}
@@ -160,6 +160,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87ce401c4d4b8604a93ce81c71db70ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Rolling: 0
+  MovementAxisForRolling: {x: 0, y: 0}
 --- !u!114 &7285198168956690473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,6 +178,7 @@ MonoBehaviour:
   CurrentHealth: 0
   Currency: 0
   Canvas: {fileID: 0}
+  InvulnTime: 0
 --- !u!58 &3619627602483614714
 CircleCollider2D:
   m_ObjectHideFlags: 0

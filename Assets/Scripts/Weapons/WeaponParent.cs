@@ -12,6 +12,10 @@ public class WeaponParent : MonoBehaviour
     protected float HeatMax = 1f; //heat determines the spread of the gun
     protected float CurrentHeat = 0f; //current heat value
     protected int BulletVelocity = 30; //current heat value
+    protected Vector3 PositionToParent = new Vector3(0, 0.1f, 0);
+    protected bool PickedUp = false;
+    protected int CurrentUpgrade = 0;
+    protected bool Chambered = false;
 
     public float Attack(Transform fromhere, GameObject Projectile, bool ShotByPlayer)
     {
@@ -93,7 +97,16 @@ public class WeaponParent : MonoBehaviour
 
     public float GetReloadTime()
     {
-        return ReloadTime;
+        if (CurrentReload <= 0)
+        {
+            //Debug.Log(ReloadTime); //if gun has no current reload
+            return ReloadTime;
+        }
+        else
+        {
+            //Debug.Log(CurrentReload); //if it has
+            return CurrentReload;
+        }
     }
 
     public int GetMaxMagSize()
@@ -114,10 +127,15 @@ public class WeaponParent : MonoBehaviour
     public float DoReload(float TimeLeftToGo, float ElapsedTime)
     {
         TimeLeftToGo -= ElapsedTime;
-        CurrentReload = TimeLeftToGo;
+        CurrentReload = TimeLeftToGo; //store reload time
 
-        if (TimeLeftToGo <= 0)
+        if (TimeLeftToGo <= 0 && !Chambered)
             BulletsRemaining = MaxMagSize; //set new bullets left (max)
+        else if (Chambered) //reload individual bullets
+        {
+            BulletsRemaining = (int)((MaxMagSize / ReloadTime) * (ReloadTime - CurrentReload));
+            Debug.Log(BulletsRemaining);
+        }
 
         return TimeLeftToGo;
     }
@@ -143,5 +161,30 @@ public class WeaponParent : MonoBehaviour
     public int ReturnVelocity()
     {
         return BulletVelocity;
+    }
+
+    public Vector3 GetLocalPosition()
+    {
+        return PositionToParent;
+    }
+
+    public bool GetPickedUp()
+    {
+        return PickedUp;
+    }
+
+    public int GetCurrentUpgrade()
+    {
+        return CurrentUpgrade;
+    }
+
+    public void SetCurrentUpgrades(int ByHowMuch)
+    {
+        CurrentUpgrade += ByHowMuch;
+    }
+
+    public void SetPickedUp()
+    {
+        PickedUp = !PickedUp;
     }
 }

@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = 12;
+        CheckSpeed();
         Rolling = 0;
         rollingleft = true;
         rb = GetComponent<Rigidbody2D>();
@@ -65,5 +65,30 @@ public class PlayerMovement : MonoBehaviour
     public float ReturnRollTimer()
     {
         return Rolling;
+    }
+
+    public void IncreaseSpeed(int IncreaseBy)
+    {
+        CheckSpeed();
+        speed += (IncreaseBy * 2);
+        //Debug.Log("Speed: " + speed);
+    }
+
+    void CheckSpeed()
+    {
+        if (speed < 1)
+        {
+            speed = 12;
+            if (gameObject.name.Contains("Mercenary"))
+            {
+                float temp = speed * 1.2f;
+                speed = (int)temp;
+                //Debug.Log("Merc");
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 }

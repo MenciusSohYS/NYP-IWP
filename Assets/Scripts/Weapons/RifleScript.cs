@@ -12,5 +12,6 @@ public class RifleScript : WeaponParent
         BulletsRemaining = 30;
         ReloadTime = MaxMagSize * 0.1f;
         HeatMax = 1f;
+        PositionToParent = new Vector3(0, 0.6f, 0);
     }
 }

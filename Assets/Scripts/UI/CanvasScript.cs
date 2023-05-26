@@ -16,17 +16,21 @@ public class CanvasScript : MonoBehaviour
     [SerializeField] TextMeshProUGUI AmmoText;
     [SerializeField] int MakeDarker;
     [SerializeField] RectTransform AmmoIndicator;
+    [SerializeField] RectTransform Crosshair;
     [SerializeField] RectTransform Base;
     private Vector3 Offset;
     // Start is called before the first frame update
     void Awake()
     {
+        Cursor.visible = false;
         //find player
         Player = GameObject.FindGameObjectWithTag("Player");
 
         GetComponent<Canvas>().worldCamera = Camera.main;
+        GetComponent<Canvas>().sortingLayerName = "UI";
+        
 
-        Offset = new Vector3(10, 10, 0);
+        Offset = new Vector3(45, 30, 0);
         //debug of text file
         {
             //string[] Scores = TxtHandler.ReadFile(@"PlayerStats.txt"); //read from file and return an array
@@ -58,6 +62,7 @@ public class CanvasScript : MonoBehaviour
         positionToMove.z = Base.position.z;
 
         AmmoIndicator.position = Camera.main.ScreenToWorldPoint(positionToMove + Offset);
+        Crosshair.position = Camera.main.ScreenToWorldPoint(positionToMove);
     }
 
     public void SetMaxNCurrentHP(int Max, int Curr)
@@ -72,6 +77,12 @@ public class CanvasScript : MonoBehaviour
     public void SetCurrentHP(int Curr)
     {
         Health.value = Curr;
+        HPNumber.text = Health.value.ToString() + "/" + Health.maxValue.ToString();
+    }
+    public void HealCurrentHP(int Curr)
+    {
+        Health.value = Curr;
+        BGHP.value = Health.value;
         HPNumber.text = Health.value.ToString() + "/" + Health.maxValue.ToString();
     }
     public void SetCoins(int Coins)
@@ -90,9 +101,9 @@ public class CanvasScript : MonoBehaviour
         Alertmessage.text = TextToSetTo; //set the text
 
         if (MakeDarker == -1)
-            Alertmessage.alpha = 0f; //change alpha to 1
+            Alertmessage.alpha = 0f; //change alpha to 1 during updtae
         else
-            Alertmessage.alpha = 1f; //change alpha to 0
+            Alertmessage.alpha = 1f; //change alpha to 0 during updtae
 
         this.MakeDarker = MakeDarker; //make it darker or brighter
     }

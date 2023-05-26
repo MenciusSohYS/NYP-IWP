@@ -7,10 +7,12 @@ public class PortalScript : MonoBehaviour
 {
     private GameObject Player;
     private bool CanMoveOn;
+    private PlayerMechanics PlayerMechs;
     // Start is called before the first frame update
     void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
+        PlayerMechs = Player.GetComponent<PlayerMechanics>();
         CanMoveOn = false;
     }
 
@@ -21,7 +23,7 @@ public class PortalScript : MonoBehaviour
 
         if (CanMoveOn)
         {
-            Player.GetComponent<PlayerMechanics>().MessagePlayer("Press E to move on");
+            PlayerMechs.MessagePlayer("Press E to move on");
             if (Input.GetKeyDown(KeyCode.E))
             {
                 //push level, current hp and max hp to global variables

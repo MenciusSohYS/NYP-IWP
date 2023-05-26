@@ -15,6 +15,7 @@ public class DungeonScript : MonoBehaviour
     public GameObject HCoverPrefab;
     public GameObject WeaponWorkbenchPrefab;
     public GameObject[] EnemyList;
+    public GameObject ChestPrefab;
 
     //containers
     public GameObject RoomObjects;
@@ -40,6 +41,9 @@ public class DungeonScript : MonoBehaviour
                 int randomnum = Random.Range(0, 2);
                 int x = Random.Range(-13, 13);
                 int y = Random.Range(-13, 13); //random position
+
+                if (x < 1 && x > -1 && y < 1 && y > -1)
+                    continue; //we want to reserve this space for the chest later
 
                 for (int j = 0; j < Covers.Length; ++j) //go through list to see if they can fit
                 {
@@ -189,6 +193,9 @@ public class DungeonScript : MonoBehaviour
             MiniMap.GetComponent<CameraScript>().ResumeCamera();
             MiniMap.GetComponent<Camera>().orthographicSize = 30f;
             MiniMap.GetComponent<Camera>().backgroundColor = Color.black;
+
+            if (!transform.name.Contains("BossRoom"))
+                Instantiate(ChestPrefab, transform.position + new Vector3(0, 0, -0.1f), Quaternion.identity);
 
             PlayFabHandler.UpdateMoney(GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>().GetCoins() - PlayFabHandler.Coins); //push the update money to playfab
         }

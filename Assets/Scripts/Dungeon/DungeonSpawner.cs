@@ -10,34 +10,37 @@ public class DungeonSpawner : MonoBehaviour
     public GameObject CorridorPrefab;
     public GameObject BossRoomPrefab;
     public GameObject UpgradeRoomPrefab;
-    [SerializeField] int [,] GridOfDungeon;
+    private int[][] GridOfDungeon = new int[GridSize][]; //create a grid
     [SerializeField] int[] TestMap;
     public GameObject[] PlayerPrefabs;
     [SerializeField] List<GameObject> EndRooms;
     public GameObject[] Buffs;
+    private const int GridSize = 15;
+    GameObject mainCamera;
+    GameObject miniMap;
+    GameObject canvas;
 
     // Start is called before the first frame update
     void Start()
     {
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        miniMap = GameObject.FindGameObjectWithTag("MiniMap");
+        canvas = GameObject.Find("Canvas");
         for (int i = 0; i < PlayerPrefabs.Length; ++i)
         {
             if (PlayerPrefabs[i].name == Globalvariables.Playerprefabname)
             {
-                GameObject PlayerGO = Instantiate(PlayerPrefabs[i], new Vector3(0, 0, 0), Quaternion.identity);
-                GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>().SetPlayer(PlayerGO);
-                GameObject.FindGameObjectWithTag("MiniMap").GetComponent<CameraScript>().SetPlayer(PlayerGO);
+                GameObject PlayerGO = Instantiate(PlayerPrefabs[i], new Vector3(0, 0, -0.05f), Quaternion.identity);
+                mainCamera.GetComponent<CameraScript>().SetPlayer(PlayerGO);
+                miniMap.GetComponent<CameraScript>().SetPlayer(PlayerGO);
                 break;
             }
-        }       
+        }
 
 
-        GridOfDungeon = new int[15, 15];
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < GridSize; i++)
         {
-            for (int j = 0; j < 15; ++j)
-            {
-                GridOfDungeon[i, j] = 0;
-            }
+            GridOfDungeon[i] = new int[GridSize]; //finish creating the second part of the jagged array
         }
 
         GameObject CurrRoom;
@@ -55,9 +58,9 @@ public class DungeonSpawner : MonoBehaviour
         PrevRoom.GetComponent<RoomHandler>().SetRoomCoordinates(currentcoords); //tell it where it is on the map
 
 
-        GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y] = 1; //tell the list its already occupied
+        GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y] = 1; //tell the list its already occupied
 
-        GameObject.Find("Canvas").GetComponent<CanvasScript>().SetText("Level " + Globalvariables.CurrentLevel.ToString(), 1);
+        canvas.GetComponent<CanvasScript>().SetText("Level " + Globalvariables.CurrentLevel.ToString(), 1);
 
 
         for (int i = 1; i < AmountOfRooms; ++i) //for loop to create everything
@@ -138,7 +141,7 @@ public class DungeonSpawner : MonoBehaviour
                 switch (LocationOfNewRoomRelativeToCurrent)//see where we can place a room
                 {
                     case 0:
-                        if (!checkedspot[0] && GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y + 1] == 0)
+                        if (!checkedspot[0] && GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y + 1] == 0)
                         {
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(0, 30, 0), Quaternion.identity);
                             corridor.transform.Rotate(0, 0, 90);
@@ -156,7 +159,7 @@ public class DungeonSpawner : MonoBehaviour
                             continue;
                         }
                     case 1:
-                        if (!checkedspot[1] && GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y - 1] == 0)
+                        if (!checkedspot[1] && GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y - 1] == 0)
                         {
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(0, -30, 0), Quaternion.identity);
                             corridor.transform.Rotate(0, 0, -90);
@@ -174,7 +177,7 @@ public class DungeonSpawner : MonoBehaviour
                             continue;
                         }
                     case 2:
-                        if (!checkedspot[2] && GridOfDungeon[(int)currentcoords.x + 1, (int)currentcoords.y] == 0)
+                        if (!checkedspot[2] && GridOfDungeon[(int)currentcoords.x + 1][(int)currentcoords.y] == 0)
                         {
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(30, 0, 0), Quaternion.identity);
 
@@ -191,7 +194,7 @@ public class DungeonSpawner : MonoBehaviour
                             continue;
                         }
                     case 3:
-                        if (!checkedspot[3] && GridOfDungeon[(int)currentcoords.x - 1, (int)currentcoords.y] == 0)
+                        if (!checkedspot[3] && GridOfDungeon[(int)currentcoords.x - 1][(int)currentcoords.y] == 0)
                         {
                             corridor = Instantiate(CorridorPrefab, PrevRoom.transform.position + new Vector3(-30, 0, 0), Quaternion.identity);
                             corridor.transform.Rotate(0, 0, 180);
@@ -239,7 +242,7 @@ public class DungeonSpawner : MonoBehaviour
                 
                 LetRoomsKnow(LocationOfNewRoomRelativeToCurrent, PrevRoom, CurrRoom); //let them know their parent and children
                 corridor.GetComponent<CorridorScript>().AssignNeighbours(CurrRoom, PrevRoom, LocationOfNewRoomRelativeToCurrent); //tell the corridor who is infront and tell the corridor who is behind
-                GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y] = 1; //tell the list that the area is occupied
+                GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y] = 1; //tell the list that the area is occupied
                 
                 if (i != UpgradeRoomLocation) //if the room is not a upgrade room (or rooms without enemies, you do not need grids for pathfinding)
                     CurrRoom.GetComponent<TestGrid>().enabled = false;
@@ -267,7 +270,7 @@ public class DungeonSpawner : MonoBehaviour
                     }
                     else if (!CheckIfThereIsAnythingThere(currentcoords) || i == changedirections)
                     {
-                        Debug.Log("Found dead end!"); //found dead end
+                        //Debug.Log("Found dead end!"); //found dead end
                         EndRooms.Add(PrevRoom);
                         bool nodeadends = false;
                         while (!nodeadends)
@@ -353,7 +356,7 @@ public class DungeonSpawner : MonoBehaviour
                 switch (j)
                 {
                     case 0:
-                        if (GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y + 1] == 1)
+                        if (GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y + 1] == 1)
                         {
                             IsThisAreaOccupied++;
                             //Debug.Log("Top is occupied, current room is number: " + i);
@@ -364,7 +367,7 @@ public class DungeonSpawner : MonoBehaviour
                         }
                         break;
                     case 1:
-                        if (GridOfDungeon[(int)currentcoords.x, (int)currentcoords.y - 1] == 1)
+                        if (GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y - 1] == 1)
                         {
                             IsThisAreaOccupied++;
                             //Debug.Log("Bottom is occupied, current room is number: " + i);
@@ -375,7 +378,7 @@ public class DungeonSpawner : MonoBehaviour
                         }
                         break;
                     case 2:
-                        if (GridOfDungeon[(int)currentcoords.x + 1, (int)currentcoords.y] == 1)
+                        if (GridOfDungeon[(int)currentcoords.x + 1][(int)currentcoords.y] == 1)
                         {
                             IsThisAreaOccupied++;
                             //Debug.Log("Right is occupied, current room is number: " + i);
@@ -386,7 +389,7 @@ public class DungeonSpawner : MonoBehaviour
                         }
                         break;
                     case 3:
-                        if (GridOfDungeon[(int)currentcoords.x - 1, (int)currentcoords.y] == 1)
+                        if (GridOfDungeon[(int)currentcoords.x - 1][(int)currentcoords.y] == 1)
                         {
                             IsThisAreaOccupied++;
                             //Debug.Log("Left is occupied, current room is number: " + i);

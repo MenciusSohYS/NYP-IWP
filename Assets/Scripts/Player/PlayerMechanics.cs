@@ -12,12 +12,27 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] CanvasScript Canvas;
 
     [SerializeField] float InvulnTime;
+    [SerializeField] AbilityParent CharacterAbility;
+    [SerializeField] PlayerMovement PlayerMoveScript;
+    [SerializeField] SpriteRenderer SpriteRender;
 
     // Start is called before the first frame update
     void Start()
     {
         InvulnTime = 0;
         Currency = 0;
+        CharacterAbility = GetComponent<AbilityParent>();
+        PlayerMoveScript = GetComponent<PlayerMovement>();
+        SpriteRender = GetComponent<SpriteRenderer>();
+        if (Globalvariables.CurrentLevel == 1)
+        {
+            for (int i = 0; i < PlayFabHandler.SkillList.Count; ++i)
+            {
+                //Debug.Log(PlayFabHandler.SkillList[i].Name + " has " + PlayFabHandler.SkillList[i].StackAmount);
+                AssignBuffs(PlayFabHandler.SkillList[i].Name, PlayFabHandler.SkillList[i].StackAmount); //assign the correct buffs when the player starts the first level (mechanics)
+            }
+        }
+
         MaxHealth = Globalvariables.MaxHP;
         CurrentHealth = Globalvariables.CurrentHP;
 
@@ -35,14 +50,22 @@ public class PlayerMechanics : MonoBehaviour
             InvulnTime -= Time.deltaTime;
             if (InvulnTime <= 0)
             {
-                transform.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                SpriteRender.color = new Color(1, 1, 1, 1);
             }
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            UseAbility(CharacterAbility.UseAbility()); //use the character's abilites
+        }
+        else
+        {
+            CharacterAbility.CoolDownAbility(Time.deltaTime); //cool down the ability when not in use
         }
     }
 
     public bool MinusHP(int howmuchtominus)
     {
-        if (GetComponent<PlayerMovement>().ReturnRollTimer() > 0)
+        if (PlayerMoveScript.ReturnRollTimer() > 0)
         {
             return false;
         }
@@ -59,10 +82,19 @@ public class PlayerMechanics : MonoBehaviour
             CurrentHealth -= howmuchtominus;
             Canvas.SetCurrentHP(CurrentHealth);
             InvulnTime = 0.5f;
-            transform.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
+            SpriteRender.color = new Color(1, 0, 0, 1);
             return true;
         }
         return false;
+    }
+
+    public void Heal(int HowMuchToHeal)
+    {
+        CurrentHealth += HowMuchToHeal;
+        if (MaxHealth < CurrentHealth)
+            CurrentHealth = MaxHealth;
+
+        Canvas.HealCurrentHP(CurrentHealth);
     }
 
     public int GetMaxHP()
@@ -107,5 +139,36 @@ public class PlayerMechanics : MonoBehaviour
     public void MessagePlayer(string Message)
     {
         Canvas.SetText(Message, 1);
+    }
+
+    void AssignBuffs(string name, int amount)
+    {
+        if (name == "Increase Health")
+        {
+            Globalvariables.MaxHP += (amount * 25);
+            Globalvariables.CurrentHP = Globalvariables.MaxHP;
+            //Debug.Log("Increase Health");
+        }
+        else if (name == "Increase Speed")
+        {
+            PlayerMoveScript.IncreaseSpeed(amount);
+            //Debug.Log("Increase Speed");
+        }
+    }
+
+    void UseAbility(int WhichAbility)
+    {
+        switch (WhichAbility)
+        {
+            case 0:
+                return;
+            case 1:
+                {
+                    Heal(20);
+                    return;
+                }
+            default:
+                return;
+        }        
     }
 }

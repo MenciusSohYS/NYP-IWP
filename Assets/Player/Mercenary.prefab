@@ -134,7 +134,6 @@ MonoBehaviour:
   - {fileID: 5057738742393006419, guid: c3f8a82bc231c3143b6495458e3187ce, type: 3}
   BulletSpawner: {fileID: 1741950278577782543}
   WeaponScript: {fileID: 0}
-  CurrentUpgrade: 0
   PlayerMechanicsScript: {fileID: 0}
 --- !u!1 &3801289705830727392
 GameObject:
@@ -233,6 +232,7 @@ GameObject:
   - component: {fileID: 1123344206750640557}
   - component: {fileID: -3440330448794843748}
   - component: {fileID: 7285198168956690473}
+  - component: {fileID: 4288334341802094948}
   - component: {fileID: 3619627602483614714}
   - component: {fileID: 6991560272743884117}
   m_Layer: 0
@@ -351,6 +351,21 @@ MonoBehaviour:
   Currency: 0
   Canvas: {fileID: 0}
   InvulnTime: 0
+  CharacterAbility: {fileID: 0}
+  PlayerMoveScript: {fileID: 0}
+  SpriteRender: {fileID: 0}
+--- !u!114 &4288334341802094948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4293842565912521357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8c1454798a39940ad4ad8318240f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!58 &3619627602483614714
 CircleCollider2D:
   m_ObjectHideFlags: 0

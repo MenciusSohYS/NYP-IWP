@@ -33,7 +33,7 @@ public class EnemyMechanics : MonoBehaviour
             CurrentHealth -= MinusBy;
         else
         {
-            Debug.Log(CostOfEnemy);
+            //Debug.Log(CostOfEnemy);
             Player.GetComponent<PlayerMechanics>().SetCoins(CostOfEnemy);
             InsideThisRoom.GetComponent<DungeonScript>().RemoveEnemyFromList(gameObject);
             if (Drops.Length != 0)

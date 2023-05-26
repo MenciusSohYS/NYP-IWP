@@ -45,7 +45,7 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         bool HitSomethingWithHealth = false;
-        bool piercecapped = true; //if have pierce cap do make this false
+        bool piercecapped = false; //if have pierce cap do make this false
 
         if (collision.transform.name.Contains("Bullet"))
         {
@@ -56,22 +56,26 @@ public class Bullet : MonoBehaviour
         {
             HitSomethingWithHealth = collision.transform.GetComponent<PlayerMechanics>().MinusHP(DamageToDo);
             collision.GetComponent<Rigidbody2D>().AddForce(rb.velocity * 5);
+            piercecapped = true;
         }
         else if (collision.transform.tag == "Enemy" && PlayerFriendly)
         {
             collision.transform.GetComponent<EnemyMechanics>().MinusHP(DamageToDo);
             HitSomethingWithHealth = true;
+            piercecapped = true;
         }
         else if (collision.transform.tag == "HalfCover")
         {
             float tempdmg = DamageToDo;
             tempdmg *= 0.5f;
             DamageToDo = (int)tempdmg;
-            piercecapped = false;
         }
         else if (collision.transform.tag == "FullCover")
         {
+            piercecapped = true;
         }
+        else if (collision.transform.tag == "Walls")
+            piercecapped = true;
 
         if (HitSomethingWithHealth)
         {

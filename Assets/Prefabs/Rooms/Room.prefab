@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: -7130941141285165500}
   - component: {fileID: 1222945619038125799}
   m_Layer: 0
-  m_Name: BossRoom
-  m_TagString: BossRoom
+  m_Name: Room
+  m_TagString: Room
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -66,8 +66,10 @@ MonoBehaviour:
   EnemyCost: 0
   FCoverPrefab: {fileID: 8820514405288375605, guid: 93c38eca10f3e57429c6a1c9d6d0b1d3, type: 3}
   HCoverPrefab: {fileID: 8820514405288375605, guid: 3a73b126e940aba479d86bdb7caf16cd, type: 3}
+  WeaponWorkbenchPrefab: {fileID: 0}
   EnemyList:
-  - {fileID: 7888168876331056701, guid: 86d6e4f15b20b4e4885f5deacdab501c, type: 3}
+  - {fileID: 7888168876331056701, guid: 5ce690b8a29be8549882f5bafba1d6f3, type: 3}
+  ChestPrefab: {fileID: 2207561014164058557, guid: 498f9e3971c807b41a2ca90401e6c17b, type: 3}
   RoomObjects: {fileID: 2196393389922210799}
   RoomEnemies: {fileID: 4391147591592173838}
   Fog: {fileID: 3648767516148201600}
@@ -120,7 +122,7 @@ GameObject:
   - component: {fileID: 656165446032464037}
   m_Layer: 0
   m_Name: West Entrance
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -203,7 +205,7 @@ GameObject:
   - component: {fileID: 3502561970042426397}
   m_Layer: 0
   m_Name: Walls
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -247,7 +249,7 @@ GameObject:
   - component: {fileID: 8870309001829518289}
   m_Layer: 0
   m_Name: South Entrance
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -364,7 +366,7 @@ GameObject:
   - component: {fileID: 182313641478057100}
   m_Layer: 0
   m_Name: West (1)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -497,7 +499,7 @@ GameObject:
   - component: {fileID: 4865851869792508837}
   m_Layer: 0
   m_Name: TopLPillar
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -627,7 +629,7 @@ GameObject:
   - component: {fileID: 1173074784406631523}
   m_Layer: 0
   m_Name: Entrances
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -753,7 +755,7 @@ GameObject:
   - component: {fileID: 5223697540703614264}
   m_Layer: 0
   m_Name: South (2)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -886,7 +888,7 @@ GameObject:
   - component: {fileID: 5255569431871630731}
   m_Layer: 0
   m_Name: North (2)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1050,7 +1052,7 @@ GameObject:
   - component: {fileID: 8989632920531652905}
   m_Layer: 0
   m_Name: South
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1243,7 +1245,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.6320754, g: 0.6320754, b: 0.6320754, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1265,7 +1267,7 @@ GameObject:
   - component: {fileID: 5512953739848638286}
   m_Layer: 0
   m_Name: North Entrance
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1351,7 +1353,7 @@ GameObject:
   - component: {fileID: 8443013278504685699}
   m_Layer: 0
   m_Name: East (2)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1484,7 +1486,7 @@ GameObject:
   - component: {fileID: 6640828476664862875}
   m_Layer: 0
   m_Name: West (2)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1676,7 +1678,7 @@ SpriteRenderer:
   m_SortingLayerID: -1718758803
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 5a798b050cb7230418d5eb9a47a4c7c1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2c768bf3cabf1834395e4ca4dc71728e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1701,7 +1703,7 @@ GameObject:
   - component: {fileID: 6817341376212348051}
   m_Layer: 0
   m_Name: BottomRPillar
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1834,7 +1836,7 @@ GameObject:
   - component: {fileID: 8825663300653479146}
   m_Layer: 0
   m_Name: TopRPillar
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1967,7 +1969,7 @@ GameObject:
   - component: {fileID: 447350663326924683}
   m_Layer: 0
   m_Name: South (1)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2100,7 +2102,7 @@ GameObject:
   - component: {fileID: 71464637983147292}
   m_Layer: 0
   m_Name: West
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2233,7 +2235,7 @@ GameObject:
   - component: {fileID: 2484442770281754310}
   m_Layer: 0
   m_Name: North (1)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2366,7 +2368,7 @@ GameObject:
   - component: {fileID: 7029153828607154307}
   m_Layer: 0
   m_Name: East (1)
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2499,7 +2501,7 @@ GameObject:
   - component: {fileID: 4344798573009399780}
   m_Layer: 0
   m_Name: BottomLPillar
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2632,7 +2634,7 @@ GameObject:
   - component: {fileID: 4705236823875488873}
   m_Layer: 0
   m_Name: North
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2763,7 +2765,7 @@ GameObject:
   - component: {fileID: 4628540240986510570}
   m_Layer: 0
   m_Name: East Entrance
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2849,7 +2851,7 @@ GameObject:
   - component: {fileID: 5807426307369395295}
   m_Layer: 0
   m_Name: East
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
