@@ -177,9 +177,16 @@ MonoBehaviour:
   PlayerPrefabs:
   - {fileID: 4293842565912521357, guid: 9dafb77adf8e73546a415139e70d31d6, type: 3}
   - {fileID: 4293842565912521357, guid: 97ed5e02e2ac46b46bad5975911ea8de, type: 3}
+  - {fileID: 4293842565912521357, guid: dc32e3e3f1229784e94f2182bedb0c3f, type: 3}
+  WeaponPrefabs:
+  - {fileID: 2325470093786714973, guid: a343e30128ef40646a7294b3b884d9c3, type: 3}
+  - {fileID: 2325470093786714973, guid: d45660560b585f047a1ec68969e76fef, type: 3}
+  - {fileID: 2325470093786714973, guid: 44d199cc97500af4fbb26420b5d4bcd8, type: 3}
+  - {fileID: 8269321400050437038, guid: c998bf5985468904b8a7664639330b53, type: 3}
   EndRooms: []
   Buffs:
   - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
+  - {fileID: 4575172184027129287, guid: 3adaa26bdaaf2894bab5d6b7c9122b97, type: 3}
 --- !u!1 &213076303
 GameObject:
   m_ObjectHideFlags: 0

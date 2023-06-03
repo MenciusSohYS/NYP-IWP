@@ -28,6 +28,9 @@ public class GunScript : MonoBehaviour
         transform.Rotate(new Vector3(0, 0, PrevAngle * Mathf.Rad2Deg));
         //find gun transform
         GunTransform = transform.GetChild(0);
+        if (GunTransform.GetComponent<SpriteRenderer>() == null)
+            GunTransform = GunTransform.GetChild(0);
+
         //find weaponscript
         WeaponScript = GunTransform.GetComponent<WeaponParent>();
         timerforshooting = 0;
@@ -35,27 +38,10 @@ public class GunScript : MonoBehaviour
         //find weapon sprite
         GunSprite = GunTransform.GetComponent<SpriteRenderer>();
 
-
-        if (Globalvariables.CurrentLevel > 1) //if the level is not 1, the player might have altered their gun stats, so we override it
-        {
-            WeaponScript.SetDamageByNumber(Globalvariables.WeaponComponents.Damage);
-            WeaponScript.SetFireRateByNumber(Globalvariables.WeaponComponents.FireRate);
-            WeaponScript.SetReloadTimeByNumber(Globalvariables.WeaponComponents.ReloadTime);
-            WeaponScript.SetMaxMagSize(Globalvariables.WeaponComponents.MagSize);
-            WeaponScript.SetCurrentSize(Globalvariables.WeaponComponents.CurrSize);
-            WeaponScript.SetSpread(Globalvariables.WeaponComponents.Spread);
-            WeaponScript.SetMaxHeat(Globalvariables.WeaponComponents.HeatMax);
-            WeaponScript.SetVelocity(Globalvariables.WeaponComponents.Velocity);
-            CurrentUpgrade = Globalvariables.WeaponComponents.CurrentUpgrades;
-        }
-        else
-        {
-            ApplyBuffPreReq();
-            CurrentUpgrade = WeaponScript.GetCurrentUpgrade();
-            WeaponScript.SetPickedUp();
-        }
+        WeaponInitiation();        
 
         PlayerMechanicsScript = transform.parent.GetComponent<PlayerMechanics>();
+
         PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
     }
     void Update()
@@ -92,7 +78,7 @@ public class GunScript : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                if (WeaponScript.ReturnCurrentMag() != WeaponScript.GetMaxMagSize() && WeaponScript.GetReloadTime() != -1) //if max mag no need to reload
+                if (WeaponScript.ReturnCurrentMag() != WeaponScript.GetMaxMagSize() && WeaponScript.ReturnFullReload() != -1) //if max mag no need to reload
                 {
                     Shooting = false;
                     Reloading = true;
@@ -109,11 +95,26 @@ public class GunScript : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.Q))
             {
-                DropWeapon();
+                //DropWeapon();
                 return; //break the update as we dont cant do anything else below
             }
 
-            WeaponScript.SetWeaponHeat(Time.deltaTime);
+            if (!Shooting || Reloading)
+            {
+                WeaponScript.SetWeaponHeat(Time.deltaTime);
+
+                if (WeaponScript.transform.name.Contains("Bow"))
+                {
+                    int Mag = WeaponScript.ReturnCurrentMag();
+                    PlayerMechanicsScript.ShowAmmoLeft(Mag);
+                    if (Mag == 0)
+                    {
+                        ReloadTimer = WeaponScript.ReturnFullReload();
+                        DestroyTempWeapon();
+                        return;
+                    }
+                }
+            }
             GunSprite.material.SetColor("_SpriteColor", new Color(0, -WeaponScript.ReturnCurrentWeaponHeat(), -WeaponScript.ReturnCurrentWeaponHeat(), 0) + new Color(1, 1, 1, 1));
 
 
@@ -121,6 +122,10 @@ public class GunScript : MonoBehaviour
             {
                 GunTransform.Rotate(0, 0, 10);
                 ReloadTimer = WeaponScript.DoReload(ReloadTimer, Time.deltaTime); //push the calculation to the gun for storing and dynamic reload
+
+                if (WeaponScript.ReturnChambered())
+                    PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
+
                 if (ReloadTimer <= 0)
                 {
                     GunTransform.localRotation = Quaternion.Euler(0, 0, 90);
@@ -128,7 +133,7 @@ public class GunScript : MonoBehaviour
                     Reloading = false; //completed reload
                 }
             }
-            else if (Shooting && timerforshooting <= 0 && WeaponScript.ReturnCurrentMag() > 0) //if the player is shooting, can shoot after fire rate cool down and has more than 1 bullet
+            else if (Shooting && timerforshooting <= 0 && WeaponScript.ReturnCurrentMag() > 0) //if the player is shooting, can shoot after fire rate cool down and has more than 0 bullet
             {
                 timerforshooting = WeaponScript.Attack(BulletSpawner, Bullets[CurrentUpgrade], true); //shoot
                 PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
@@ -166,7 +171,7 @@ public class GunScript : MonoBehaviour
             WeaponScript.SetMaxMagSize((int)(WeaponScript.GetMaxMagSize() * 1.5f)); //increase the max mag
             WeaponScript.SetDamageByNumber((int)(WeaponScript.GetDamage() * 1.5f)); //damage
             WeaponScript.SetFireRateByNumber((WeaponScript.GetFireRate() * 0.8f)); //lower the firerate the faster the gun shoots
-            WeaponScript.SetReloadTimeByNumber(WeaponScript.GetReloadTime() * 0.75f); //lower the reload time the faster
+            WeaponScript.SetReloadTimeByNumber(WeaponScript.ReturnFullReload() * 0.75f); //lower the reload time the faster
             WeaponScript.SetSpread(WeaponScript.GetSpread() * 0.8f); //lower the spread the better
             WeaponScript.SetMaxHeat(WeaponScript.ReturnMaxHeat() * 0.9f); //lower the heat the better
         }
@@ -193,11 +198,11 @@ public class GunScript : MonoBehaviour
         }
         else if (name == "Increase Reload Speed")
         {
-            if (WeaponScript.GetReloadTime() == -1)
+            if (WeaponScript.ReturnFullReload() == -1)
             {
                 return;
             }
-            float amounttoincreaseby = WeaponScript.GetReloadTime() * (1 - (amount * 0.05f));
+            float amounttoincreaseby = WeaponScript.ReturnFullReload() * (1 - (amount * 0.05f));
             
             WeaponScript.SetReloadTimeByNumber(amounttoincreaseby);
             //Debug.Log("Amount to decrease by: " + amounttoincreaseby);
@@ -206,6 +211,7 @@ public class GunScript : MonoBehaviour
 
     public void AssignNewGun(GameObject NewGun, bool isanoverride) //is the gun an override? if not then replace the current gun
     {
+
         if (isanoverride)
         {
             //since its an override and there is another weapon that exists, we should:
@@ -232,6 +238,13 @@ public class GunScript : MonoBehaviour
         GunTransform.SetParent(transform);
         //place this weapon on top
         GunTransform.SetAsFirstSibling();
+
+        if (GunTransform.GetComponent<SpriteRenderer>() == null) //if no sprite renderer, it should be a melee weapon
+        {
+            GunTransform.GetComponent<Animator>().enabled = true;
+            GunTransform = GunTransform.GetChild(0);
+            NewGun = NewGun.transform.GetChild(0).gameObject;
+        }
         //get the new gun's weapon script
         WeaponScript = NewGun.GetComponent<WeaponParent>();
         if (!WeaponScript.GetPickedUp()) //if it has never been picked up, apply the player's ability
@@ -249,7 +262,9 @@ public class GunScript : MonoBehaviour
         //find weapon sprite
         GunSprite = NewGun.GetComponent<SpriteRenderer>();
         //set new bullets left
-        PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
+        if (PlayerMechanicsScript != null) //dungeon might call it before its assigned, but we will call the bottom script later when the thing properly initializes
+            PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
+
         if (GunTransform.GetComponent<WeaponDropped>() != null) //if it exists
         {
             GunTransform.GetComponent<WeaponDropped>().enabled = false; //disable the script for when the weapon gets dropped
@@ -260,6 +275,11 @@ public class GunScript : MonoBehaviour
     void DropWeapon()
     {
         GunTransform.position += new Vector3(0, 0, 0.21f); //set the position on the Z axis
+        if (GunTransform.GetComponent<WeaponParent>().ReturnMelee())
+        {
+            GunTransform = GunTransform.parent;
+            GunTransform.GetComponent<Animator>().enabled = false;
+        }
         GunTransform.GetComponent<WeaponDropped>().enabled = true; //enable the script for when the weapon gets dropped
         GunTransform.GetComponent<CircleCollider2D>().enabled = true; //enable the collider that goes with the script
         GunTransform.SetParent(null); //drop weapon
@@ -278,5 +298,28 @@ public class GunScript : MonoBehaviour
             //Debug.Log(PlayFabHandler.SkillList[i].Name + " has " + PlayFabHandler.SkillList[i].StackAmount);
             AssignBuffs(PlayFabHandler.SkillList[i].Name, PlayFabHandler.SkillList[i].StackAmount); //assign the correct buffs when the player starts the first level or picks up a new (gun)
         }
+    }
+
+    void WeaponInitiation()
+    {
+        if (Globalvariables.CurrentLevel <= 1) //if the level is not 1, the player might have altered their gun stats, so we override it
+        {
+            ApplyBuffPreReq();
+            CurrentUpgrade = WeaponScript.GetCurrentUpgrade();
+            WeaponScript.SetPickedUp();
+        }
+    }
+
+    public void AssignWeaponBuffsAfterLevelOne()//should be self explanatory
+    {
+        WeaponScript.SetDamageByNumber(Globalvariables.WeaponComponents.Damage);
+        WeaponScript.SetFireRateByNumber(Globalvariables.WeaponComponents.FireRate);
+        WeaponScript.SetReloadTimeByNumber(Globalvariables.WeaponComponents.ReloadTime);
+        WeaponScript.SetMaxMagSize(Globalvariables.WeaponComponents.MagSize);
+        WeaponScript.SetCurrentSize(Globalvariables.WeaponComponents.CurrSize);
+        WeaponScript.SetSpread(Globalvariables.WeaponComponents.Spread);
+        WeaponScript.SetMaxHeat(Globalvariables.WeaponComponents.HeatMax);
+        WeaponScript.SetVelocity(Globalvariables.WeaponComponents.Velocity);
+        CurrentUpgrade = Globalvariables.WeaponComponents.CurrentUpgrades;
     }
 }

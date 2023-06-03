@@ -16,6 +16,9 @@ public class WeaponDropped : MonoBehaviour
         Player = GameObject.FindGameObjectWithTag("Player");
         PlayerGunScript = Player.transform.GetChild(0).GetComponent<GunScript>();
         GunRenderer = GetComponent<SpriteRenderer>();
+        if (GunRenderer == null)
+            GunRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+
     }
     private void Update()
     {

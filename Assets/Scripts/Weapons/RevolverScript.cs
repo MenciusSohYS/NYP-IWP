@@ -9,7 +9,7 @@ public class RevolverScript : WeaponParent
         FireRate = 0.5f;
         Spread = 0.1f;
         BulletsRemaining = 6;
-        MaxMagSize = 9;
+        MaxMagSize = 6;
         ReloadTime = 1.2f;
         HeatMax = 0.5f;
         PositionToParent = new Vector3(0, 0.6f, 0);

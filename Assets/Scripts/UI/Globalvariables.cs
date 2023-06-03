@@ -22,6 +22,7 @@ public static class Globalvariables
         public static float HeatMax;
         public static int Velocity;
         public static int CurrentUpgrades;
+        public static string WeaponName;
     };
 
 }

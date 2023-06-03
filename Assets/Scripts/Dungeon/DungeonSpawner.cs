@@ -13,6 +13,7 @@ public class DungeonSpawner : MonoBehaviour
     private int[][] GridOfDungeon = new int[GridSize][]; //create a grid
     [SerializeField] int[] TestMap;
     public GameObject[] PlayerPrefabs;
+    public GameObject[] WeaponPrefabs;
     [SerializeField] List<GameObject> EndRooms;
     public GameObject[] Buffs;
     private const int GridSize = 15;
@@ -33,6 +34,24 @@ public class DungeonSpawner : MonoBehaviour
                 GameObject PlayerGO = Instantiate(PlayerPrefabs[i], new Vector3(0, 0, -0.05f), Quaternion.identity);
                 mainCamera.GetComponent<CameraScript>().SetPlayer(PlayerGO);
                 miniMap.GetComponent<CameraScript>().SetPlayer(PlayerGO);
+
+
+                if (Globalvariables.CurrentLevel > 1)
+                {
+                    for (int j = 0; j < WeaponPrefabs.Length; ++j)
+                    {
+                        //Debug.Log(Globalvariables.WeaponComponents.WeaponName.Contains(WeaponPrefabs[j].transform.name));
+                        if (Globalvariables.WeaponComponents.WeaponName.Contains(WeaponPrefabs[j].transform.name))
+                        {
+                            GameObject NewWeapon = Instantiate(WeaponPrefabs[j], PlayerGO.transform.position, Quaternion.identity);
+                            //Destroy(PlayerWeapon.transform.GetChild(0).GetChild(0).gameObject);
+                            PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignNewGun(NewWeapon, false);
+                            PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignWeaponBuffsAfterLevelOne();
+                            Destroy(PlayerGO.transform.GetChild(0).GetChild(PlayerGO.transform.GetChild(0).childCount - 1).gameObject); //remove the last gameobject
+                        }
+                    }
+                }
+
                 break;
             }
         }

@@ -32,8 +32,21 @@ public class PortalScript : MonoBehaviour
                 Globalvariables.MaxHP = Player.GetComponent<PlayerMechanics>().GetMaxHP();
 
                 //set weapon stats and stuff, to be used when you start the new level
+                Globalvariables.WeaponComponents.WeaponName = Player.transform.GetChild(0).GetChild(0).name;
                 WeaponParent PlayerWeaponScript = Player.transform.GetChild(0).GetChild(0).GetComponent<WeaponParent>();
+
+                if (PlayerWeaponScript == null)
+                {
+                    PlayerWeaponScript = Player.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<WeaponParent>();
+                }
+
                 GunScript PlayerGunScript = Player.transform.GetChild(0).GetComponent<GunScript>();
+
+                //if (PlayerWeaponScript != null)
+                //    Debug.Log(Player.transform.GetChild(0).name);
+                //else
+                //    Debug.Log("NULL");
+
                 Globalvariables.WeaponComponents.Damage = PlayerWeaponScript.GetDamage();
                 Globalvariables.WeaponComponents.FireRate = PlayerWeaponScript.GetFireRate();
                 Globalvariables.WeaponComponents.ReloadTime = PlayerWeaponScript.GetReloadTime();

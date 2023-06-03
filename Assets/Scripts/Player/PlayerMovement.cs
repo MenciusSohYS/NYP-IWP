@@ -35,10 +35,20 @@ public class PlayerMovement : MonoBehaviour
                 MovementAxisForRolling.y = Mathf.Sin(radians);
                 Rolling = 0.5f;
 
-                if (transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().flipY)
-                    rollingleft = true;
+                if (transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>() != null)
+                {
+                    if (transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>())
+                        rollingleft = true;
+                    else
+                        rollingleft = false;
+                }
                 else
-                    rollingleft = false;
+                {
+                    if (transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>())
+                        rollingleft = true;
+                    else
+                        rollingleft = false;
+                }
             }
             else if (Input.GetKey(KeyCode.LeftControl))
                 rb.velocity = new Vector2(Movement.x * speed * 0.5f, Movement.y * speed * 0.5f);

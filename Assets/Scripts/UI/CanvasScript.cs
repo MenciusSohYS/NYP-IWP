@@ -27,7 +27,8 @@ public class CanvasScript : MonoBehaviour
         Player = GameObject.FindGameObjectWithTag("Player");
 
         GetComponent<Canvas>().worldCamera = Camera.main;
-        GetComponent<Canvas>().sortingLayerName = "UI";
+        GetComponent<Canvas>().sortingLayerName = "Default";
+        GetComponent<Canvas>().sortingLayerID = 1;
         
 
         Offset = new Vector3(45, 30, 0);

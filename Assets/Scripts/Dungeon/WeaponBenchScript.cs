@@ -6,11 +6,16 @@ public class WeaponBenchScript : MonoBehaviour
 {
     private GameObject Player;
     private bool CanMoveOn;
-    // Start is called before the first frame update
-    void Start()
+    BoxCollider2D[] colliders;
+
+       
+// Start is called before the first frame update
+void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
         CanMoveOn = false;
+        colliders = GetComponentsInChildren<BoxCollider2D>(true); //true to include those that are inactive
+        Debug.Log(colliders.Length);
     }
 
     // Update is called once per frame
@@ -22,6 +27,11 @@ public class WeaponBenchScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E))
             {
                 UpgradeWeapon();
+                foreach (BoxCollider2D collider in colliders)
+                {
+                    collider.enabled = false;
+                    CanMoveOn = false;
+                }
             }
         }
     }

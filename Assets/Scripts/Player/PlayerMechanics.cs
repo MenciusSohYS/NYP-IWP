@@ -147,12 +147,12 @@ public class PlayerMechanics : MonoBehaviour
         {
             Globalvariables.MaxHP += (amount * 25);
             Globalvariables.CurrentHP = Globalvariables.MaxHP;
-            //Debug.Log("Increase Health");
+            Debug.Log("Increase Health");
         }
         else if (name == "Increase Speed")
         {
             PlayerMoveScript.IncreaseSpeed(amount);
-            //Debug.Log("Increase Speed");
+            Debug.Log("Increase Speed");
         }
     }
 

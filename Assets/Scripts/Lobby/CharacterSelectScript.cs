@@ -7,7 +7,7 @@ using TMPro;
 public class CharacterSelectScript : MonoBehaviour
 {
     //enable audio listener, mechanics, movement, gunscript, flip sprite script
-    [SerializeField] GameObject[] Characters;
+    [SerializeField] GameObject[] Characters2;
     [SerializeField] int CurrentIndex;
     public GameObject Camera;
     private GameObject Trader;
@@ -18,6 +18,16 @@ public class CharacterSelectScript : MonoBehaviour
     private bool ConfirmPurchase;
     private bool FadeOut;
     private int CurrentCost;
+
+    public class HandlerNumberToLocalNumber
+    {
+        public int LocalNumber;
+        public int HandlerNumber;
+        public GameObject CharacterGO;
+    }
+
+    List<HandlerNumberToLocalNumber> handlerNumberToLocalNumber;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,9 +37,33 @@ public class CharacterSelectScript : MonoBehaviour
         //PlayFabHandler.GetPlayerInventory();
         //TxtHandler.CheckForCharacters(); //check what characters the player owns
         CurrentIndex = 0; //start from zero
-        Characters = GameObject.FindGameObjectsWithTag("Player");
+        Characters2 = GameObject.FindGameObjectsWithTag("Player");
+
+        handlerNumberToLocalNumber = new List<HandlerNumberToLocalNumber>();
+
+        foreach (GameObject GO in Characters2)
+        {
+            handlerNumberToLocalNumber.Add(new HandlerNumberToLocalNumber { CharacterGO = GO });
+            //Debug.Log(GO.name);
+        }
+
+        for (int i = 0; i < PlayFabHandler.Characters.Count; ++i)
+        {
+            for (int j = 0; j < handlerNumberToLocalNumber.Count; ++j)
+            {
+                if (PlayFabHandler.Characters[i].Name == handlerNumberToLocalNumber[j].CharacterGO.name)
+                {
+                    handlerNumberToLocalNumber[j].LocalNumber = j;
+                    handlerNumberToLocalNumber[j].HandlerNumber = i;
+                    //Debug.Log(handlerNumberToLocalNumber[j].CharacterGO.name);
+                    //Debug.Log(PlayFabHandler.Characters[i].Name);
+                    //they might have different array co ordinates so we need to use this class to sync them up
+                }
+            }
+        }
+
         Trader = GameObject.FindGameObjectWithTag("Trader");
-        Camera.transform.position = Characters[0].transform.position - new Vector3(0, 0, 5); //shift the camera to where ever the first character is
+        Camera.transform.position = handlerNumberToLocalNumber[0].CharacterGO.transform.position - new Vector3(0, 0, 5); //shift the camera to where ever the first character is
         WriteText(); //lock camera to the first player the game can find and write its description
         Coins.text = PlayFabHandler.Coins.ToString();
     }
@@ -52,11 +86,11 @@ public class CharacterSelectScript : MonoBehaviour
     public void NextCharacter()
     {
         ++CurrentIndex;
-        if (CurrentIndex > Characters.Length - 1)
+        if (CurrentIndex > handlerNumberToLocalNumber.Count - 1)
         {
             CurrentIndex = 0;
         }
-        Camera.transform.position = Characters[CurrentIndex].transform.position - new Vector3(0, 0, 5);
+        Camera.transform.position = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.transform.position - new Vector3(0, 0, 5);
         WriteText(); //loop through the list and find the next character to be potentially selected, write their description after finding them
     }
     public void PreviousCharacter()
@@ -64,29 +98,29 @@ public class CharacterSelectScript : MonoBehaviour
         --CurrentIndex;
         if (CurrentIndex < 0)
         {
-            CurrentIndex = Characters.Length - 1;
+            CurrentIndex = handlerNumberToLocalNumber.Count - 1;
         }
-        Camera.transform.position = Characters[CurrentIndex].transform.position - new Vector3(0, 0, 5);
+        Camera.transform.position = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.transform.position - new Vector3(0, 0, 5);
         WriteText();
     }
 
     public void EnableCharacter()
     {
-        for (int i = 0; i < Characters.Length; ++i)
+        for (int i = 0; i < handlerNumberToLocalNumber.Count; ++i)
         {
             if (i != CurrentIndex)
-                Destroy(Characters[i]);
+                Destroy(handlerNumberToLocalNumber[i].CharacterGO);
         }
 
         //if player chooses the character, destroy all the others and enable the chosen's scripts
         //then set the camera to follow it
-        Characters[CurrentIndex].GetComponent<AudioListener>().enabled = true;
-        Characters[CurrentIndex].GetComponent<PlayerMovement>().enabled = true;
+        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<AudioListener>().enabled = true;
+        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<PlayerMovement>().enabled = true;
         Camera.GetComponent<Camera>().fieldOfView = 80;
         Camera.GetComponent<CameraScript>().enabled = true;
-        Camera.GetComponent<CameraScript>().SetPlayer(Characters[CurrentIndex]);
+        Camera.GetComponent<CameraScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
         //set trader's player
-        Trader.GetComponent<TraderScript>().SetPlayer(Characters[CurrentIndex]);
+        Trader.GetComponent<TraderScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
 
         Description.transform.parent.gameObject.SetActive(false);//disable the panel
         Notification.gameObject.SetActive(false); //disable the notification text
@@ -99,7 +133,7 @@ public class CharacterSelectScript : MonoBehaviour
         }
 
         //lastly, push the gameobject to the global variables so that we know which to instaniate later
-        Globalvariables.Playerprefabname = Characters[CurrentIndex].name;
+        Globalvariables.Playerprefabname = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.name;
     }
 
     public void BuyCharacter()
@@ -116,11 +150,11 @@ public class CharacterSelectScript : MonoBehaviour
         ConfirmPurchase = false;
         if (int.Parse(Coins.text) >= CurrentCost)
         {
-            PlayFabHandler.BuyCharacter(Characters[CurrentIndex].name, CurrentCost);
+            PlayFabHandler.BuyCharacter(handlerNumberToLocalNumber[CurrentIndex].CharacterGO.name, CurrentCost);
 
             Coins.text = (int.Parse(Coins.text) - CurrentCost).ToString(); //update the currency
 
-            DoUnlock(Characters[CurrentIndex].name); //unlock the character and update the files
+            DoUnlock(handlerNumberToLocalNumber[CurrentIndex].CharacterGO.name); //unlock the character and update the files
 
             Lock.SetActive(false); //unlock the UI
             FadeOut = true; //fade out the purchase message
@@ -137,17 +171,22 @@ public class CharacterSelectScript : MonoBehaviour
     {
         ConfirmPurchase = false;
         Notification.text = "";
-        if (Characters[CurrentIndex].name == "BountyHunter")
+
+
+        Description.text = PlayFabHandler.Characters[handlerNumberToLocalNumber[CurrentIndex].HandlerNumber].Description; //description of class
+        CurrentCost = PlayFabHandler.Characters[handlerNumberToLocalNumber[CurrentIndex].HandlerNumber].Cost; //set cost of this character
+
+        if (handlerNumberToLocalNumber[CurrentIndex].CharacterGO.name == "BountyHunter")
         {
-            Description.text = "Bounty Hunter, starts with a revolver that deals high damage but low ammo capacity"; //description of class
             Lock.SetActive(!PlayFabHandler.UnlockedBounty); //unlock or lock the button depending on if the player has unlocked the character
-            CurrentCost = 100; //set cost of this character
         }
-        else if (Characters[CurrentIndex].name == "Mercenary")
+        else if (handlerNumberToLocalNumber[CurrentIndex].CharacterGO.name == "Mercenary")
         {
-            Description.text = "Mercenary, starts with a rifle with high fire rate and magazine capacity, but has a wide spray and a long reload";
             Lock.SetActive(!PlayFabHandler.UnlockedMercenary);
-            CurrentCost = 150;
+        }
+        else if (handlerNumberToLocalNumber[CurrentIndex].CharacterGO.name == "Elf")
+        {
+            Lock.SetActive(!PlayFabHandler.UnlockedElf);
         }
     }
 
@@ -171,7 +210,7 @@ public class CharacterSelectScript : MonoBehaviour
     public void BackButton()
     {
         GetComponent<ShopScript>().ShopPanel.SetActive(false);
-        Characters[CurrentIndex].GetComponent<PlayerMovement>().enabled = true;
+        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<PlayerMovement>().enabled = true;
     }
 
     public void UpdateCoins(int AmountToMinus)

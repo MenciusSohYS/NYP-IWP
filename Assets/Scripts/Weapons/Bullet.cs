@@ -12,7 +12,9 @@ public class Bullet : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        VelocityOfBullet = 30;
+        if (VelocityOfBullet < 0)
+            VelocityOfBullet = 30;
+
         rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, 3.0f);
     }
@@ -75,6 +77,8 @@ public class Bullet : MonoBehaviour
             piercecapped = true;
         }
         else if (collision.transform.tag == "Walls")
+            piercecapped = true;
+        else if (collision.transform.tag == "Melee")
             piercecapped = true;
 
         if (HitSomethingWithHealth)

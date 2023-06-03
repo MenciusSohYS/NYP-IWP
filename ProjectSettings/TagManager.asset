@@ -16,6 +16,7 @@ TagManager:
   - Trader
   - LobbyCanvas
   - Walls
+  - Melee
   layers:
   - Default
   - TransparentFX
@@ -53,9 +54,9 @@ TagManager:
   - name: Background
     uniqueID: 2576208493
     locked: 0
-  - name: Default
-    uniqueID: 0
-    locked: 0
   - name: UI
     uniqueID: 647760671
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0

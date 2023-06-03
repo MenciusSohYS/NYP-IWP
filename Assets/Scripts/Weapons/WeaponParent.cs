@@ -16,8 +16,9 @@ public class WeaponParent : MonoBehaviour
     protected bool PickedUp = false;
     protected int CurrentUpgrade = 0;
     protected bool Chambered = false;
+    protected bool isMelee = false;
 
-    public float Attack(Transform fromhere, GameObject Projectile, bool ShotByPlayer)
+    public virtual float Attack(Transform fromhere, GameObject Projectile, bool ShotByPlayer)
     {
         float RandomX = Random.Range(-Spread, Spread) * CurrentHeat;
         float RandomY = Random.Range(-Spread, Spread) * CurrentHeat;
@@ -100,13 +101,26 @@ public class WeaponParent : MonoBehaviour
         if (CurrentReload <= 0)
         {
             //Debug.Log(ReloadTime); //if gun has no current reload
-            return ReloadTime;
+
+            if (Chambered)
+            {
+                float remainingReloadTime = ReloadTime * (1 - (float)BulletsRemaining / MaxMagSize);
+
+                return remainingReloadTime;  //reload from current mag size
+            }
+
+            return ReloadTime; //this is for dynamic/reload saving
         }
         else
         {
-            //Debug.Log(CurrentReload); //if it has
-            return CurrentReload;
+            //Debug.Log(CurrentReload); //if it has been reloaded partially
+            return CurrentReload; //this is for dynamic/reload saving
         }
+    }
+
+    public float ReturnFullReload()
+    {
+        return ReloadTime;
     }
 
     public int GetMaxMagSize()
@@ -134,13 +148,12 @@ public class WeaponParent : MonoBehaviour
         else if (Chambered) //reload individual bullets
         {
             BulletsRemaining = (int)((MaxMagSize / ReloadTime) * (ReloadTime - CurrentReload));
-            Debug.Log(BulletsRemaining);
         }
 
         return TimeLeftToGo;
     }
 
-    public void SetWeaponHeat(float ElapsedTime)
+    public virtual void SetWeaponHeat(float ElapsedTime)
     {
         if (CurrentHeat <= 0)
         {
@@ -183,8 +196,17 @@ public class WeaponParent : MonoBehaviour
         CurrentUpgrade += ByHowMuch;
     }
 
-    public void SetPickedUp()
+    public virtual void SetPickedUp()
     {
         PickedUp = !PickedUp;
+    }
+
+    public bool ReturnChambered()
+    {
+        return Chambered;
+    }
+    public bool ReturnMelee()
+    {
+        return isMelee;
     }
 }
