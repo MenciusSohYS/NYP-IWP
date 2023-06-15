@@ -27,7 +27,8 @@ public class DungeonSpawner : MonoBehaviour
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         miniMap = GameObject.FindGameObjectWithTag("MiniMap");
         canvas = GameObject.Find("Canvas");
-        for (int i = 0; i < PlayerPrefabs.Length; ++i)
+
+        for (int i = 0; i < PlayerPrefabs.Length; ++i) //create player
         {
             if (PlayerPrefabs[i].name == Globalvariables.Playerprefabname)
             {
@@ -45,8 +46,8 @@ public class DungeonSpawner : MonoBehaviour
                         {
                             GameObject NewWeapon = Instantiate(WeaponPrefabs[j], PlayerGO.transform.position, Quaternion.identity);
                             //Destroy(PlayerWeapon.transform.GetChild(0).GetChild(0).gameObject);
-                            PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignNewGun(NewWeapon, false);
-                            PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignWeaponBuffsAfterLevelOne();
+                            PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignNewGun(NewWeapon, false, false); //replace current gun and tell the game that we have picked it up, just instantiating
+                            PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignWeaponBuffsAfterLevelOne(); //Assign the buffs
                             Destroy(PlayerGO.transform.GetChild(0).GetChild(PlayerGO.transform.GetChild(0).childCount - 1).gameObject); //remove the last gameobject
                         }
                     }
@@ -262,7 +263,7 @@ public class DungeonSpawner : MonoBehaviour
                 LetRoomsKnow(LocationOfNewRoomRelativeToCurrent, PrevRoom, CurrRoom); //let them know their parent and children
                 corridor.GetComponent<CorridorScript>().AssignNeighbours(CurrRoom, PrevRoom, LocationOfNewRoomRelativeToCurrent); //tell the corridor who is infront and tell the corridor who is behind
                 GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y] = 1; //tell the list that the area is occupied
-                
+
                 if (i != UpgradeRoomLocation) //if the room is not a upgrade room (or rooms without enemies, you do not need grids for pathfinding)
                     CurrRoom.GetComponent<TestGrid>().enabled = false;
 

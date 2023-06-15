@@ -6,12 +6,12 @@ public class SwordScript : WeaponParent
 {
     public SwordScript()
     {
-        Damage = 70;
+        Damage = 50;
         FireRate = 0.5f; //duration for 1 swing
         Spread = 0.1f;
         BulletsRemaining = 1;
         MaxMagSize = 1;
-        ReloadTime = 0.01f; //cool down before attacking again
+        ReloadTime = 0.1f; //cool down before attacking again
         HeatMax = 0.1f;
         PositionToParent = new Vector3(0, 1f, 0);
         isMelee = true;
@@ -25,8 +25,9 @@ public class SwordScript : WeaponParent
     //private List<(float, float)> NumberOfAttacks;
     private List<float> Animations;
     private int AttackNumber;
-    private string[] animationNames = { "SwordAttack", "SwordAttack2" }; //append here
+    //private string[] animationNames = { "SwordAttack", "SwordAttack2" }; //append here
     private TrailRenderer Trail;
+    private bool IsPlayer;
 
     private void Start()
     {
@@ -44,6 +45,11 @@ public class SwordScript : WeaponParent
             //Debug.Log("Animation duration: " + duration + " seconds");
             Animations.Add(clip.length);
         }
+
+        AudioSourceField = GetComponent<AudioSource>();
+        AudioSourceField.volume = 0.5f;
+        AssignAtStart();
+        IsPlayer = true;
 
         //tesing
         {
@@ -95,22 +101,42 @@ public class SwordScript : WeaponParent
         //Debug.Log(FireRate + "*" + Animations[AttackNumber]);
         AnimatorField.SetFloat("Speed",  Animations[AttackNumber] / FireRate); //converts the animation to the proper multiplier
         //Debug.Log("NumberOfAttacks[" + AttackNumber + "] out of " + NumberOfAttacks.Count);
-
+        MeleeSound();
         timerforattacking = FireRate; //timerforattacking is to tell the sword if the attack is over
 
         Trail.emitting = true;
         return FireRate + ReloadTime;
     }
 
+    void MeleeSound()
+    {
+        if (AudioSourceField.clip != ShootingSoundEffects[AttackNumber])
+        {
+            AudioSourceField.clip = ShootingSoundEffects[AttackNumber];
+            AudioSourceField.Play();
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Enemy" && isAttacking)
+        if (isAttacking)
         {
-            collision.transform.GetComponent<EnemyMechanics>().MinusHP(Damage);
+            if (collision.gameObject.tag == "Enemy" && IsPlayer)
+            {
+                collision.transform.GetComponent<EnemyMechanics>().MinusHP(Damage);
 
-            GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
+                GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
 
-            numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString());
+                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString());
+            }
+            else if (collision.transform.tag == "Player" && !IsPlayer)
+            {
+                collision.transform.GetComponent<PlayerMechanics>().MinusHP(Damage);
+
+                GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
+
+                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString());
+            }
         }
     }
 
@@ -125,17 +151,22 @@ public class SwordScript : WeaponParent
         {
             ++AttackNumber; //increase the value so that the next time we attack its the next pattern
 
-            if (AttackNumber > Animations.Count - 1)
+            if (AttackNumber > Animations.Count - 2)
             {
                 AttackNumber = 0;
                 //Debug.Log("NumberOfAttacks[" + AttackNumber + "] out of " + NumberOfAttacks.Count);
             }
-            //Debug.Log("Time up");
+            //Debug.Log(AttackNumber);
 
             isAttacking = false;
             AnimatorField.SetInteger("Attack", 4);
             Trail.emitting = false;
             //SwordCollider.isTrigger = true;
         }
+    }
+
+    public void SetIsPlayer(bool setto)
+    {
+        IsPlayer = setto;
     }
 }

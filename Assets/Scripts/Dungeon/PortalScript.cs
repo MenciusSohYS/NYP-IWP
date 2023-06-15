@@ -49,7 +49,7 @@ public class PortalScript : MonoBehaviour
 
                 Globalvariables.WeaponComponents.Damage = PlayerWeaponScript.GetDamage();
                 Globalvariables.WeaponComponents.FireRate = PlayerWeaponScript.GetFireRate();
-                Globalvariables.WeaponComponents.ReloadTime = PlayerWeaponScript.GetReloadTime();
+                Globalvariables.WeaponComponents.ReloadTime = PlayerWeaponScript.ReturnFullReload();
                 Globalvariables.WeaponComponents.MagSize = PlayerWeaponScript.GetMaxMagSize();
                 Globalvariables.WeaponComponents.CurrSize = PlayerWeaponScript.ReturnCurrentMag();
                 Globalvariables.WeaponComponents.Spread = PlayerWeaponScript.GetSpread();

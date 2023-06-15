@@ -12,9 +12,11 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] CanvasScript Canvas;
 
     [SerializeField] float InvulnTime;
+    private Color SpriteColor;
     [SerializeField] AbilityParent CharacterAbility;
     [SerializeField] PlayerMovement PlayerMoveScript;
     [SerializeField] SpriteRenderer SpriteRender;
+    private GunScript PlayergunScript;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +40,10 @@ public class PlayerMechanics : MonoBehaviour
 
         Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
         Canvas.SetMaxNCurrentHP(MaxHealth, CurrentHealth);
+        Canvas.GetComponent<CanvasScript>().TellPlayerGameObjectHasSpawned();
 
         SetCoins(PlayFabHandler.Coins);
+        PlayergunScript = transform.GetChild(0).GetComponent<GunScript>();
     }
 
     // Update is called once per frame
@@ -50,7 +54,7 @@ public class PlayerMechanics : MonoBehaviour
             InvulnTime -= Time.deltaTime;
             if (InvulnTime <= 0)
             {
-                SpriteRender.color = new Color(1, 1, 1, 1);
+                SpriteRender.color = SpriteColor;
             }
         }
         if (Input.GetKeyDown(KeyCode.F))
@@ -59,7 +63,7 @@ public class PlayerMechanics : MonoBehaviour
         }
         else
         {
-            CharacterAbility.CoolDownAbility(Time.deltaTime); //cool down the ability when not in use
+            Canvas.SetCurrentAbilityCD(CharacterAbility.CoolDownAbility(Time.deltaTime)); //cool down the ability when not in use
         }
     }
 
@@ -82,6 +86,7 @@ public class PlayerMechanics : MonoBehaviour
             CurrentHealth -= howmuchtominus;
             Canvas.SetCurrentHP(CurrentHealth);
             InvulnTime = 0.5f;
+            SpriteColor = SpriteRender.color;
             SpriteRender.color = new Color(1, 0, 0, 1);
             return true;
         }
@@ -147,12 +152,12 @@ public class PlayerMechanics : MonoBehaviour
         {
             Globalvariables.MaxHP += (amount * 25);
             Globalvariables.CurrentHP = Globalvariables.MaxHP;
-            Debug.Log("Increase Health");
+            //Debug.Log("Increase Health");
         }
         else if (name == "Increase Speed")
         {
             PlayerMoveScript.IncreaseSpeed(amount);
-            Debug.Log("Increase Speed");
+            //Debug.Log("Increase Speed");
         }
     }
 
@@ -170,5 +175,23 @@ public class PlayerMechanics : MonoBehaviour
             default:
                 return;
         }        
+    }
+
+    public float ReturnMaxCoolDown()
+    {
+        return CharacterAbility.ReturnMaxAbilityCoolDown();
+    }
+
+    public AiHandler.PlayerStates GetPlayerState()
+    {
+        if (CurrentHealth <= 0)
+        {
+            return AiHandler.PlayerStates.Dead;
+        }
+        else if (PlayergunScript.GetReloading())
+        {
+            return AiHandler.PlayerStates.Reloading;
+        }
+        return AiHandler.PlayerStates.Alive;
     }
 }

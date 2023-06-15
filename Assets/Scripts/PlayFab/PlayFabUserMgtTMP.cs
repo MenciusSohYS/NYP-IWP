@@ -11,14 +11,21 @@ public class PlayFabUserMgtTMP : MonoBehaviour
 {
     [SerializeField] TMP_InputField usernameoremail, password, displayname, ForgetPass, SignUpUsername, SignUpEmail, SignUpPassword, SignUpConfirmPassword;
     [SerializeField] TextMeshProUGUI msg, resetsent;
-    [SerializeField] GameObject ForgetPasswordField, Login, SignUp;
-
+    [SerializeField] GameObject ForgetPasswordField, Login, SignUp, Loading;
+    private void Start()
+    {
+        ShowOrHideLoading(false);
+    }
     public void OnButtonReg()
     {
+        ShowOrHideLoading(true);
         if (SignUpConfirmPassword.text == SignUpPassword.text)
             OnButtonReguser();
         else
+        {
+            ShowOrHideLoading(false);
             msg.text = "Passwords do not match";
+        }
     }
     public void OnButtonReguser()
     {
@@ -33,12 +40,18 @@ public class PlayFabUserMgtTMP : MonoBehaviour
 
     public void OnButtonLogin()
     {
+        ShowOrHideLoading(true);
         if (IsValidEmail(usernameoremail.text))
         {
             OnButtonLoginEmail();
         }
         else
             OnButtonLoginUserName();
+    }
+
+    public void ShowOrHideLoading(bool setto)
+    {
+        Loading.SetActive(setto);
     }
 
     private bool IsValidEmail(string email)
@@ -77,7 +90,7 @@ public class PlayFabUserMgtTMP : MonoBehaviour
     }
     void OnLoginSuccess(LoginResult r)
     {
-        Debug.Log("Login Success");
+        //Debug.Log("Login Success");
         //msg.text = "Success" + r.PlayFabId + r.InfoResultPayload.PlayerProfile.DisplayName;
         PlayFabHandler.PlayFabID = r.PlayFabId;
 
@@ -86,6 +99,7 @@ public class PlayFabUserMgtTMP : MonoBehaviour
     }
     void OnRegSuccess(RegisterPlayFabUserResult r)
     {
+        ShowOrHideLoading(false);
         UpdateMsg("Register Success");
 
         var req = new UpdateUserTitleDisplayNameRequest
@@ -103,6 +117,7 @@ public class PlayFabUserMgtTMP : MonoBehaviour
 
     void OnError(PlayFabError e)
     {
+        ShowOrHideLoading(false);
         ErrorMessage(e.GenerateErrorReport());
     }
 
@@ -212,11 +227,13 @@ public class PlayFabUserMgtTMP : MonoBehaviour
         msg.text = "";
         if (ForgetPasswordField.activeSelf)
         {
+            msg.text = "";
             ForgetPasswordField.SetActive(false);
             Login.SetActive(true);
         }
         else
         {
+            msg.text = "Reset Password";
             ForgetPasswordField.SetActive(true);
             Login.SetActive(false);
         }

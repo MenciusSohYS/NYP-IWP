@@ -26,7 +26,7 @@ public class WeaponDropped : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
-                PlayerGunScript.AssignNewGun(gameObject, false);
+                PlayerGunScript.AssignNewGun(gameObject, false, true);
             }
         }
     }

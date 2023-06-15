@@ -11,7 +11,7 @@ public class FireRateIncrease : BuffScript
     }
     public override void ApplyBuffs()
     {
-        Player.GetComponent<PlayerMechanics>().IncreaseFireRate(0.5f);
+        Player.GetComponent<PlayerMechanics>().IncreaseFireRate(0.8f);
         Debug.Log("increased fire rate");
     }
 

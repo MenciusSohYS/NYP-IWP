@@ -30,7 +30,10 @@ public class CorridorScript : MonoBehaviour
 
     public void EnableEnemyAI()
     {
-        NextRoom.GetComponent<DungeonScript>().EnableEnemies();
+        NextRoom.GetComponent<TestGrid>().enabled = true;
+        NextRoom.GetComponent<TestGrid>().CreateGrid(); //enables the grid
+        NextRoom.GetComponent<AiHandler>().enabled = true;
+        NextRoom.GetComponent<DungeonScript>().EnableEnemies(); //enables the enemy AI
     }
 
     public int GetEnemyCount()

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class WeaponParent : MonoBehaviour
 {
@@ -17,11 +18,47 @@ public class WeaponParent : MonoBehaviour
     protected int CurrentUpgrade = 0;
     protected bool Chambered = false;
     protected bool isMelee = false;
+    protected AudioSource AudioSourceField;
+    public AudioClip ReloadSoundEffect;
+    public AudioClip[] ShootingSoundEffects;
+    protected float ReloadSoundDuration;
+    protected float ReloadPitch;
+
+    private void Start()
+    {
+        if (AudioSourceField == null)
+            AudioSourceField = GetComponent<AudioSource>();
+        AssignAtStart();
+    }
+
+    protected virtual void AssignAtStart()
+    {
+        if (ReloadSoundEffect != null)
+        {
+            ReloadSoundDuration = ReloadSoundEffect.length; //get the reload sound's duration, will not change during run time for now
+            ReloadPitch = ReloadSoundDuration / ReloadTime;
+        }
+    }
+
+    public void StopSound()
+    {
+        if (CurrentReload <= 0 && (!Chambered && !isMelee))
+            AudioSourceField.Pause();
+    }
+
+    public void TellitsAttachedToPlayer()
+    {
+        if (AudioSourceField == null)
+            AudioSourceField = GetComponent<AudioSource>();
+        AudioSourceField.spatialBlend = 0;
+    }
 
     public virtual float Attack(Transform fromhere, GameObject Projectile, bool ShotByPlayer)
     {
         float RandomX = Random.Range(-Spread, Spread) * CurrentHeat;
         float RandomY = Random.Range(-Spread, Spread) * CurrentHeat;
+
+        PlayShootingSound();
 
         GameObject BulletShot = Instantiate(Projectile, fromhere.position, fromhere.rotation);
         BulletShot.GetComponent<Bullet>().ShotBy(ShotByPlayer); //shot by enemy
@@ -33,9 +70,22 @@ public class WeaponParent : MonoBehaviour
         if (CurrentHeat < HeatMax)
             CurrentHeat += 0.1f;
 
-        //Debug.Log(CurrentHeat + "/" + HeatMax);
+        //Debug.Log(FireRate);
         return FireRate;
     }
+
+    protected void PlayShootingSound()
+    {
+        if (ShootingSoundEffects.Length < 1 || (AudioSourceField.isPlaying && !Chambered))
+            return;
+
+        //int RandomShootingSound = Random.Range(0, ShootingSoundEffects.Length); //use if I decide to put in more sound
+        AudioSourceField.clip = ShootingSoundEffects[0];
+        //Debug.Log(ShootingSoundEffects[RandomShootingSound].name);
+        AudioSourceField.Play();
+        //Debug.Log("Playing Revolver Sound");
+    }
+
     public void SetVelocity(int newVelocity)
     {
         BulletVelocity = newVelocity;
@@ -57,20 +107,21 @@ public class WeaponParent : MonoBehaviour
     {
         MaxMagSize = newMaxMagSize;
     }
-    public void SetReloadTimeByNumber(float setto)
+    public virtual void SetReloadTimeByNumber(float setto)
     {
         ReloadTime = setto;
+        ReloadPitch = ReloadSoundDuration / ReloadTime; //pitch for reload will probably only change here
     }
     public void SetDamageByNumber(int setto)
     {
         Damage = setto;
     }
-    public void SetFireRateByNumber(float setto)
+    public virtual void SetFireRateByNumber(float setto)
     {
         FireRate = setto;
     }
 
-    public void SetFireRate(float multiplyby)
+    public virtual void SetFireRate(float multiplyby)
     {
         FireRate *= multiplyby;
     }
@@ -96,19 +147,31 @@ public class WeaponParent : MonoBehaviour
         return Spread;
     }
 
-    public float GetReloadTime()
+    public virtual void StartReload()
+    {
+        if (AudioSourceField != null)
+        {
+            AudioSourceField.clip = ReloadSoundEffect;
+            AudioSourceField.pitch = ReloadPitch;
+
+            if (!AudioSourceField.isPlaying)
+            {
+                AudioSourceField.Play();
+            }
+            //Debug.Log(ReloadSound.clip.length + " " + ReloadTime);
+        }
+        else
+        {
+            Debug.Log("Reload is null");
+            return;
+        }
+    }
+
+    public virtual float GetReloadTime()
     {
         if (CurrentReload <= 0)
         {
             //Debug.Log(ReloadTime); //if gun has no current reload
-
-            if (Chambered)
-            {
-                float remainingReloadTime = ReloadTime * (1 - (float)BulletsRemaining / MaxMagSize);
-
-                return remainingReloadTime;  //reload from current mag size
-            }
-
             return ReloadTime; //this is for dynamic/reload saving
         }
         else
@@ -138,16 +201,15 @@ public class WeaponParent : MonoBehaviour
         BulletsRemaining -= MinusHowMuch;
     }
 
-    public float DoReload(float TimeLeftToGo, float ElapsedTime)
+    public virtual float DoReload(float TimeLeftToGo, float ElapsedTime)
     {
         TimeLeftToGo -= ElapsedTime;
         CurrentReload = TimeLeftToGo; //store reload time
 
-        if (TimeLeftToGo <= 0 && !Chambered)
-            BulletsRemaining = MaxMagSize; //set new bullets left (max)
-        else if (Chambered) //reload individual bullets
+        if (TimeLeftToGo <= 0 && AudioSourceField != null)
         {
-            BulletsRemaining = (int)((MaxMagSize / ReloadTime) * (ReloadTime - CurrentReload));
+            BulletsRemaining = MaxMagSize; //set new bullets left (max)
+            AudioSourceField.pitch = 1;
         }
 
         return TimeLeftToGo;

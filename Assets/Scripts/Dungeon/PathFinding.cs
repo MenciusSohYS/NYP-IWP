@@ -12,9 +12,11 @@ public class PathFinding
     private Grid<PathNode> Grid;
     private List<PathNode> OpenList;
     private List<PathNode> ClosedList;
+    private Vector3 OriginLocation;
 
     public PathFinding(int width, int height, int OriginPointX, int OriginPointY, Vector3 Where)
     {
+        OriginLocation = Where;
         Instance = this;
         Grid = new Grid<PathNode>(width, height, 1f, OriginPointX, OriginPointY, Where, (Grid<PathNode> g, int x, int y) => new PathNode(g, x, y)); //create the grid as well as nodes
     }
@@ -24,12 +26,12 @@ public class PathFinding
         Grid.GetXY(EndPos, out int EndX, out int EndY); //find end location
 
         //Debug.Log("Moving from: X: " + StartX + ", Y: " + StartY + "\tTo X: " + EndX + ", Y: " + EndY);
-
-        List<PathNode> path = FindPath(StartX + 14, StartY + 14, EndX, EndY);
-
+        
+        List<PathNode> path = FindPath(StartX + 15, StartY + 15, EndX, EndY);
+        //Debug.Log(path);
         if (path == null) //has an error
         {
-            //Debug.Log("PATH IS EMPTY");
+            Debug.Log("PATH IS EMPTY");
             return null;
         }
         else //convert everything
@@ -38,7 +40,7 @@ public class PathFinding
             List<Vector3> PathOfVectors = new List<Vector3>();
             foreach (PathNode PNode in path)
             {
-                PathOfVectors.Add(new Vector3(PNode.x - 14, PNode.y - 14) * Grid.GetCellSize());
+                PathOfVectors.Add((new Vector3(PNode.x - 15, PNode.y - 15) * Grid.GetCellSize()) + OriginLocation);
             }
             return PathOfVectors;
         }
@@ -46,9 +48,9 @@ public class PathFinding
     public List<PathNode> FindPath(int StartX, int StartY, int EndX, int EndY)
     {
         PathNode StartNode = Grid.GetGridObject(StartX, StartY); //find start location
-        PathNode EndNode = Grid.GetGridObject(EndX + 14, EndY + 14); //find end location
+        PathNode EndNode = Grid.GetGridObject(EndX + 15, EndY + 15); //find end location
 
-
+        //Debug.Log("Moving from: X: " + StartX + ", Y: " + StartY + "\tTo X: " + (EndX + 15) + ", Y: " + (EndY + 15));
         //Debug.Log("Moving from: X: " + StartNode.x + ", Y: " + StartNode.y + "\tTo X: " + EndNode.x + ", Y: " + EndNode.y);
 
         if (StartNode == null || EndNode == null)
@@ -177,6 +179,7 @@ public class PathFinding
     private List<PathNode> CalculatePath (PathNode EndNode)
     {
         List<PathNode> PastPath = new List<PathNode>();
+        EndNode.SetIsWalkable(false);
         PastPath.Add(EndNode); //start from the end and work our way back
         PathNode CurrenNode = EndNode;
         while (CurrenNode.PreviousNode != null) //so while it still has a parent
@@ -218,5 +221,14 @@ public class PathFinding
     public Grid<PathNode> GetGrid()
     {
         return Grid;
+    }
+
+    public Vector3 ConvertWorldPos(Vector3 Position)
+    {
+        Grid.GetXY(Position, out int StartX, out int StartY);
+
+        Vector3 ConvertedPosition = new Vector3(StartX + 15, StartY + 15);
+
+        return ConvertedPosition;
     }
 }

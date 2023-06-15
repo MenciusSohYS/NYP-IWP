@@ -13,10 +13,15 @@ public class AbilityParent : MonoBehaviour
         Debug.Log("ability used");
         return 0;
     }
-    public virtual void CoolDownAbility(float Time)
+    public virtual float CoolDownAbility(float Time)
     {
         if (Timer <= 0)
-            return;
+            return CoolDown;
         Timer -= Time;
+        return CoolDown - Timer;
+    }
+    public virtual float ReturnMaxAbilityCoolDown()
+    {
+        return CoolDown;
     }
 }

@@ -10,7 +10,7 @@ public class MiniGun : WeaponParent
         Spread = 0.9f;
         MaxMagSize = 300;
         BulletsRemaining = 300;
-        ReloadTime = MaxMagSize * 0.05f;
+        ReloadTime = 3f;
         HeatMax = 1f;
     }
 }

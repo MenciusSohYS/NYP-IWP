@@ -17,7 +17,8 @@ public class Grid<TGridObject> {
     private Vector3 OriginalPosition; //start pos
     private TGridObject[,] GridArray; //array to reference
 
-    public Grid(int Width, int Height, float CellSize, int OriginPointX, int OriginPointY, Vector3 OriginalPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
+    public Grid(int Width, int Height, float CellSize, int OriginPointX, int OriginPointY, Vector3 OriginalPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) 
+    {
         this.Width = Width;
         this.Height = Height;
         this.CellSize = CellSize;
@@ -40,8 +41,8 @@ public class Grid<TGridObject> {
             {
                 for (int y = 0; y < GridArray.GetLength(1); ++y)
                 {
-                    Debug.DrawLine(GetWorldPosition(x - 14, y - 14), GetWorldPosition(x - 14, y + 1 - 14), Color.red, 100f);
-                    Debug.DrawLine(GetWorldPosition(x - 14, y - 14), GetWorldPosition(x + 1 - 14, y - 14), Color.red, 100f);
+                    Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x - 15, y + 1 - 15), Color.red, 100f);
+                    Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x + 1 - 15, y - 15), Color.red, 100f);
                 }
             }
         }
@@ -64,6 +65,7 @@ public class Grid<TGridObject> {
     }
 
     public void GetXY(Vector3 worldPosition, out int x, out int y) {
+        //Debug.Log(worldPosition + "  " + OriginalPosition);
         x = Mathf.FloorToInt((worldPosition - OriginalPosition).x / CellSize);
         y = Mathf.FloorToInt((worldPosition - OriginalPosition).y / CellSize);
     }
@@ -107,4 +109,17 @@ public class Grid<TGridObject> {
         return GetGridObject(x, y);
     }
 
+    public void DrawUnWalkable(int x, int y, bool IsNowWalkable) //will draw a line from the unwalkable to its right and above it
+    {
+        if (!IsNowWalkable)
+        {
+            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x - 15, y + 1 - 15), Color.green, 100f);
+            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x + 1 - 15, y - 15), Color.green, 100f);
+        }
+        else
+        {
+            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x - 15, y + 1 - 15), Color.red, 100f);
+            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x + 1 - 15, y - 15), Color.red, 100f);
+        }
+    }
 }

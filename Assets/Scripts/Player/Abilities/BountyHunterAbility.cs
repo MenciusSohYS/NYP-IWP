@@ -19,15 +19,16 @@ public class BountyHunterAbility : AbilityParent
         {
             //Debug.Log("Bounty Ability");
             PointerToGun = Instantiate(GoldenGunPrefab, transform.position, Quaternion.identity);
-            transform.GetChild(0).GetComponent<GunScript>().AssignNewGun(PointerToGun, true);
+            transform.GetChild(0).GetComponent<GunScript>().AssignNewGun(PointerToGun, true, true);
             Timer = CoolDown;
         }
         return 0;
     }
-    public override void CoolDownAbility(float Time)
+    public override float CoolDownAbility(float Time)
     {
         if (Timer <= 0 || PointerToGun != null)
-            return;
+            return CoolDown;
         Timer -= Time;
+        return CoolDown - Timer;
     }
 }

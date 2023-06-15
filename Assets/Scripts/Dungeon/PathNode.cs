@@ -37,5 +37,6 @@ public class PathNode
     {
         IsWalkable = setto;
         Grid.TriggerGridObjectChanged(x, y);
+        Grid.DrawUnWalkable(x, y, setto);
     }
 }

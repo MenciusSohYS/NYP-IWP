@@ -61,9 +61,10 @@ public class CorridorExit : MonoBehaviour
 
             if (ExitedCorrectly && transform.parent.parent.GetComponent<CorridorScript>().GetEnemyCount() > 0)
             {
+
                 //Debug.Log("Player exited corridor and entered room");
                 collision.transform.GetComponent<PlayerMechanics>().AnnounceRoomEntered();
-                transform.parent.parent.GetComponent<CorridorScript>().EnableEnemyAI();
+                transform.parent.parent.GetComponent<CorridorScript>().EnableEnemyAI(); //also enables the grid
             }
         }
     }

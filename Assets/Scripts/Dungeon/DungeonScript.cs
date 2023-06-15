@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DungeonScript : MonoBehaviour
 {
-    public static int MAX_COST_FOR_ENEMIES = 1;
+    public static int MAX_COST_FOR_ENEMIES = 2;
     public GameObject[] walls; //0 is North (Top), 1 is South (bottom), 2 is East (right), 3 is West (left)
 
     public GameObject[] doors;
@@ -22,16 +22,20 @@ public class DungeonScript : MonoBehaviour
     [SerializeField] GameObject RoomEnemies;
     public GameObject Fog;
 
-    [SerializeField] List<GameObject> Enemies;
+    [SerializeField] List<GameObject> Enemies; //all enemies
     public GameObject[] Covers; //an array of covers
+    public List<GameObject> MeleeEnemies; //all enemies
+    public List<GameObject> RangedEnemies; //all enemies
 
     [SerializeField] List<int> SidesWithCorridors;
+
+    private TestGrid GridReference;
 
     // Start is called before the first frame update
     void Start()
     {
         Covers = new GameObject[10];
-
+        GridReference = GetComponent<TestGrid>();
         //if its a normal room
         if (transform.tag == "Room")
         {
@@ -79,7 +83,7 @@ public class DungeonScript : MonoBehaviour
                 else
                     MaxInt = EnemyCost + 1;
 
-                int RandomEnemyNumber = 1; //Random.Range(1, MaxInt);
+                int RandomEnemyNumber = Random.Range(1, MaxInt);
 
                 int x = 0;
                 int y = 0;
@@ -116,11 +120,27 @@ public class DungeonScript : MonoBehaviour
                     }
                 }
                 //create enemy
-                
+
 
                 Enemies.Add(Instantiate(EnemyList[RandomEnemyNumber - 1], this.transform.position + new Vector3(x, y), Quaternion.identity));
                 EnemyCost -= RandomEnemyNumber;
                 Enemies[Enemies.Count - 1].transform.SetParent(RoomEnemies.transform); //put enemies inside of the room's container, for easier reference
+            }
+
+            //add these new enemies to the list
+            for (int i = 0; i < Enemies.Count; ++i)
+            {
+                if (Enemies[i] != null) //if its not null, count
+                {
+                    if (Enemies[i].GetComponent<EnemyMechanics>().ReturnEnemyType() == EnemyMechanics.EnemyType.BasicMelee)
+                    {
+                        MeleeEnemies.Add(Enemies[i]);
+                    }
+                    else if (Enemies[i].GetComponent<EnemyMechanics>().ReturnEnemyType() == EnemyMechanics.EnemyType.BasicRanged)
+                    {
+                        RangedEnemies.Add(Enemies[i]);
+                    }
+                }
             }
         }
         else if (transform.tag == "BossRoom")
@@ -179,6 +199,14 @@ public class DungeonScript : MonoBehaviour
     public void RemoveEnemyFromList(GameObject Enemy)
     {
         Enemies.Remove(Enemy);
+        if (RangedEnemies.Contains(Enemy))
+        {
+            RangedEnemies.Remove(Enemy);
+        }
+        else
+        {
+            MeleeEnemies.Remove(Enemy);
+        }
 
         if (Enemies.Count == 0)
         {
@@ -204,5 +232,60 @@ public class DungeonScript : MonoBehaviour
     public int GetEnemyCount()
     {
         return Enemies.Count;
+    }
+
+    public int GetRangedEnemyCount()
+    {
+        return RangedEnemies.Count;
+    }
+
+    public int GetMeleeEnemyCount()
+    {
+        return MeleeEnemies.Count;
+    }
+
+    public void SetMeleeEnemiesToAttack(Vector3 PlayerLocation)
+    {
+        Vector3 PlaceToGoToAttack = PlayerLocation;
+        foreach (GameObject Enemies in MeleeEnemies)
+        {
+            GridReference.MakeWalkableForEnemy(Enemies.transform.position);
+            PlaceToGoToAttack = LookForValidLocation(PlayerLocation, 2); //it to go here
+            Enemies.GetComponent<EnemyMovement>().MovingToTarget(PlaceToGoToAttack);
+        }
+    }
+
+
+    Vector3 LookForValidLocation(Vector3 TargetPosition, int radius)
+    {
+        Vector3 NewLocation = TargetPosition;
+
+        //breakdown, start with -1 and check each location, then increase the max num to check by 1 (to check 1,1 first)
+        //each time we abs the number (to change to positive if negative) to find out if the Number is 
+
+        int MaxNum = 1;
+
+        Debug.Log("Came Here Again");
+        while (MaxNum <= radius)
+        {
+            for (int i = -MaxNum; i <= MaxNum; ++i) //this will represent X
+            {
+                for (int j = -MaxNum; j <= MaxNum; ++j) //this will represent Y
+                {
+                    if ((i == 0 && j == 0) || (Mathf.Abs(i) < MaxNum && Mathf.Abs(j) < MaxNum))
+                        continue; //we do not want 0, 0 or repeat numbers (if max num is 2, it will check for 1 again)
+
+                    Debug.Log("Checking : " + ((int)TargetPosition.x - (int)transform.position.x + 15) + " " + i + " " + ((int)TargetPosition.y - (int)transform.position.y + 15) + " " + j);
+
+                    if (GridReference.TestIfGridIsTrue((int)TargetPosition.x + i - (int)transform.position.x + 15, (int)TargetPosition.y + j - (int)transform.position.y + 15))
+                    {
+                        return NewLocation + new Vector3(i, j);
+                    }
+                }
+            }
+            ++MaxNum;
+        }
+
+        return NewLocation;
     }
 }

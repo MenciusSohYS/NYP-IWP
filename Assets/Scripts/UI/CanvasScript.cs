@@ -11,6 +11,10 @@ public class CanvasScript : MonoBehaviour
     public TextMeshProUGUI Alertmessage;
     public Slider BGHP; //background hpbar
     public TextMeshProUGUI HPNumber;
+    public Slider SkillCoolDown;
+    public Image SkillCoolDownImage;
+    private bool isRecharged;
+    private CircleCreator CircleCreatorScript;
 
     [SerializeField] TextMeshProUGUI Coin;
     [SerializeField] TextMeshProUGUI AmmoText;
@@ -24,14 +28,17 @@ public class CanvasScript : MonoBehaviour
     {
         Cursor.visible = false;
         //find player
-        Player = GameObject.FindGameObjectWithTag("Player");
 
         GetComponent<Canvas>().worldCamera = Camera.main;
         GetComponent<Canvas>().sortingLayerName = "Default";
         GetComponent<Canvas>().sortingLayerID = 1;
-        
+        isRecharged = true;
+        CircleCreatorScript = SkillCoolDownImage.transform.GetChild(0).GetComponent<CircleCreator>();
 
         Offset = new Vector3(45, 30, 0);
+        SkillCoolDown.interactable = false;
+        Health.interactable = false;
+        BGHP.interactable = false;
         //debug of text file
         {
             //string[] Scores = TxtHandler.ReadFile(@"PlayerStats.txt"); //read from file and return an array
@@ -64,6 +71,13 @@ public class CanvasScript : MonoBehaviour
 
         AmmoIndicator.position = Camera.main.ScreenToWorldPoint(positionToMove + Offset);
         Crosshair.position = Camera.main.ScreenToWorldPoint(positionToMove);
+    }
+
+    public void TellPlayerGameObjectHasSpawned()
+    {
+        Player = GameObject.FindGameObjectWithTag("Player");
+
+        SkillCoolDown.maxValue = Player.GetComponent<PlayerMechanics>().ReturnMaxCoolDown();
     }
 
     public void SetMaxNCurrentHP(int Max, int Curr)
@@ -111,12 +125,30 @@ public class CanvasScript : MonoBehaviour
 
     public void SendScore()
     {
-        Debug.Log("C" + Coin.text);
+        //Debug.Log("C" + Coin.text);
         PlayFabHandler.UpdateMoney(int.Parse(Coin.text) - PlayFabHandler.Coins); //push the update money to playfab
     }
 
     public void UpdateAmmo(int Ammo)
     {
         AmmoText.text = Ammo.ToString();
+    }
+
+    public void SetCurrentAbilityCD(float currentTime)
+    {
+        SkillCoolDown.value = currentTime;
+        if (SkillCoolDown.value == SkillCoolDown.maxValue && isRecharged) //if its recharged call it once
+        {
+            //Debug.Log("Recharged");
+            SkillCoolDownImage.color = SkillCoolDownImage.color + new Color(0, 100, 0);
+            isRecharged = false;
+            CircleCreatorScript.Create(SkillCoolDownImage.color); //create the circle to tell the player that it has recharged
+        }
+        else if (!isRecharged && SkillCoolDown.value != SkillCoolDown.maxValue) //if its not recharged, change the color once
+        {
+            //Debug.Log("Not Recharged");
+            isRecharged = true;
+            SkillCoolDownImage.color = SkillCoolDownImage.color - new Color(0, 100, 0);
+        }
     }
 }

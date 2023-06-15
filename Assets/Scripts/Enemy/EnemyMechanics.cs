@@ -11,6 +11,14 @@ public class EnemyMechanics : MonoBehaviour
     [SerializeField] GameObject Player;
     [SerializeField] GameObject[] Drops;
     [SerializeField] GameObject PortalPrefab;
+    public enum EnemyType
+    {
+        BasicRanged,
+        BasicMelee,
+        BossRanged
+    }
+    [SerializeField] EnemyType enemyType;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +35,11 @@ public class EnemyMechanics : MonoBehaviour
         
     }
 
+    public EnemyType ReturnEnemyType()
+    {
+        return enemyType;
+    }
+
     public void MinusHP(int MinusBy)
     {
         if (CurrentHealth > MinusBy)
@@ -40,7 +53,7 @@ public class EnemyMechanics : MonoBehaviour
             {
                 //randomise it
                 int randomdrop = Random.Range(0, Drops.Length); //randomise the drop
-                Instantiate(Drops[1], transform.position, Quaternion.identity); //create
+                Instantiate(Drops[randomdrop], transform.position, Quaternion.identity); //create
                 Instantiate(PortalPrefab, transform.parent.position - new Vector3(0, 0, 0.01f), Quaternion.identity); //create
             }
             Destroy(gameObject);
@@ -50,6 +63,11 @@ public class EnemyMechanics : MonoBehaviour
     public void AssignRoom (GameObject room)
     {
         InsideThisRoom = room;
+    }
+
+    public Vector3 GetRoomCoordinates()
+    {
+        return InsideThisRoom.transform.position;
     }
 
     public void AlterCost(int addhowmuch)

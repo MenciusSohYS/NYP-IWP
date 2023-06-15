@@ -10,8 +10,8 @@ public class BowScript : WeaponParent
         Damage = 100;
         FireRate = 0.2f;
         Spread = 0.01f;
-        BulletsRemaining = 10;
-        MaxMagSize = 10;
+        BulletsRemaining = 5;
+        MaxMagSize = 5;
         ReloadTime = -1;
         HeatMax = 1f; //we will use heat to determine how much the string has been pulled
         PositionToParent = new Vector3(0, 0.6f, 0);

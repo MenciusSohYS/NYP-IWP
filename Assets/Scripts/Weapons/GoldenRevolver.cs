@@ -12,5 +12,6 @@ public class GoldenRevolver : WeaponParent
         ReloadTime = -1;
         HeatMax = 0.5f;
         PositionToParent = new Vector3(0, 0.6f, 0);
+        Chambered = true;
     }
 }

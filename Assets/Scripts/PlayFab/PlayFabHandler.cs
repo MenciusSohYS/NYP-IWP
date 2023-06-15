@@ -150,7 +150,7 @@ public static class PlayFabHandler
         PlayFabClientAPI.AddUserVirtualCurrency(updatereq,
             result =>
             {
-                Debug.Log("ADDED "+ updatereq.Amount + " DOLLARS");
+                //Debug.Log("ADDED "+ updatereq.Amount + " DOLLARS");
                 Coins += AmountToAdd;
 
             }, OnError);

@@ -9,13 +9,13 @@ public class WeaponBenchScript : MonoBehaviour
     BoxCollider2D[] colliders;
 
        
-// Start is called before the first frame update
-void Start()
+    // Start is called before the first frame update
+    void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
         CanMoveOn = false;
         colliders = GetComponentsInChildren<BoxCollider2D>(true); //true to include those that are inactive
-        Debug.Log(colliders.Length);
+        //Debug.Log(colliders.Length);
     }
 
     // Update is called once per frame

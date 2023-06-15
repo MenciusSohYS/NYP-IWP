@@ -33,12 +33,13 @@ public class GunScript : MonoBehaviour
 
         //find weaponscript
         WeaponScript = GunTransform.GetComponent<WeaponParent>();
+
         timerforshooting = 0;
 
         //find weapon sprite
         GunSprite = GunTransform.GetComponent<SpriteRenderer>();
 
-        WeaponInitiation();        
+        WeaponInitiation();
 
         PlayerMechanicsScript = transform.parent.GetComponent<PlayerMechanics>();
 
@@ -83,11 +84,14 @@ public class GunScript : MonoBehaviour
                     Shooting = false;
                     Reloading = true;
                     ReloadTimer = WeaponScript.GetReloadTime();
+                    WeaponScript.StopSound();
+                    WeaponScript.StartReload();
                 }
             }
             else if (Input.GetMouseButtonUp(0)) //check if the mouse is being held down
             {
                 Shooting = false;
+                WeaponScript.StopSound();
             }
             else if (Input.GetMouseButtonDown(0))
             {
@@ -140,6 +144,7 @@ public class GunScript : MonoBehaviour
                 if (WeaponScript.ReturnCurrentMag() <= 0) //if no more bullets, start the reload
                 {
                     ReloadTimer = WeaponScript.GetReloadTime();
+                    WeaponScript.StartReload();
                     if (ReloadTimer == -1)
                     {
                         DestroyTempWeapon();
@@ -208,10 +213,8 @@ public class GunScript : MonoBehaviour
             //Debug.Log("Amount to decrease by: " + amounttoincreaseby);
         }
     }
-
-    public void AssignNewGun(GameObject NewGun, bool isanoverride) //is the gun an override? if not then replace the current gun
+    public void AssignNewGun(GameObject NewGun, bool isanoverride, bool isANewGun) //is the gun an override? if not then replace the current gun
     {
-
         if (isanoverride)
         {
             //since its an override and there is another weapon that exists, we should:
@@ -247,11 +250,16 @@ public class GunScript : MonoBehaviour
         }
         //get the new gun's weapon script
         WeaponScript = NewGun.GetComponent<WeaponParent>();
-        if (!WeaponScript.GetPickedUp()) //if it has never been picked up, apply the player's ability
+        if (!WeaponScript.GetPickedUp() && isANewGun) //if it has never been picked up, apply the player's ability
         {
             ApplyBuffPreReq();
             WeaponScript.SetPickedUp(); //tell it that we have picked it up already
         }
+        else if (!isANewGun)
+        {
+            WeaponScript.SetPickedUp();
+        }
+        WeaponScript.TellitsAttachedToPlayer();
         CurrentUpgrade = WeaponScript.GetCurrentUpgrade(); //apply the weapon's current upgrade
         //set its position relative to parent
         GunTransform.localPosition = WeaponScript.GetLocalPosition();
@@ -288,7 +296,7 @@ public class GunScript : MonoBehaviour
 
     void DestroyTempWeapon()
     {
-        AssignNewGun(transform.GetChild(transform.childCount - 1).gameObject, false);
+        AssignNewGun(transform.GetChild(transform.childCount - 1).gameObject, false, true);
     }
 
     void ApplyBuffPreReq()
@@ -307,6 +315,7 @@ public class GunScript : MonoBehaviour
             ApplyBuffPreReq();
             CurrentUpgrade = WeaponScript.GetCurrentUpgrade();
             WeaponScript.SetPickedUp();
+            WeaponScript.TellitsAttachedToPlayer();
         }
     }
 
@@ -320,6 +329,12 @@ public class GunScript : MonoBehaviour
         WeaponScript.SetSpread(Globalvariables.WeaponComponents.Spread);
         WeaponScript.SetMaxHeat(Globalvariables.WeaponComponents.HeatMax);
         WeaponScript.SetVelocity(Globalvariables.WeaponComponents.Velocity);
+        WeaponScript.TellitsAttachedToPlayer();
         CurrentUpgrade = Globalvariables.WeaponComponents.CurrentUpgrades;
+    }
+
+    public bool GetReloading()
+    {
+        return Reloading;
     }
 }

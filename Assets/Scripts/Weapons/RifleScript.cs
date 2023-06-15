@@ -5,7 +5,7 @@ public class RifleScript : WeaponParent
 
     public RifleScript()
     {
-        Damage = 2;
+        Damage = 7;
         FireRate = 0.1f;
         Spread = 0.5f;
         MaxMagSize = 30;

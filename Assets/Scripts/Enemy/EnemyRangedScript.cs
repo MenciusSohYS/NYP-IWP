@@ -12,6 +12,7 @@ public class EnemyRangedScript : MonoBehaviour
     public WeaponParent WeaponScript;
     private bool Reloading;
     private float ReloadTimer;
+    private SpriteRenderer spriteRenderer;
     void Start()
     {
         Reloading = false;
@@ -28,6 +29,15 @@ public class EnemyRangedScript : MonoBehaviour
         transform.Rotate(new Vector3(0, 0, PrevAngle * Mathf.Rad2Deg));
 
         WeaponScript = transform.GetChild(0).GetComponent<WeaponParent>();
+
+        if (WeaponScript == null)
+        {
+            WeaponScript = transform.GetChild(0).GetChild(0).GetComponent<WeaponParent>(); //if its a melee weapon
+            WeaponScript.GetComponent<SwordScript>().SetIsPlayer(false);
+        }
+
+        WeaponScript.SetDamage(0.5f);
+        spriteRenderer = WeaponScript.GetComponent<SpriteRenderer>();
     }
     void Update()
     {
@@ -36,26 +46,35 @@ public class EnemyRangedScript : MonoBehaviour
         //Follow player
         {
             Vector3 CenterPivot = transform.parent.position;
-
-            float PrevAngle = Mathf.Atan2(CenterPivot.x - prevposition.x, prevposition.y - CenterPivot.y);
-
             Vector3 currPosition = Player.transform.position;
 
             float CurrAngle = Mathf.Atan2(CenterPivot.x - currPosition.x, currPosition.y - CenterPivot.y);
+            transform.rotation = Quaternion.Euler(0, 0, CurrAngle * Mathf.Rad2Deg);
 
-            prevposition = currPosition;
+            //old code
+            {
+                //Vector3 CenterPivot = transform.parent.position;
 
-            float AngleDiff = CurrAngle - PrevAngle;
+                //float PrevAngle = Mathf.Atan2(CenterPivot.x - prevposition.x, prevposition.y - CenterPivot.y);
 
-            transform.Rotate(new Vector3(0, 0, AngleDiff * Mathf.Rad2Deg));
+                //Vector3 currPosition = Player.transform.position;
+
+                //float CurrAngle = Mathf.Atan2(CenterPivot.x - currPosition.x, currPosition.y - CenterPivot.y);
+
+                //prevposition = currPosition;
+
+                //float AngleDiff = CurrAngle - PrevAngle;
+
+                //transform.Rotate(new Vector3(0, 0, AngleDiff * Mathf.Rad2Deg));
+            }
 
             if (currPosition.x < transform.position.x)
             {
-                transform.GetChild(0).GetComponent<SpriteRenderer>().flipY = true;
+                spriteRenderer.flipY = true;
             }
             else
             {
-                transform.GetChild(0).GetComponent<SpriteRenderer>().flipY = false;
+                spriteRenderer.flipY = false;
             }
         }
 
@@ -71,6 +90,7 @@ public class EnemyRangedScript : MonoBehaviour
             if (WeaponScript.ReturnCurrentMag() <= 0) //if no more bullets, start the reload
             {
                 Reloading = true;
+                WeaponScript.StartReload();
                 ReloadTimer = WeaponScript.GetReloadTime();
             }
         }
