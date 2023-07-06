@@ -16,6 +16,7 @@ public class BowScript : WeaponParent
         HeatMax = 1f; //we will use heat to determine how much the string has been pulled
         PositionToParent = new Vector3(0, 0.6f, 0);
         BulletVelocity = 40;
+        Piercing = 4;
     }
 
     public Sprite[] Sprites;
@@ -57,6 +58,7 @@ public class BowScript : WeaponParent
             BulletShot.GetComponent<Bullet>().ShotBy(isShotByPlayer); //shot by enemy
             BulletShot.GetComponent<Bullet>().AssignDamage((int)(Damage * CurrentHeat));
             BulletShot.GetComponent<Bullet>().AssignVelocity((int)(20 + (BulletVelocity * CurrentHeat)));
+            BulletShot.GetComponent<Bullet>().AssignPierce((int)(Piercing * CurrentHeat) + 1);
 
             //Debug.Log((int)(BulletVelocity * CurrentHeat));
 

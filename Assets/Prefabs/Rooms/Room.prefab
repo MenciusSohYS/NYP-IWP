@@ -71,12 +71,15 @@ MonoBehaviour:
   EnemyList:
   - {fileID: 7888168876331056701, guid: 5ce690b8a29be8549882f5bafba1d6f3, type: 3}
   - {fileID: 7888168876331056701, guid: 45fa0b7f2578cc94e984a69841dc8121, type: 3}
+  - {fileID: 7888168876331056701, guid: d4e0af36cf636db43bd16750decedcd5, type: 3}
   ChestPrefab: {fileID: 2207561014164058557, guid: 498f9e3971c807b41a2ca90401e6c17b, type: 3}
   RoomObjects: {fileID: 2196393389922210799}
   RoomEnemies: {fileID: 4391147591592173838}
   Fog: {fileID: 3648767516148201600}
   Enemies: []
   Covers: []
+  MeleeEnemies: []
+  RangedEnemies: []
   SidesWithCorridors: 
 --- !u!114 &-7130941141285165500
 MonoBehaviour:
@@ -125,6 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DungeonScript: {fileID: 6518267365221879166}
+  PlayerGO: {fileID: 0}
 --- !u!1 &1248869368260912074
 GameObject:
   m_ObjectHideFlags: 0

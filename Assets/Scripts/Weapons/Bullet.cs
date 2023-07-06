@@ -9,12 +9,16 @@ public class Bullet : MonoBehaviour
     public bool PlayerFriendly;
     [SerializeField] GameObject DamageNumber;
     public int VelocityOfBullet;
+    private bool HitHalfCover;
+    int piercecapped; //if have pierce cap do make this false
+    [SerializeField] GameObject ExplosionEffect;
+
     // Start is called before the first frame update
     private void Start()
     {
         if (VelocityOfBullet < 0)
             VelocityOfBullet = 30;
-
+        HitHalfCover = false;
         rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, 3.0f);
     }
@@ -44,10 +48,14 @@ public class Bullet : MonoBehaviour
         VelocityOfBullet = Velocity;
     }
 
+    public void AssignPierce(int AmountAvailable)
+    {
+        piercecapped = AmountAvailable;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         bool HitSomethingWithHealth = false;
-        bool piercecapped = false; //if have pierce cap do make this false
 
         if (collision.transform.name.Contains("Bullet"))
         {
@@ -56,30 +64,34 @@ public class Bullet : MonoBehaviour
 
         if (collision.transform.tag == "Player" && !PlayerFriendly)
         {
+            if (HitHalfCover && collision.transform.name.Contains("Dwarf"))
+                return;
+
             HitSomethingWithHealth = collision.transform.GetComponent<PlayerMechanics>().MinusHP(DamageToDo);
             collision.GetComponent<Rigidbody2D>().AddForce(rb.velocity * 5);
-            piercecapped = true;
+            --piercecapped;
         }
         else if (collision.transform.tag == "Enemy" && PlayerFriendly)
         {
             collision.transform.GetComponent<EnemyMechanics>().MinusHP(DamageToDo);
             HitSomethingWithHealth = true;
-            piercecapped = true;
+            --piercecapped;
         }
         else if (collision.transform.tag == "HalfCover")
         {
             float tempdmg = DamageToDo;
             tempdmg *= 0.5f;
             DamageToDo = (int)tempdmg;
+            HitHalfCover = true;
         }
-        else if (collision.transform.tag == "FullCover")
+        else if (collision.transform.tag == "Fullcover")
         {
-            piercecapped = true;
+            piercecapped = 0;
         }
         else if (collision.transform.tag == "Walls")
-            piercecapped = true;
+            piercecapped = 0;
         else if (collision.transform.tag == "Melee")
-            piercecapped = true;
+            piercecapped = 0;
 
         if (HitSomethingWithHealth)
         {
@@ -88,8 +100,11 @@ public class Bullet : MonoBehaviour
             numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString());
         }
 
-        if (piercecapped)
+        if (piercecapped <= 0)
         {
+            if (ExplosionEffect != null)
+                Instantiate(ExplosionEffect, transform.position, Quaternion.identity); //create an explosive if you can
+
             Destroy(gameObject);
         }
     }

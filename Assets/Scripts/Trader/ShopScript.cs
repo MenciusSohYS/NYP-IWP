@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
 using TMPro;
@@ -11,6 +12,7 @@ public class ShopScript : MonoBehaviour
     public GameObject ShopItemPrefab;
     public GameObject ShopPanel;
     public TextMeshProUGUI ShopNotif;
+    public Texture2D[] ImagesForShop;
     private float TimerForNotif;
     private bool NotifTrue;
     // Start is called before the first frame update
@@ -56,17 +58,27 @@ public class ShopScript : MonoBehaviour
 
         ShopUI.transform.SetParent(ShopContentArea.transform, false);
 
-        ShopUI.GetComponent<ItemScript>().SetItemName(name);
-        ShopUI.GetComponent<ItemScript>().SetItemPrice(Price);
-        ShopUI.GetComponent<ItemScript>().SetDescription(Description);
-        ShopUI.GetComponent<ItemScript>().SetItemID(ItemID);
-        ShopUI.GetComponent<ItemScript>().SetCanvasGO(gameObject);
+        ItemScript ShopItemScript = ShopUI.GetComponent<ItemScript>();
+
+        ShopItemScript.SetItemName(name); //assign name
+        ShopItemScript.SetItemPrice(Price); //assign price
+        ShopItemScript.SetDescription(Description); //assign description
+        ShopItemScript.SetItemID(ItemID); //assign itemid (hidden from player)
+        ShopItemScript.SetCanvasGO(gameObject); //assign Canvas to refer to when we want to buy an item
 
         for (int i = 0; i < PlayFabHandler.SkillList.Count; ++i)
         {
             if (PlayFabHandler.SkillList[i].Name == name)
             {
-                ShopUI.GetComponent<ItemScript>().SetItemAmount(PlayFabHandler.SkillList[i].StackAmount);
+                ShopItemScript.SetItemAmount(PlayFabHandler.SkillList[i].StackAmount); //assign the current stack amount of the item
+            }
+        }
+
+        for (int i = 0; i < ImagesForShop.Length; ++i)
+        {
+            if (ImagesForShop[i].name == ItemID)
+            {
+                ShopItemScript.SetImage(ImagesForShop[i]); //assign image to the shop
             }
         }
 

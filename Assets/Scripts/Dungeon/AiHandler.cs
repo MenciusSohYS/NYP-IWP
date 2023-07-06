@@ -7,7 +7,7 @@ public class AiHandler : MonoBehaviour
     [SerializeField] DungeonScript DungeonScript;
     private int RangedEnemyCount;
     private int MeleeEnemyCount;
-    private GameObject PlayerGO;
+    [SerializeField] GameObject PlayerGO;
     private PlayerStates CurrentPlayerState;
     private PlayerStates PreviousPlayerState;
     private float timerforupdate;
@@ -17,7 +17,9 @@ public class AiHandler : MonoBehaviour
     {
         Alive,
         Reloading,
-        Dead
+        Dead,
+        Shooting,
+        NotShooting
     }
     private void Start()
     {
@@ -77,6 +79,13 @@ public class AiHandler : MonoBehaviour
     void StateHandler()
     {
         //Debug.Log(CurrentPlayerState);
+
+        if (transform.name.Contains("BossRoom"))
+        {
+            DungeonScript.SetBossToAttack(PlayerGO.transform.position);
+            return;
+        }
+
         switch(CurrentPlayerState)
         {
             case PlayerStates.Alive:
@@ -84,6 +93,23 @@ public class AiHandler : MonoBehaviour
             case PlayerStates.Dead:
                 break;
             case PlayerStates.Reloading:
+                if (MeleeEnemyCount > 0)
+                {
+                    DungeonScript.SetMeleeEnemiesToAttack(PlayerGO.transform.position);
+                }
+                if (RangedEnemyCount > 0)
+                {
+                    DungeonScript.RangedTryToLookForPlayer(PlayerGO.transform.position);
+                }
+                break;
+            case PlayerStates.Shooting:
+                DungeonScript.GoHide(PlayerGO.transform.position, false);
+                break;
+            case PlayerStates.NotShooting:
+                if (RangedEnemyCount > 0)
+                {
+                    DungeonScript.RangedTryToLookForPlayer(PlayerGO.transform.position);
+                }
                 if (MeleeEnemyCount > 0)
                 {
                     DungeonScript.SetMeleeEnemiesToAttack(PlayerGO.transform.position);

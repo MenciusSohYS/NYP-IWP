@@ -15,6 +15,7 @@ public class EnemyMechanics : MonoBehaviour
     {
         BasicRanged,
         BasicMelee,
+        SniperRanged,
         BossRanged
     }
     [SerializeField] EnemyType enemyType;

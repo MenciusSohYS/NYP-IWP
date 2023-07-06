@@ -31,7 +31,7 @@ public class PathFinding
         //Debug.Log(path);
         if (path == null) //has an error
         {
-            Debug.Log("PATH IS EMPTY");
+            Debug.Log("PATH IS EMPTY: " + (StartX + 15) + " " + (StartY + 15) + " " + EndX + " " + EndY);
             return null;
         }
         else //convert everything
@@ -95,16 +95,21 @@ public class PathFinding
             //search neighbournode
             foreach(PathNode NeighbourNode in GetNeighbourList(CurrentNode))
             {
+                if (NeighbourNode == null)
+                {
+                    Debug.Log("Neighbour is null");
+                }
                 //use list function to see if closedlist has neighbournode
                 if (ClosedList.Contains(NeighbourNode))
                 {
                     continue;
                 }
+
                 if (NeighbourNode != null)
                 {
                     if (!NeighbourNode.IsWalkable)
                     {
-                        Debug.Log("Not walkable");
+                        //Debug.Log("Not walkable");
                         ClosedList.Add(NeighbourNode);
                         continue;
                     }
@@ -143,7 +148,7 @@ public class PathFinding
             //down and then up
             if (CurrentNode.y - 1 >= 0)
                 neightbourlist.Add(GetNode(CurrentNode.x - 1, CurrentNode.y - 1));
-            if (CurrentNode.y + 1 >= 0)
+            if (CurrentNode.y + 1 < Grid.GetHeight())
                 neightbourlist.Add(GetNode(CurrentNode.x - 1, CurrentNode.y + 1));
         }
         if (CurrentNode.x + 1 < Grid.GetWidth())
@@ -153,7 +158,7 @@ public class PathFinding
             //down and then up
             if (CurrentNode.y - 1 >= 0)
                 neightbourlist.Add(GetNode(CurrentNode.x + 1, CurrentNode.y - 1));
-            if (CurrentNode.y + 1 >= 0)
+            if (CurrentNode.y + 1 < Grid.GetHeight())
                 neightbourlist.Add(GetNode(CurrentNode.x + 1, CurrentNode.y + 1));
         }
 
@@ -163,7 +168,7 @@ public class PathFinding
             neightbourlist.Add(GetNode(CurrentNode.x, CurrentNode.y - 1));
         }
         //up
-        if (CurrentNode.y + 1 >= 0)
+        if (CurrentNode.y + 1 < Grid.GetHeight())
         {
             neightbourlist.Add(GetNode(CurrentNode.x, CurrentNode.y + 1));
         }
@@ -194,6 +199,10 @@ public class PathFinding
 
     private int CalculateDistanceCost(PathNode PointA, PathNode PointB)
     {
+        if (PointB == null)
+        {
+            Debug.Log("Current: " + PointA + " Neighbour: " + PointB);
+        }
         int xDistance = Mathf.Abs(PointA.x - PointB.x);
         int yDistance = Mathf.Abs(PointA.y - PointB.y);
         int Remaining = Mathf.Abs(xDistance - yDistance);

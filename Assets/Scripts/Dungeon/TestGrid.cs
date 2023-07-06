@@ -63,12 +63,10 @@ public class TestGrid : MonoBehaviour
 
     public bool TestIfGridIsTrue(int Xaxis, int Yaxis)
     {
-        return PathFind.GetNode(Xaxis, Yaxis).IsWalkable;
-    }
+        //Debug.Log(Xaxis + " and " + Yaxis + " and " + PathFind + " TOF: " + PathFind.GetNode(Xaxis, Yaxis).IsWalkable);
 
-    public void MakeWalkableForEnemy(Vector3 Position)
-    {
-        Position = PathFind.ConvertWorldPos(Position);
-        PathFind.GetNode((int)Position.x, (int)Position.y).SetIsWalkable(true);
+        //Debug.DrawLine(new Vector3(Xaxis - 15, Yaxis - 15) + transform.position, new Vector3(Xaxis + 1 - 15, Yaxis + 1 - 15) + transform.position, Color.cyan, 15f);
+
+        return PathFind.GetNode(Xaxis, Yaxis).IsWalkable;
     }
 }

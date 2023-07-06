@@ -27,7 +27,12 @@ public class ChestScript : MonoBehaviour
                 int randint = Random.Range(0, ThisToSpawn.Length);
                 GameObject NewObj = Instantiate(ThisToSpawn[randint], transform.position, Quaternion.identity);
                 NewObj.GetComponent<CircleCollider2D>().enabled = true;
-                NewObj.GetComponent<WeaponDropped>().enabled = true;
+                
+                if (NewObj.GetComponent<WeaponDropped>() != null)
+                {
+                    NewObj.GetComponent<WeaponDropped>().enabled = true;
+                }
+
                 GetComponent<CircleCollider2D>().enabled = false;
             }
         }

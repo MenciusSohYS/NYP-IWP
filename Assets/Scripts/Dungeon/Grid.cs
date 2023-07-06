@@ -113,11 +113,12 @@ public class Grid<TGridObject> {
     {
         if (!IsNowWalkable)
         {
-            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x - 15, y + 1 - 15), Color.green, 100f);
-            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x + 1 - 15, y - 15), Color.green, 100f);
+            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x - 15, y + 1 - 15), Color.yellow, 100f);
+            Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x + 1 - 15, y - 15), Color.yellow, 100f);
         }
         else
         {
+            //Debug.Log("Drawing Line");
             Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x - 15, y + 1 - 15), Color.red, 100f);
             Debug.DrawLine(GetWorldPosition(x - 15, y - 15), GetWorldPosition(x + 1 - 15, y - 15), Color.red, 100f);
         }

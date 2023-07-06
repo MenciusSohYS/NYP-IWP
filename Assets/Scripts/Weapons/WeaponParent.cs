@@ -23,6 +23,8 @@ public class WeaponParent : MonoBehaviour
     public AudioClip[] ShootingSoundEffects;
     protected float ReloadSoundDuration;
     protected float ReloadPitch;
+    protected bool CanUpdate = false;
+    protected int Piercing = 1;
 
     private void Start()
     {
@@ -46,7 +48,7 @@ public class WeaponParent : MonoBehaviour
             AudioSourceField.Pause();
     }
 
-    public void TellitsAttachedToPlayer()
+    public virtual void TellitsAttachedToPlayer()
     {
         if (AudioSourceField == null)
             AudioSourceField = GetComponent<AudioSource>();
@@ -64,6 +66,7 @@ public class WeaponParent : MonoBehaviour
         BulletShot.GetComponent<Bullet>().ShotBy(ShotByPlayer); //shot by enemy
         BulletShot.GetComponent<Bullet>().AssignDamage(Damage);
         BulletShot.GetComponent<Bullet>().AssignVelocity(BulletVelocity);
+        BulletShot.GetComponent<Bullet>().AssignPierce(Piercing);
         BulletShot.transform.up += new Vector3(RandomX, RandomY, 0);
 
         SetNewBulletsLeft(1); //set new bullets left (-1)
@@ -74,10 +77,12 @@ public class WeaponParent : MonoBehaviour
         return FireRate;
     }
 
-    protected void PlayShootingSound()
+    protected virtual void PlayShootingSound()
     {
         if (ShootingSoundEffects.Length < 1 || (AudioSourceField.isPlaying && !Chambered))
+        {
             return;
+        }
 
         //int RandomShootingSound = Random.Range(0, ShootingSoundEffects.Length); //use if I decide to put in more sound
         AudioSourceField.clip = ShootingSoundEffects[0];
@@ -149,22 +154,6 @@ public class WeaponParent : MonoBehaviour
 
     public virtual void StartReload()
     {
-        if (AudioSourceField != null)
-        {
-            AudioSourceField.clip = ReloadSoundEffect;
-            AudioSourceField.pitch = ReloadPitch;
-
-            if (!AudioSourceField.isPlaying)
-            {
-                AudioSourceField.Play();
-            }
-            //Debug.Log(ReloadSound.clip.length + " " + ReloadTime);
-        }
-        else
-        {
-            Debug.Log("Reload is null");
-            return;
-        }
     }
 
     public virtual float GetReloadTime()
@@ -203,6 +192,20 @@ public class WeaponParent : MonoBehaviour
 
     public virtual float DoReload(float TimeLeftToGo, float ElapsedTime)
     {
+        if (AudioSourceField.clip != ReloadSoundEffect) //if its a shooting sound
+        {
+            if (AudioSourceField.isPlaying && AudioSourceField.clip.length < 0.5f) //if it is still playing the shooting sound
+            {
+                return TimeLeftToGo;
+            }
+            else
+            {
+                AudioSourceField.clip = ReloadSoundEffect;
+                AudioSourceField.pitch = ReloadPitch;
+                AudioSourceField.Play();
+            }
+        }
+
         TimeLeftToGo -= ElapsedTime;
         CurrentReload = TimeLeftToGo; //store reload time
 
@@ -210,6 +213,8 @@ public class WeaponParent : MonoBehaviour
         {
             BulletsRemaining = MaxMagSize; //set new bullets left (max)
             AudioSourceField.pitch = 1;
+            AudioSourceField.clip = ShootingSoundEffects[0];
+            AudioSourceField.time = 0;
         }
 
         return TimeLeftToGo;
@@ -270,5 +275,10 @@ public class WeaponParent : MonoBehaviour
     public bool ReturnMelee()
     {
         return isMelee;
+    }
+
+    public void StartCanUpdate()
+    {
+        CanUpdate = true;
     }
 }

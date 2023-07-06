@@ -19,9 +19,6 @@ public class RevolverScript : WeaponParent
 
     public override void StartReload()
     {
-        AudioSourceField.clip = ReloadSoundEffect;
-        AudioSourceField.pitch = ReloadPitch;
-
         //Debug.Log(ReloadSound.clip.length + "/" + remainingReloadTime + "=" + ReloadSound.clip.length / remainingReloadTime);
         //Debug.Log(ReloadPitch);
 
@@ -64,6 +61,19 @@ public class RevolverScript : WeaponParent
 
     public override float DoReload(float TimeLeftToGo, float ElapsedTime)
     {
+        if (AudioSourceField.clip != ReloadSoundEffect) //if its a shooting sound
+        {
+            if (AudioSourceField.isPlaying) //if it is still playing the shooting sound
+            {
+                return TimeLeftToGo;
+            }
+            else
+            {
+                AudioSourceField.clip = ReloadSoundEffect;
+                AudioSourceField.pitch = ReloadPitch;
+            }
+        }
+
         TimeLeftToGo -= ElapsedTime;
         CurrentReload = TimeLeftToGo; //store reload time
 

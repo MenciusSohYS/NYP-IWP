@@ -53,16 +53,19 @@ public class EnemyMovement : MonoBehaviour
     public void MovingToTarget(Vector3 TargetPos)
     {
         //Debug.Log(transform.localPosition - RoomOffset);
-        Debug.Log("ENEMY POS: " + transform.position);
-        if (PathVectorList.Count > 0 && PathVectorList != null)
+        //Debug.Log("ENEMY POS: " + transform.position);
+        if (PathVectorList != null && PathVectorList.Count > 0)
         {
-            Vector3 PositionToChange = PathFinding.Instance.ConvertWorldPos(PathVectorList[PathVectorList.Count - 1]);
-            PathFinding.Instance.GetNode((int)PositionToChange.x + 15, (int)PositionToChange.y + 15).SetIsWalkable(true);
+            Vector3 RoundVector3Part1 = new Vector3((int)Mathf.Round(PathVectorList[PathVectorList.Count - 1].x), (int)Mathf.Round(PathVectorList[PathVectorList.Count - 1].y));
+            Vector3 PositionToChange = PathFinding.Instance.ConvertWorldPos(RoundVector3Part1);
+            PathFinding.Instance.GetNode((int)(PositionToChange.x), (int)(PositionToChange.y)).SetIsWalkable(true);
         }
-        PathVectorList = PathFinding.Instance.FindPath(transform.position, TargetPos);
 
-        Vector3 NewPos = PathFinding.Instance.ConvertWorldPos(transform.position);
-        PathFinding.Instance.GetNode((int)NewPos.x + 15, (int)NewPos.y + 15).SetIsWalkable(true);
+        Vector3 RoundVector3 = new Vector3((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y));
+        Vector3 NewPos = PathFinding.Instance.ConvertWorldPos(RoundVector3);
+        PathFinding.Instance.GetNode((int)(NewPos.x), (int)(NewPos.y)).SetIsWalkable(true);
+
+        PathVectorList = PathFinding.Instance.FindPath(transform.position, TargetPos);
 
         DrawDebugRay();
         //if (PathFinding.Instance.GetNode((int)transform.position.x + 14, (int)transform.position.y + 14).IsWalkable)
@@ -90,9 +93,22 @@ public class EnemyMovement : MonoBehaviour
 
     public void DrawDebugRay()
     {
-        for (int i = 0; i < PathVectorList.Count - 1; ++i)
+        if (PathVectorList != null && PathVectorList.Count > 0)
         {
-            Debug.DrawLine(PathVectorList[i], PathVectorList[i + 1], Color.blue, 15f);
+            for (int i = 0; i < PathVectorList.Count - 1; ++i)
+            {
+                Debug.DrawLine(PathVectorList[i], PathVectorList[i + 1], Color.blue, 15f);
+            }
         }
+    }
+
+    public int VectorListCount()
+    {
+        return PathVectorList.Count;
+    }
+
+    public Vector3 ReturnLastLocation()
+    {
+        return PathVectorList[PathVectorList.Count - 1];
     }
 }

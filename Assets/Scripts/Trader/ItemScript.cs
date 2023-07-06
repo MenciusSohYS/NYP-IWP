@@ -12,6 +12,7 @@ public class ItemScript : MonoBehaviour
     public TextMeshProUGUI MaxedText;
     public TMP_InputField AmountOwnedText;
     public Image Image;
+    public GameObject ImageGO;
     private int OriginalAmount;
     private int currentcost;
     private string ItemID;
@@ -57,6 +58,12 @@ public class ItemScript : MonoBehaviour
     {
         Name.text = newstring;
     }
+    public void SetImage(Texture2D newImage)
+    {
+        Sprite sprite = Sprite.Create(newImage, new Rect(0, 0, newImage.width, newImage.height), Vector2.one * 0.5f); //convert the texture2d to a sprite
+
+        Image.sprite = sprite;
+    }
 
     public void SetItemAmount(int newAmount) //may not be referenced upon creation
     {
@@ -73,14 +80,14 @@ public class ItemScript : MonoBehaviour
 
     public void InfoButtonClick()
     {
-        if (Image.gameObject.activeSelf)
+        if (ImageGO.activeSelf)
         {
-            Image.gameObject.SetActive(false);
+            ImageGO.SetActive(false);
             Description.gameObject.SetActive(true);
         }
         else
         {
-            Image.gameObject.SetActive(true);
+            ImageGO.SetActive(true);
             Description.gameObject.SetActive(false);
         }
     }

@@ -79,7 +79,7 @@ public class GunScript : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                if (WeaponScript.ReturnCurrentMag() != WeaponScript.GetMaxMagSize() && WeaponScript.ReturnFullReload() != -1) //if max mag no need to reload
+                if (WeaponScript.ReturnCurrentMag() != WeaponScript.GetMaxMagSize() && WeaponScript.ReturnFullReload() != -1) //if max mag no need to reload or if its a ability gun
                 {
                     Shooting = false;
                     Reloading = true;
@@ -336,5 +336,10 @@ public class GunScript : MonoBehaviour
     public bool GetReloading()
     {
         return Reloading;
+    }
+
+    public bool GetIsShooting()
+    {
+        return Shooting;
     }
 }

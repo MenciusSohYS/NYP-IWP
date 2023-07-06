@@ -160,4 +160,17 @@ public static class PlayFabHandler
     {
         Debug.Log("ERROR WITH PLAYFAB");
     }
+
+    public static void LogOut()
+    {
+        UnlockedMercenary = false;
+        UnlockedElf = false;
+        UnlockedBounty = true;
+        Coins = 0;
+        PlayFabID = "";
+        SkillList = new List<PlayerBoughtSkills>();
+        Characters = new List<Character>();
+        PlayFabClientAPI.ForgetAllCredentials();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("LoginScene");
+    }
 }

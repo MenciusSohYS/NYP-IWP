@@ -13,8 +13,10 @@ public class EnemyRangedScript : MonoBehaviour
     private bool Reloading;
     private float ReloadTimer;
     private SpriteRenderer spriteRenderer;
+    private bool ShootNow;
     void Start()
     {
+        ShootNow = false;
         Reloading = false;
         ReloadTimer = 0f;
 
@@ -68,23 +70,21 @@ public class EnemyRangedScript : MonoBehaviour
                 //transform.Rotate(new Vector3(0, 0, AngleDiff * Mathf.Rad2Deg));
             }
 
-            if (currPosition.x < transform.position.x)
+            if (currPosition.x < transform.position.x && !spriteRenderer.flipY)
             {
                 spriteRenderer.flipY = true;
+                BulletSpawner.transform.localPosition = new Vector3(BulletSpawner.transform.localPosition.x, -BulletSpawner.transform.localPosition.y);
             }
-            else
+            else if (currPosition.x > transform.position.x && spriteRenderer.flipY)
             {
                 spriteRenderer.flipY = false;
+                BulletSpawner.transform.localPosition = new Vector3(BulletSpawner.transform.localPosition.x, -BulletSpawner.transform.localPosition.y);
             }
         }
 
         //shooting part
-        if (Reloading)
-        {
-            transform.GetChild(0).Rotate(0, 0, 3);
-        }
 
-        if (timerforshooting <= 0 && WeaponScript.ReturnCurrentMag() > 0) //if the player is shooting, can shoot after fire rate cool down and has more than 1 bullet
+        if (timerforshooting <= 0 && WeaponScript.ReturnCurrentMag() > 0 && ShootNow) //if the player is shooting, can shoot after fire rate cool down and has more than 1 bullet
         {
             timerforshooting = WeaponScript.Attack(BulletSpawner, Bullet, false); //shoot
             if (WeaponScript.ReturnCurrentMag() <= 0) //if no more bullets, start the reload
@@ -96,6 +96,7 @@ public class EnemyRangedScript : MonoBehaviour
         }
         else if (Reloading)
         {
+            transform.GetChild(0).Rotate(0, 0, 3);
             ReloadTimer = WeaponScript.DoReload(ReloadTimer, Time.deltaTime); //push the calculation to the gun for storing and dynamic reload
             if (ReloadTimer <= 0)
             {
@@ -103,5 +104,27 @@ public class EnemyRangedScript : MonoBehaviour
                 Reloading = false; //completed reload
             }
         }
+    }
+
+    public void SetShootNow(bool setto)
+    {
+        ShootNow = setto;
+    }
+
+    public bool ReturnShootNow()
+    {
+        return ShootNow;
+    }
+
+    public bool ReturnIsReloading()
+    {
+        return Reloading;
+    }
+    private void OnEnable()
+    {
+        WeaponScript = transform.GetChild(0).GetComponent<WeaponParent>();
+
+        if (WeaponScript != null)
+            WeaponScript.StartCanUpdate();
     }
 }

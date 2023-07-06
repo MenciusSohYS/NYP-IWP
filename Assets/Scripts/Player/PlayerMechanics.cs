@@ -81,6 +81,7 @@ public class PlayerMechanics : MonoBehaviour
                 gameObject.GetComponent<CircleCollider2D>().enabled = false;
                 Canvas.SetText("Game Over", -1);
                 Canvas.SendScore();
+                Canvas.SetGameOver();
             }
 
             CurrentHealth -= howmuchtominus;
@@ -191,6 +192,14 @@ public class PlayerMechanics : MonoBehaviour
         else if (PlayergunScript.GetReloading())
         {
             return AiHandler.PlayerStates.Reloading;
+        }
+        else if (PlayergunScript.GetIsShooting())
+        {
+            return AiHandler.PlayerStates.Shooting;
+        }
+        else if (!PlayergunScript.GetIsShooting())
+        {
+            return AiHandler.PlayerStates.NotShooting;
         }
         return AiHandler.PlayerStates.Alive;
     }

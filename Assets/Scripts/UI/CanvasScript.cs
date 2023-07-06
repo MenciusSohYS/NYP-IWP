@@ -13,6 +13,7 @@ public class CanvasScript : MonoBehaviour
     public TextMeshProUGUI HPNumber;
     public Slider SkillCoolDown;
     public Image SkillCoolDownImage;
+    public GameObject GameOverGO;
     private bool isRecharged;
     private CircleCreator CircleCreatorScript;
 
@@ -28,7 +29,7 @@ public class CanvasScript : MonoBehaviour
     {
         Cursor.visible = false;
         //find player
-
+        GameOverGO.SetActive(false);
         GetComponent<Canvas>().worldCamera = Camera.main;
         GetComponent<Canvas>().sortingLayerName = "Default";
         GetComponent<Canvas>().sortingLayerID = 1;
@@ -127,6 +128,21 @@ public class CanvasScript : MonoBehaviour
     {
         //Debug.Log("C" + Coin.text);
         PlayFabHandler.UpdateMoney(int.Parse(Coin.text) - PlayFabHandler.Coins); //push the update money to playfab
+    }
+
+    public void SetGameOver()
+    {
+        GameOverGO.SetActive(true);
+    }
+
+    public void LogOut()
+    {
+        PlayFabHandler.LogOut();
+    }
+
+    public void ReturnToLobby()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
     }
 
     public void UpdateAmmo(int Ammo)

@@ -14,6 +14,7 @@ public class CharacterSelectScript : MonoBehaviour
     public TextMeshProUGUI Description;
     public TextMeshProUGUI Coins;
     public GameObject Lock;
+    public GameObject Pause;
     public TextMeshProUGUI Notification;
     private bool ConfirmPurchase;
     private bool FadeOut;
@@ -32,7 +33,10 @@ public class CharacterSelectScript : MonoBehaviour
     void Start()
     {
         CurrentCost = 0; //cost of buying the character
-        FadeOut = false; //fade of the notification text
+        Notification.gameObject.SetActive(true);
+        Notification.text = "Character Select";
+        Notification.color = Notification.color + new Color(0, 0, 0, 1);
+        FadeOut = true; //fade of the notification text
         ConfirmPurchase = false; //for the buying of characters
         //PlayFabHandler.GetPlayerInventory();
         //TxtHandler.CheckForCharacters(); //check what characters the player owns
@@ -66,6 +70,7 @@ public class CharacterSelectScript : MonoBehaviour
         Camera.transform.position = handlerNumberToLocalNumber[0].CharacterGO.transform.position - new Vector3(0, 0, 5); //shift the camera to where ever the first character is
         WriteText(); //lock camera to the first player the game can find and write its description
         Coins.text = PlayFabHandler.Coins.ToString();
+        Pause.SetActive(false);
     }
 
     // Update is called once per frame
@@ -126,7 +131,7 @@ public class CharacterSelectScript : MonoBehaviour
         Notification.gameObject.SetActive(false); //disable the notification text
         for (int i = 0; i < transform.childCount; ++i)
         {
-            if (transform.GetChild(i).GetComponent<Button>() != null)
+            if (transform.GetChild(i).GetComponent<Button>() != null && transform.GetChild(i).name != "Pause")
             {
                 transform.GetChild(i).gameObject.SetActive(false); //find each child in canvas and disable all those that has a button variable
             }
@@ -216,5 +221,22 @@ public class CharacterSelectScript : MonoBehaviour
     public void UpdateCoins(int AmountToMinus)
     {
         Coins.text = (int.Parse(Coins.text) - AmountToMinus).ToString();
+    }
+
+    public void PauseClicked()
+    {
+        if (Pause.activeSelf)
+        {
+            Pause.SetActive(false);
+        }
+        else
+        {
+            Pause.SetActive(true);
+        }
+    }
+
+    public void PressLogOut()
+    {
+        PlayFabHandler.LogOut();
     }
 }
