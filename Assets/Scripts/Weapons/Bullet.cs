@@ -73,6 +73,15 @@ public class Bullet : MonoBehaviour
         }
         else if (collision.transform.tag == "Enemy" && PlayerFriendly)
         {
+            float DR = collision.transform.GetComponent<EnemyMechanics>().ReturnDR();
+            if (DR > 0)
+            {
+                //Debug.Log("Old Damage: " + DamageToDo);
+                float tempfloat = DamageToDo * DR;
+                DamageToDo = (int)tempfloat;
+                //Debug.Log("New Damage: " + DamageToDo);
+            }
+
             collision.transform.GetComponent<EnemyMechanics>().MinusHP(DamageToDo);
             HitSomethingWithHealth = true;
             --piercecapped;

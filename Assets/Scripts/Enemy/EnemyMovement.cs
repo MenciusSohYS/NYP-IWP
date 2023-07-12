@@ -10,6 +10,7 @@ public class EnemyMovement : MonoBehaviour
     private GameObject PlayerGO;
     private EnemyMechanics enemyMechanicsScript;
     private Vector3 RoomOffset;
+    int speed = 6;
 
     //public GameObject Room;
     // Start is called before the first frame update
@@ -39,7 +40,7 @@ public class EnemyMovement : MonoBehaviour
             Quaternion CurrentRotation = transform.GetChild(0).rotation;
 
             Vector3 MoveDirection = (PathVectorList[0] - transform.position).normalized;
-            transform.position = transform.position + MoveDirection * 6 * Time.deltaTime;
+            transform.position = transform.position + MoveDirection * speed * Time.deltaTime;
 
             transform.GetChild(0).rotation = CurrentRotation;
 
@@ -48,6 +49,11 @@ public class EnemyMovement : MonoBehaviour
                 PathVectorList.RemoveAt(0);
             }
         }
+    }
+
+    public void SetSpeed(int newspeed)
+    {
+        speed = newspeed;
     }
 
     public void MovingToTarget(Vector3 TargetPos)
@@ -107,8 +113,20 @@ public class EnemyMovement : MonoBehaviour
         return PathVectorList.Count;
     }
 
-    public Vector3 ReturnLastLocation()
+    public Vector3 ReturnLastLocation() //returns last location in the vectorlist
     {
         return PathVectorList[PathVectorList.Count - 1];
+    }
+
+    public bool ReturnIfPathVectorListIsNull()
+    {
+        if (PathVectorList != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

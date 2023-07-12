@@ -132,8 +132,15 @@ public class PlayerMechanics : MonoBehaviour
 
     public void IncreaseMaxHP(int ByHowMuch)
     {
-        MaxHealth += ByHowMuch;
-        CurrentHealth += ByHowMuch;
+        if (MaxHealth + ByHowMuch <= 500)
+        {
+            MaxHealth += ByHowMuch;
+            CurrentHealth += ByHowMuch;
+        }
+        else
+        {
+            CurrentHealth = MaxHealth;
+        }
         Canvas.SetMaxNCurrentHP(MaxHealth, CurrentHealth);
     }
 
@@ -171,6 +178,11 @@ public class PlayerMechanics : MonoBehaviour
             case 1:
                 {
                     Heal(20);
+                    return;
+                }
+            case 2:
+                {
+                    GetComponent<PlayerMovement>().FlyForward();
                     return;
                 }
             default:

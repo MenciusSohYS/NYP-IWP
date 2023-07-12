@@ -31,9 +31,12 @@ public class DungeonScript : MonoBehaviour
 
     private TestGrid GridReference;
 
+    bool SpawnMoreEnemies;
+
     // Start is called before the first frame update
     void Start()
     {
+        SpawnMoreEnemies = false;
         Covers = new GameObject[10];
         GridReference = GetComponent<TestGrid>();
         //if its a normal room
@@ -73,7 +76,7 @@ public class DungeonScript : MonoBehaviour
                 }
             }
 
-            EnemyCost = 5 * (Globalvariables.CurrentLevel); //change max amount of enemies by cost here
+            EnemyCost = 12 * (Globalvariables.CurrentLevel); //change max amount of enemies by cost here
             //creation of enemies
             while (EnemyCost > 0)
             {
@@ -147,10 +150,8 @@ public class DungeonScript : MonoBehaviour
         {
             //if its a boss room
             //create the boss
-            int randomboss = Random.Range(0, EnemyList.Length); //randomise him
-            Enemies.Add(Instantiate(EnemyList[randomboss], transform.position, Quaternion.identity)); //create and add him to the list
-            Enemies[0].GetComponent<EnemyMechanics>().MultiplyHP(10);
-            Enemies[0].GetComponent<EnemyMechanics>().AlterCost(90);
+            //int randomboss = Random.Range(0, EnemyList.Length); //randomise him
+            Enemies.Add(Instantiate(EnemyList[0], transform.position, Quaternion.identity)); //create and add him to the list            
             Enemies[0].transform.SetParent(RoomEnemies.transform);
         }
         else if (transform.tag == "UpgradeRoom")
@@ -173,14 +174,15 @@ public class DungeonScript : MonoBehaviour
 
     public void EnableEnemies() //enable enemy ai and also shut the doors so the player cannot escape
     {
+
         for (int i = 0; i < Enemies.Count; ++i)
         {
             Enemies[i].GetComponent<EnemyMovement>().enabled = true;
             Enemies[i].GetComponent<EnemyMechanics>().enabled = true;
             Enemies[i].transform.GetChild(0).GetComponent<EnemyRangedScript>().enabled = true;
             Enemies[i].GetComponent<EnemyMechanics>().AssignRoom(gameObject);
-        }
 
+        }
         for (int i = 0; i < SidesWithCorridors.Count; ++i)
         {
             doors[SidesWithCorridors[i]].SetActive(false);
@@ -227,6 +229,8 @@ public class DungeonScript : MonoBehaviour
                 Instantiate(ChestPrefab, transform.position + new Vector3(0, 0, -0.1f), Quaternion.identity);
 
             PlayFabHandler.UpdateMoney(GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>().GetCoins() - PlayFabHandler.Coins); //push the update money to playfab
+
+            GameObject.FindGameObjectWithTag("BGM").GetComponent<BGMList>().PlayBGM();
         }
     }
 
@@ -245,7 +249,7 @@ public class DungeonScript : MonoBehaviour
         return MeleeEnemies.Count;
     }
 
-    public void RangedTryToLookForPlayer(Vector3 PlayerLocation)
+    public void RangedTryToLookForPlayer(Vector3 PlayerLocation) //world coords
     {
         foreach (GameObject RangedEnemy in RangedEnemies)
         {
@@ -437,23 +441,114 @@ public class DungeonScript : MonoBehaviour
 
     public void SetBossToAttack(Vector3 PlayerPos)
     {
-        GameObject Boss = Enemies[0].transform.GetChild(0).gameObject;
-        Boss.GetComponent<EnemyRangedScript>().SetShootNow(true);
-        //make boss move randomly
-        if (Boss.GetComponent<EnemyMovement>().VectorListCount() < 1) //finished moving
-        { 
-            int RandomX;
-            int RandomY;  
-            bool CanEnemySeePlayer = false;
-            while (!CanEnemySeePlayer)
-            {
-                //randomise new location to walk/run to
-                RandomX = Random.Range(-15, 15);
-                RandomY = Random.Range(-15, 15);
-                CanEnemySeePlayer = CanSeePlayer(new Vector3(RandomX, RandomY), PlayerPos);
-            }
+        if (Enemies.Count < 1)
+            return;
 
+        GameObject Boss = Enemies[0];
+
+        if (Boss.name.Contains("Boss"))
+        {
+            CheckHPOfBoss(Boss);
+
+            Boss.transform.GetChild(0).GetComponent<EnemyRangedScript>().SetShootNow(true);
+            //make boss move randomly
+            if (Boss.GetComponent<EnemyMovement>().ReturnIfPathVectorListIsNull()) //finished moving
+            {
+                if (Boss.GetComponent<EnemyMovement>().VectorListCount() > 0)
+                    return;
+
+                int RandomX = (int)PlayerPos.x;
+                int RandomY = (int)PlayerPos.y;
+                bool CanEnemySeePlayer = false;
+                while (!CanEnemySeePlayer)
+                {
+                    //randomise new location to walk/run to
+                    RandomX = Random.Range(-15, 15) + (int)transform.position.x;
+                    RandomY = Random.Range(-15, 15) + (int)transform.position.y;
+                    //Debug.Log(RandomX + " " + RandomY);
+                    CanEnemySeePlayer = CanSeePlayer(new Vector3(RandomX, RandomY, 0), PlayerPos);
+                }
+                Vector3 PlaceToGoToAttack = LookForValidLocation(new Vector3(RandomX, RandomY, 0), 2); //look for valid location around the random spot
+                                                                                                       //Debug.Log(PlaceToGoToAttack.x + " " + PlaceToGoToAttack.y);
+                Boss.GetComponent<EnemyMovement>().MovingToTarget(PlaceToGoToAttack); //move the boss to that spot
+            }
         }
+        if (Enemies.Count > 1)
+        {
+            SetMeleeEnemiesToAttack(PlayerPos);
+        }
+    }
+
+    public bool GetSpawnMoreEnemies()
+    {
+        return SpawnMoreEnemies;
+    }
+
+    void CheckHPOfBoss(GameObject Boss)
+    {
+        SpecialBossScript SPBossScript = Boss.transform.GetComponent<SpecialBossScript>();
+        int Health = Boss.transform.GetComponent<EnemyMechanics>().GetHP();
+
+        bool Changed = SPBossScript.CheckForPhaseChange(Health); //check phase
+
+        if (Changed)
+        {
+            switch (SPBossScript.ReturnCurrentPhaseNumber())
+            {
+                case SpecialBossScript.Phase.Phase1:
+                    Debug.Log("Increased Speed");
+                    Boss.transform.GetComponent<EnemyMovement>().SetSpeed(12); //boss gets increased speed
+                    break;
+                case SpecialBossScript.Phase.Phase2:
+                    Debug.Log("Increased Accuracy");
+                    Boss.transform.GetChild(0).GetComponent<EnemyRangedScript>().WeaponScript.SetMaxHeat(0.5f);
+                    break;
+                case SpecialBossScript.Phase.Phase3:
+                    Debug.Log("Reinforcements");
+                    SpawnMoreEnemies = true;
+                    break;
+                case SpecialBossScript.Phase.Phase4:
+                    Debug.Log("Decreased damage taken");
+                    Boss.transform.GetComponent<EnemyMechanics>().SetDR(0.5f); //boss gets 50% damage reduction
+                    break;
+            }
+        }
+    }
+
+    public int SpawnReinforcements(int WhichIteration)
+    {
+        if (!SpawnMoreEnemies)
+            return 0;
+
+        switch (WhichIteration)
+        {
+            case 0:
+                ++WhichIteration;
+                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(14, 14), Quaternion.identity));
+                break;
+            case 1:
+                ++WhichIteration;
+                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(14, -14), Quaternion.identity));
+                break;
+            case 2:
+                ++WhichIteration;
+                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(-14, 14), Quaternion.identity));
+                break;
+            case 3:
+                ++WhichIteration;
+                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(-14, -14), Quaternion.identity));
+                SpawnMoreEnemies = false;
+                break;
+        }
+        Enemies[Enemies.Count - 1].transform.SetParent(RoomEnemies.transform); //put enemies inside of the room's container, for easier reference
+
+        Enemies[Enemies.Count - 1].GetComponent<EnemyMovement>().enabled = true;
+        Enemies[Enemies.Count - 1].GetComponent<EnemyMechanics>().enabled = true;
+        Enemies[Enemies.Count - 1].transform.GetChild(0).GetComponent<EnemyRangedScript>().enabled = true;
+        Enemies[Enemies.Count - 1].GetComponent<EnemyMechanics>().AssignRoom(gameObject);
+        MeleeEnemies.Add(Enemies[Enemies.Count - 1]);
+
+        return WhichIteration;
     }
 
     Vector3 LookForValidLocation(Vector3 TargetPosition, int radius, List<Vector3> ArrayOfVector3 = null)
@@ -480,6 +575,9 @@ public class DungeonScript : MonoBehaviour
 
                     int TargetXPosition = (int)TargetPosition.x + i - (int)transform.position.x + 15;
                     int TargetYPosition = (int)TargetPosition.y + j - (int)transform.position.y + 15;
+
+                    //Debug.Log(TargetXPosition);
+                    //Debug.Log(TargetYPosition);
 
                     if (TargetXPosition > 29 || TargetXPosition < 0 ||
                         TargetYPosition > 29 || TargetYPosition < 0)

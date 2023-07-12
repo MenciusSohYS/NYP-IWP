@@ -42,6 +42,11 @@ public class WeaponParent : MonoBehaviour
         }
     }
 
+    public virtual void CallFlipped(bool ToF)
+    {
+
+    }
+
     public void StopSound()
     {
         if (CurrentReload <= 0 && (!Chambered && !isMelee))
@@ -99,6 +104,8 @@ public class WeaponParent : MonoBehaviour
     public void SetMaxHeat(float newheat)
     {
         HeatMax = newheat;
+
+        Debug.Log("New Heat");
     }
     public void SetSpread(float spreadtoset)
     {

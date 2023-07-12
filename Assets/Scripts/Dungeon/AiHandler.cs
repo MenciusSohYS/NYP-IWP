@@ -12,7 +12,7 @@ public class AiHandler : MonoBehaviour
     private PlayerStates PreviousPlayerState;
     private float timerforupdate;
     private bool ContinueExecution; //continue purusing, moving or doing other things
-
+    int BossIteration = 0;
     public enum PlayerStates
     {
         Alive,
@@ -83,6 +83,7 @@ public class AiHandler : MonoBehaviour
         if (transform.name.Contains("BossRoom"))
         {
             DungeonScript.SetBossToAttack(PlayerGO.transform.position);
+            BossIteration = DungeonScript.SpawnReinforcements(BossIteration);
             return;
         }
 

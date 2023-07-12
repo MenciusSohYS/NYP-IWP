@@ -71,15 +71,17 @@ public class GunScript : MonoBehaviour
             if (currPosition.x < Screen.width / 2)
             {
                 GunSprite.flipY = true;
+                WeaponScript.CallFlipped(true);
             }
             else
             {
                 GunSprite.flipY = false;
+                WeaponScript.CallFlipped(false);
             }
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                if (WeaponScript.ReturnCurrentMag() != WeaponScript.GetMaxMagSize() && WeaponScript.ReturnFullReload() != -1) //if max mag no need to reload or if its a ability gun
+                if (WeaponScript.ReturnCurrentMag() != WeaponScript.GetMaxMagSize() && WeaponScript.ReturnFullReload() != -1 && !WeaponScript.transform.name.Contains("Staff")) //if max mag no need to reload or if its a ability gun
                 {
                     Shooting = false;
                     Reloading = true;
@@ -118,6 +120,10 @@ public class GunScript : MonoBehaviour
                         return;
                     }
                 }
+                else if (WeaponScript.transform.name.Contains("Staff"))
+                {
+                    PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
+                }
             }
             GunSprite.material.SetColor("_SpriteColor", new Color(0, -WeaponScript.ReturnCurrentWeaponHeat(), -WeaponScript.ReturnCurrentWeaponHeat(), 0) + new Color(1, 1, 1, 1));
 
@@ -141,7 +147,7 @@ public class GunScript : MonoBehaviour
             {
                 timerforshooting = WeaponScript.Attack(BulletSpawner, Bullets[CurrentUpgrade], true); //shoot
                 PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
-                if (WeaponScript.ReturnCurrentMag() <= 0) //if no more bullets, start the reload
+                if (WeaponScript.ReturnCurrentMag() <= 0 && !WeaponScript.transform.name.Contains("Staff")) //if no more bullets and is not a staff, start the reload
                 {
                     ReloadTimer = WeaponScript.GetReloadTime();
                     WeaponScript.StartReload();
@@ -178,7 +184,15 @@ public class GunScript : MonoBehaviour
             WeaponScript.SetFireRateByNumber((WeaponScript.GetFireRate() * 0.8f)); //lower the firerate the faster the gun shoots
             WeaponScript.SetReloadTimeByNumber(WeaponScript.ReturnFullReload() * 0.75f); //lower the reload time the faster
             WeaponScript.SetSpread(WeaponScript.GetSpread() * 0.8f); //lower the spread the better
-            WeaponScript.SetMaxHeat(WeaponScript.ReturnMaxHeat() * 0.9f); //lower the heat the better
+
+            if (!WeaponScript.transform.name.Contains("Staff"))
+            {
+                WeaponScript.SetMaxHeat(WeaponScript.ReturnMaxHeat() * 0.9f); //lower the heat the better
+            }
+            else
+            {
+                WeaponScript.SetMaxHeat(WeaponScript.ReturnMaxHeat() * 1.2f);
+            }
         }
     }
 

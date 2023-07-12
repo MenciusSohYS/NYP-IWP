@@ -60,7 +60,7 @@ public class ItemScript : MonoBehaviour
     }
     public void SetImage(Texture2D newImage)
     {
-        Sprite sprite = Sprite.Create(newImage, new Rect(0, 0, newImage.width, newImage.height), Vector2.one * 0.5f); //convert the texture2d to a sprite
+        Sprite sprite = Sprite.Create(newImage, new Rect(0, 0, newImage.width, newImage.height), Vector2.one * 0.1f); //convert the texture2d to a sprite
 
         Image.sprite = sprite;
     }

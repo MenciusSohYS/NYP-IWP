@@ -6,9 +6,11 @@ public class CorridorExit : MonoBehaviour
 {
     [SerializeField] int OrientationOfCorridor;
     [SerializeField] Vector3 PositionOfPlayerWhenEntering;
+    [SerializeField] GameObject BGMController;
     private void Start()
     {
         OrientationOfCorridor = transform.parent.parent.GetComponent<CorridorScript>().ReturnOrientation();
+        BGMController = GameObject.FindGameObjectWithTag("BGM");
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -61,10 +63,16 @@ public class CorridorExit : MonoBehaviour
 
             if (ExitedCorrectly && transform.parent.parent.GetComponent<CorridorScript>().GetEnemyCount() > 0)
             {
-
                 //Debug.Log("Player exited corridor and entered room");
                 collision.transform.GetComponent<PlayerMechanics>().AnnounceRoomEntered();
                 transform.parent.parent.GetComponent<CorridorScript>().EnableEnemyAI(); //also enables the grid
+
+                if (transform.parent.parent.GetComponent<CorridorScript>().ReturnNextRoomName().Contains("BossRoom"))
+                {
+                    BGMController.GetComponent<BGMList>().PlayBossBattleMusic();
+                }
+                else
+                    BGMController.GetComponent<BGMList>().PlayBattleMusic();
             }
         }
     }

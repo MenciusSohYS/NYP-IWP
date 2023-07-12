@@ -5,7 +5,7 @@ using UnityEngine;
 public class MiniGun : WeaponParent
 {    public MiniGun()
     {
-        Damage = 4;
+        Damage = 10;
         FireRate = 0.05f;
         Spread = 0.9f;
         MaxMagSize = 300;

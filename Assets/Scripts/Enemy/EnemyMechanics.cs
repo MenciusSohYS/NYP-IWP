@@ -11,6 +11,7 @@ public class EnemyMechanics : MonoBehaviour
     [SerializeField] GameObject Player;
     [SerializeField] GameObject[] Drops;
     [SerializeField] GameObject PortalPrefab;
+    [SerializeField] float DamageReduction;
     public enum EnemyType
     {
         BasicRanged,
@@ -23,22 +24,38 @@ public class EnemyMechanics : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DamageReduction = 0;
         Player = GameObject.FindGameObjectWithTag("Player");
         if (CostOfEnemy <= 0)
             CostOfEnemy = 10;
         //Debug.Log("First");
         CurrentHealth = 100;
+
+        if (enemyType == EnemyType.BossRanged)
+        {
+            CurrentHealth = 1000;
+            CostOfEnemy = 90;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetDR(float newDR)
     {
-        
+        DamageReduction = newDR;
+    }
+
+    public float ReturnDR()
+    {
+        return DamageReduction;
     }
 
     public EnemyType ReturnEnemyType()
     {
         return enemyType;
+    }
+
+    public int GetHP()
+    {
+        return CurrentHealth;
     }
 
     public void MinusHP(int MinusBy)

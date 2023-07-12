@@ -249,7 +249,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Rolling: 0
+  FlyingTimer: 0
   MovementAxisForRolling: {x: 0, y: 0}
+  Fire: {fileID: 0}
 --- !u!114 &7285198168956690473
 MonoBehaviour:
   m_ObjectHideFlags: 0

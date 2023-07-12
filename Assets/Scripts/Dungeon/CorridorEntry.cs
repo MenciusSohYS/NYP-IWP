@@ -12,6 +12,10 @@ public class CorridorEntry : MonoBehaviour
         {
             transform.parent.parent.GetComponent<CorridorScript>().RevealNextRoom();
             //Debug.Log("Player has entered the corridor");
+            if (transform.parent.parent.GetComponent<CorridorScript>().ReturnNextRoomName().Contains("BossRoom"))
+            {
+                GameObject.FindGameObjectWithTag("BGM").GetComponent<BGMList>().PlayBossBGM();
+            }
         }
     }
 }

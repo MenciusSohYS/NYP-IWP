@@ -28,6 +28,11 @@ public class CorridorScript : MonoBehaviour
         NextRoom.GetComponent<DungeonScript>().RemoveFog();
     }
 
+    public string ReturnNextRoomName()
+    {
+        return NextRoom.name;
+    }
+
     public void EnableEnemyAI()
     {
         NextRoom.GetComponent<TestGrid>().enabled = true;

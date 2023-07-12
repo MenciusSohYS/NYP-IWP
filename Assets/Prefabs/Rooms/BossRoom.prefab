@@ -70,6 +70,7 @@ MonoBehaviour:
   WeaponWorkbenchPrefab: {fileID: 0}
   EnemyList:
   - {fileID: 7888168876331056701, guid: 86d6e4f15b20b4e4885f5deacdab501c, type: 3}
+  - {fileID: 7888168876331056701, guid: 45fa0b7f2578cc94e984a69841dc8121, type: 3}
   ChestPrefab: {fileID: 0}
   RoomObjects: {fileID: 2196393389922210799}
   RoomEnemies: {fileID: 4391147591592173838}
@@ -126,6 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DungeonScript: {fileID: 6518267365221879166}
+  PlayerGO: {fileID: 0}
 --- !u!1 &1248869368260912074
 GameObject:
   m_ObjectHideFlags: 0

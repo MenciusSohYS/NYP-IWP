@@ -316,34 +316,21 @@ public class PlayFabUserMgtTMP : MonoBehaviour
         PlayFabClientAPI.GetUserData(new GetUserDataRequest()
             , result =>
             {
+                if (result.Data == null || !result.Data.ContainsKey("BGM"))
                 {
-                    //UpdateMsg("Got User Data");
-                    //if (result.Data == null || !result.Data.ContainsKey("XP"))
-                    //{
-                    //    Debug.Log("No Xp");
-                    //}
-                    //else
-                    //{
-                    //    StaticGlobal.XP = int.Parse(result.Data["XP"].Value);
-                    //}
-
-                    //if (result.Data == null || !result.Data.ContainsKey("Level"))
-                    //{
-                    //    Debug.Log("No Level");
-                    //}
-                    //else
-                    //{
-                    //    StaticGlobal.Level = int.Parse(result.Data["Level"].Value);
-                    //}
-
-                    //if (result.Data == null || !result.Data.ContainsKey("Score"))
-                    //{
-                    //    Debug.Log("No Score");
-                    //}
-                    //else
-                    //{
-                    //    StaticGlobal.Score = int.Parse(result.Data["Score"].Value);
-                    //}
+                    Debug.Log("No BGM");
+                }
+                else
+                {
+                    PlayFabHandler.BGMSliderValue = float.Parse(result.Data["BGM"].Value);
+                }
+                if (result.Data == null || !result.Data.ContainsKey("Weapon"))
+                {
+                    Debug.Log("No BGM");
+                }
+                else
+                {
+                    PlayFabHandler.WeaponSliderValue = float.Parse(result.Data["Weapon"].Value);
                 }
                 PlayFabHandler.GetVirtualCurrencies();
             }
@@ -354,8 +341,4 @@ public class PlayFabUserMgtTMP : MonoBehaviour
             });
     }
 
-    public void EnterGame()
-    {
-        SceneManager.LoadScene("Landing");
-    }
 }

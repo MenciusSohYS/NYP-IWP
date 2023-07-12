@@ -14,6 +14,18 @@ public class CrankGun : WeaponParent
         HeatMax = 1f;
     }
 
+    public override void CallFlipped(bool ToF)
+    {
+        if (ToF)
+        {
+            transform.GetChild(0).localPosition = new Vector3(transform.GetChild(0).localPosition.x, 0.8f, transform.GetChild(0).localPosition.z);
+        }
+        else
+        {
+            transform.GetChild(0).localPosition = new Vector3(transform.GetChild(0).localPosition.x, -0.8f, transform.GetChild(0).localPosition.z);
+        }
+    }
+
     public override void TellitsAttachedToPlayer()
     {
         base.TellitsAttachedToPlayer();

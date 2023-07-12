@@ -7,8 +7,10 @@ public class WeaponBenchScript : MonoBehaviour
     private GameObject Player;
     private bool CanMoveOn;
     BoxCollider2D[] colliders;
+    public CircleCreator CircleCreatorScript;
+    public AudioSource AudioSourceField;
 
-       
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +55,8 @@ public class WeaponBenchScript : MonoBehaviour
 
     private void UpgradeWeapon()
     {
+        AudioSourceField.Play();
         Player.transform.GetChild(0).GetComponent<GunScript>().UpgradeWeapon(1);
+        CircleCreatorScript.Create(new Color(0, 255, 0));
     }
 }

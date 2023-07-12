@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 715291562686792572}
   - component: {fileID: -3268501826042247732}
   - component: {fileID: 3274407190642926928}
+  - component: {fileID: 3605000810307885199}
   m_Layer: 0
   m_Name: MiniGunBoss
   m_TagString: Enemy
@@ -242,7 +243,8 @@ MonoBehaviour:
   - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
   - {fileID: 4575172184027129287, guid: 3adaa26bdaaf2894bab5d6b7c9122b97, type: 3}
   PortalPrefab: {fileID: 1120737040449094889, guid: 0560940eba58cf5499e446512cb1ee18, type: 3}
-  enemyType: 2
+  DamageReduction: 0
+  enemyType: 3
 --- !u!58 &715291562686792572
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -294,6 +296,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PathVectorList: []
   SquarePrefab: {fileID: 8884974301991653678, guid: c443bd220463607439352caf98f97916, type: 3}
+--- !u!114 &3605000810307885199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7888168876331056701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23bb03c91edda32458afa98d27d9dd30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentPhaseNumber: 0
+  PreviousPhaseNumber: 0
 --- !u!1001 &3934756738296002458
 PrefabInstance:
   m_ObjectHideFlags: 0

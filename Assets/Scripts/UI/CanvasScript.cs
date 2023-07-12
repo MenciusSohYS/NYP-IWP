@@ -16,6 +16,9 @@ public class CanvasScript : MonoBehaviour
     public GameObject GameOverGO;
     private bool isRecharged;
     private CircleCreator CircleCreatorScript;
+    public GameObject PausePanel;
+    public Slider SliderForBGM;
+    public Slider SliderForWeapon;
 
     [SerializeField] TextMeshProUGUI Coin;
     [SerializeField] TextMeshProUGUI AmmoText;
@@ -40,6 +43,9 @@ public class CanvasScript : MonoBehaviour
         SkillCoolDown.interactable = false;
         Health.interactable = false;
         BGHP.interactable = false;
+        PausePanel.SetActive(false);
+        SliderForBGM.value = PlayFabHandler.BGMSliderValue;
+        SliderForWeapon.value = PlayFabHandler.WeaponSliderValue;
         //debug of text file
         {
             //string[] Scores = TxtHandler.ReadFile(@"PlayerStats.txt"); //read from file and return an array
@@ -56,7 +62,7 @@ public class CanvasScript : MonoBehaviour
     {
         if (BGHP.value > Health.value)
         {
-            BGHP.value -= (Time.deltaTime * (BGHP.maxValue/20));
+            BGHP.value -= (Time.deltaTime * (BGHP.maxValue*0.05f));
         }
         if (Alertmessage.IsActive())
         {
@@ -72,6 +78,23 @@ public class CanvasScript : MonoBehaviour
 
         AmmoIndicator.position = Camera.main.ScreenToWorldPoint(positionToMove + Offset);
         Crosshair.position = Camera.main.ScreenToWorldPoint(positionToMove);
+
+        if (Input.GetKeyDown(KeyCode.F10))
+        {
+            PausePanelInteraction();
+        }
+    }
+
+    public void PausePanelInteraction()
+    {
+        if (PausePanel.activeSelf)
+        {
+            PausePanel.SetActive(false);
+        }
+        else
+        {
+            PausePanel.SetActive(true);
+        }
     }
 
     public void TellPlayerGameObjectHasSpawned()
@@ -137,11 +160,15 @@ public class CanvasScript : MonoBehaviour
 
     public void LogOut()
     {
+        PlayFabHandler.BGMSliderValue = SliderForBGM.value;
+        PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
         PlayFabHandler.LogOut();
     }
 
     public void ReturnToLobby()
     {
+        Globalvariables.ForgetEverything();
+        Cursor.visible = true;
         UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
     }
 

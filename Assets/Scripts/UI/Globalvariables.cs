@@ -9,6 +9,8 @@ public static class Globalvariables
     public static int CurrentLevel = 1;
     public static int MaxHP = 200;
     public static int CurrentHP = 200;
+    public static int Speed = 12;
+    public static float timerforsound;
 
     //Weapon stats
     public struct WeaponComponents
@@ -25,4 +27,10 @@ public static class Globalvariables
         public static string WeaponName;
     };
 
+    public static void ForgetEverything()
+    {
+        MaxHP = 200;
+        CurrentHP = 200;
+        Speed = 12;
+    }
 }

@@ -30,6 +30,7 @@ public class PortalScript : MonoBehaviour
                 ++Globalvariables.CurrentLevel;
                 Globalvariables.CurrentHP = Player.GetComponent<PlayerMechanics>().GetCurrentHP();
                 Globalvariables.MaxHP = Player.GetComponent<PlayerMechanics>().GetMaxHP();
+                Globalvariables.Speed = Player.GetComponent<PlayerMovement>().ReturnSpeed();
 
                 //set weapon stats and stuff, to be used when you start the new level
                 Globalvariables.WeaponComponents.WeaponName = Player.transform.GetChild(0).GetChild(0).name;

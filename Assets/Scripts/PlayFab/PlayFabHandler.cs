@@ -9,6 +9,12 @@ public static class PlayFabHandler
     public static bool UnlockedMercenary = false;
     public static bool UnlockedElf = false;
     public static bool UnlockedBounty = true;
+    public static bool UnlockedDwarf = false;
+    public static bool UnlockedWizard = false;
+
+
+    public static float BGMSliderValue = 1;
+    public static float WeaponSliderValue = 1;
 
     public struct PlayerBoughtSkills
     {
@@ -80,6 +86,10 @@ public static class PlayFabHandler
                         UnlockedMercenary = true;
                     else if (i.DisplayName == "Elf")
                         UnlockedElf = true;
+                    else if (i.DisplayName == "Dwarf")
+                        UnlockedDwarf = true;
+                    else if (i.DisplayName == "Wizard")
+                        UnlockedWizard = true;
                     else if (i.CatalogVersion == "Skills") //if we find one belonging to the skills catalogue, we will want to create a struct about it
                     {
                         SkillList.Add(new PlayerBoughtSkills
@@ -114,6 +124,10 @@ public static class PlayFabHandler
                     UnlockedMercenary = true;
                 else if (NameOfCharacter == "Elf")
                     UnlockedElf = true;
+                else if (NameOfCharacter == "Dwarf")
+                    UnlockedDwarf = true;
+                else if (NameOfCharacter == "Wizard")
+                    UnlockedWizard = true;
 
                 GetVirtualCurrencies();
             }, OnError);
@@ -163,14 +177,39 @@ public static class PlayFabHandler
 
     public static void LogOut()
     {
+        PushAudioPreferences();
         UnlockedMercenary = false;
         UnlockedElf = false;
         UnlockedBounty = true;
+        UnlockedDwarf = false;
+        UnlockedWizard = false;
         Coins = 0;
         PlayFabID = "";
         SkillList = new List<PlayerBoughtSkills>();
         Characters = new List<Character>();
+        BGMSliderValue = 1;
+        WeaponSliderValue = 1;
+        Globalvariables.ForgetEverything();
         PlayFabClientAPI.ForgetAllCredentials();
+        Cursor.visible = true;
         UnityEngine.SceneManagement.SceneManager.LoadScene("LoginScene");
+    }
+
+    public static void PushAudioPreferences()
+    {
+        PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest()
+        {
+            Data = new Dictionary<string, string>()
+                {
+                    {"BGM", BGMSliderValue.ToString() },
+                    {"Weapon", WeaponSliderValue.ToString() }
+                }
+        },
+            result => Debug.Log("Pushed " + BGMSliderValue + " and "+ WeaponSliderValue),
+            error =>
+            {
+                Debug.Log("Error in getting user data");
+                Debug.Log(error.GenerateErrorReport());
+            });
     }
 }
