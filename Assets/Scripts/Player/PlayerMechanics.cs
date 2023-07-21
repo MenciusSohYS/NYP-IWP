@@ -12,11 +12,14 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] CanvasScript Canvas;
 
     [SerializeField] float InvulnTime;
+    [SerializeField] float ShieldCD;
+    public CircleCreator CircleCreatorScript;
     private Color SpriteColor;
     [SerializeField] AbilityParent CharacterAbility;
     [SerializeField] PlayerMovement PlayerMoveScript;
     [SerializeField] SpriteRenderer SpriteRender;
     private GunScript PlayergunScript;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -46,6 +49,11 @@ public class PlayerMechanics : MonoBehaviour
         PlayergunScript = transform.GetChild(0).GetComponent<GunScript>();
     }
 
+    public void UpdatePlayerAndMaxAbilityCooldown()
+    {
+        Canvas.GetComponent<CanvasScript>().TellPlayerGameObjectHasSpawned();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -57,6 +65,15 @@ public class PlayerMechanics : MonoBehaviour
                 SpriteRender.color = SpriteColor;
             }
         }
+
+        if (Globalvariables.RadialShield)
+        {
+            if (ShieldCD > 0)
+            {
+                ShieldCD -= Time.deltaTime;
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             UseAbility(CharacterAbility.UseAbility()); //use the character's abilites
@@ -67,8 +84,18 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
+    public bool IsTouchinghalfCover()
+    {
+        return PlayerMoveScript.IsTouchingHalfCover();
+    }
+
     public bool MinusHP(int howmuchtominus)
     {
+        if (transform.name.Contains("Dwarf") && PlayerMoveScript.IsTouchingHalfCover())
+        {
+            return false;
+        }
+
         if (PlayerMoveScript.ReturnRollTimer() > 0)
         {
             return false;
@@ -89,6 +116,16 @@ public class PlayerMechanics : MonoBehaviour
             InvulnTime = 0.5f;
             SpriteColor = SpriteRender.color;
             SpriteRender.color = new Color(1, 0, 0, 1);
+
+            if (Globalvariables.RadialShield)
+            {
+                if (ShieldCD <= 0)
+                {
+                    CircleCreatorScript.Create(SpriteColor);
+                    ShieldCD = 3f;
+                }
+            }
+
             return true;
         }
         return false;
@@ -96,6 +133,13 @@ public class PlayerMechanics : MonoBehaviour
 
     public void Heal(int HowMuchToHeal)
     {
+        if (Globalvariables.HealthOrb > 0)
+        {
+            HowMuchToHeal *= Globalvariables.HealthOrb;
+        }
+
+        Debug.Log(HowMuchToHeal);
+
         CurrentHealth += HowMuchToHeal;
         if (MaxHealth < CurrentHealth)
             CurrentHealth = MaxHealth;
@@ -132,6 +176,11 @@ public class PlayerMechanics : MonoBehaviour
 
     public void IncreaseMaxHP(int ByHowMuch)
     {
+        if (Globalvariables.HealthOrb > 0)
+        {
+            ByHowMuch *= Globalvariables.HealthOrb;
+        }
+
         if (MaxHealth + ByHowMuch <= 500)
         {
             MaxHealth += ByHowMuch;
@@ -139,6 +188,7 @@ public class PlayerMechanics : MonoBehaviour
         }
         else
         {
+            MaxHealth = 500;
             CurrentHealth = MaxHealth;
         }
         Canvas.SetMaxNCurrentHP(MaxHealth, CurrentHealth);

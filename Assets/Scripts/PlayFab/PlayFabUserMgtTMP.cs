@@ -326,19 +326,40 @@ public class PlayFabUserMgtTMP : MonoBehaviour
                 }
                 if (result.Data == null || !result.Data.ContainsKey("Weapon"))
                 {
-                    Debug.Log("No BGM");
+                    Debug.Log("No WeaponSFX");
                 }
                 else
                 {
                     PlayFabHandler.WeaponSliderValue = float.Parse(result.Data["Weapon"].Value);
                 }
-                PlayFabHandler.GetVirtualCurrencies();
+                GetPlayerHighScore();
             }
             , (error) =>
             {
                 UpdateMsg("Error in getting user data");
                 UpdateMsg(error.GenerateErrorReport());
             });
+    }
+    public void GetPlayerHighScore()
+    {
+        var HighScore = new GetPlayerStatisticsRequest
+        {
+            StatisticNames = new List<string> { "HighScore" }
+        };
+        PlayFabClientAPI.GetPlayerStatistics(HighScore,
+            result =>
+            {
+                StatisticValue HighScoreString = result.Statistics.Find(score => score.StatisticName == "HighScore"); //get the highscore
+                if (HighScoreString != null)
+                {
+                    //Debug.Log(HighScoreString.Value);
+
+                    PlayFabHandler.HighScore = HighScoreString.Value; //assign the highscore
+                    //Debug.Log(HighScore);
+                }
+                PlayFabHandler.GetVirtualCurrencies();
+            }
+            , OnError);
     }
 
 }

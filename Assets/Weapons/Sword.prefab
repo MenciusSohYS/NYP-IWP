@@ -246,6 +246,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 73072c3257f0f8549b944b09149c4830, type: 3}
   - {fileID: 8300000, guid: 4115c9c06035bd742b842d5345f511f6, type: 3}
   DamageNumber: {fileID: 1311177426580020759, guid: 19cb6c83ae668944b9ee83e3763fc17f, type: 3}
+  SwordSprites:
+  - {fileID: 21300000, guid: 28068d3b0af57c042bb3ea2b6d06495c, type: 3}
+  - {fileID: 21300000, guid: 0b04698d711746e4bb007a027794a03d, type: 3}
 --- !u!61 &5939067454102141776
 BoxCollider2D:
   m_ObjectHideFlags: 0

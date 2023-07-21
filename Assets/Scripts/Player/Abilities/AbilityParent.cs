@@ -24,4 +24,31 @@ public class AbilityParent : MonoBehaviour
     {
         return CoolDown;
     }
+
+    public virtual void SetNewCoolDown(float MultiplyBy)
+    {
+        if (MultiplyBy < 0.1f)
+            MultiplyBy = 0.1f;
+
+
+        //Debug.Log(CoolDown);
+        CoolDown *= MultiplyBy;
+        //Debug.Log(CoolDown);
+    }
+
+    public virtual void CallAtStart()
+    {
+
+    }
+
+    private void Start()
+    {
+        if (Globalvariables.SkillCooldown > 0) //apply ability cooldown buff
+        {
+            SetNewCoolDown(1f - (Globalvariables.SkillCooldown * 0.1f));
+            GetComponent<PlayerMechanics>().UpdatePlayerAndMaxAbilityCooldown();
+        }
+
+        CallAtStart();
+    }
 }

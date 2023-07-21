@@ -15,6 +15,7 @@ public static class PlayFabHandler
 
     public static float BGMSliderValue = 1;
     public static float WeaponSliderValue = 1;
+    public static int HighScore = 0;
 
     public struct PlayerBoughtSkills
     {
@@ -189,6 +190,7 @@ public static class PlayFabHandler
         Characters = new List<Character>();
         BGMSliderValue = 1;
         WeaponSliderValue = 1;
+        HighScore = 0;
         Globalvariables.ForgetEverything();
         PlayFabClientAPI.ForgetAllCredentials();
         Cursor.visible = true;
@@ -212,4 +214,33 @@ public static class PlayFabHandler
                 Debug.Log(error.GenerateErrorReport());
             });
     }
+
+    public static void PushScore(int ScoreToCompare)
+    {
+        if (ScoreToCompare < HighScore)
+        {
+            return;
+        }
+        Debug.Log("Higher Score");
+        HighScore = ScoreToCompare;
+
+        var req = new PlayFab.ClientModels.UpdatePlayerStatisticsRequest
+        {
+            Statistics = new List<PlayFab.ClientModels.StatisticUpdate>
+            {
+                new PlayFab.ClientModels.StatisticUpdate
+                {
+                    StatisticName = "HighScore",
+                    Value=HighScore
+                }
+            }
+        };
+        PlayFabClientAPI.UpdatePlayerStatistics(req, 
+            result=>
+            {
+                //Debug.Log("Successful leaderboard sent" + result.ToString());
+            }
+            , OnError);
+    }
+
 }

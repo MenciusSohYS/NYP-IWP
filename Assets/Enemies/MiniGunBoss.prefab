@@ -230,20 +230,27 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7888168876331056701}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d175d2e93e7185642bdcf6f9d3f159a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentHealth: 0
+  CurrentHealth: 1000
+  MaxHP: 0
   InsideThisRoom: {fileID: 0}
-  CostOfEnemy: 0
+  CostOfEnemy: 100
   Player: {fileID: 0}
   Drops:
   - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
   - {fileID: 4575172184027129287, guid: 3adaa26bdaaf2894bab5d6b7c9122b97, type: 3}
   PortalPrefab: {fileID: 1120737040449094889, guid: 0560940eba58cf5499e446512cb1ee18, type: 3}
   DamageReduction: 0
+  DOTDuration: 2
+  DOTCountDown: 0
+  DOTDamage: 0
+  DamageNumber: {fileID: 1311177426580020759, guid: 19cb6c83ae668944b9ee83e3763fc17f, type: 3}
+  FireForEnemy: {fileID: 7660482718257556121, guid: ddc39d1fb1a0af84db87b9ae83ac0477, type: 3}
+  FireReference: {fileID: 0}
   enemyType: 3
 --- !u!58 &715291562686792572
 CircleCollider2D:

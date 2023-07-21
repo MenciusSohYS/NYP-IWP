@@ -19,15 +19,31 @@ public class PortalScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(0, 0, 1);
+        transform.Rotate(0, 0, 250 * Time.deltaTime);
 
         if (CanMoveOn)
         {
             PlayerMechs.MessagePlayer("Press E to move on");
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                Globalvariables.CurrentLevel = 8;
+            }
             if (Input.GetKeyDown(KeyCode.E))
             {
                 //push level, current hp and max hp to global variables
                 ++Globalvariables.CurrentLevel;
+
+                //Debug.Log(Globalvariables.CurrentLevel);
+
+                if (Globalvariables.CurrentLevel >= 10)
+                {
+                    PlayFabHandler.PushScore(Globalvariables.EnemiesKilled);
+                    Globalvariables.ForgetEverything();
+                    Cursor.visible = true;
+                    SceneManager.LoadScene("LobbyScene");
+                    return;
+                }
+
                 Globalvariables.CurrentHP = Player.GetComponent<PlayerMechanics>().GetCurrentHP();
                 Globalvariables.MaxHP = Player.GetComponent<PlayerMechanics>().GetMaxHP();
                 Globalvariables.Speed = Player.GetComponent<PlayerMovement>().ReturnSpeed();
@@ -57,9 +73,11 @@ public class PortalScript : MonoBehaviour
                 Globalvariables.WeaponComponents.HeatMax = PlayerWeaponScript.ReturnMaxHeat();
                 Globalvariables.WeaponComponents.Velocity = PlayerWeaponScript.ReturnVelocity();
                 Globalvariables.WeaponComponents.CurrentUpgrades = PlayerGunScript.ReturnCurrentUpgrade();
-                
-                
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);//reload the scene and progess the player
+
+
+                Cursor.visible = true;
+                SceneManager.LoadScene("BuffSelectionScreen");//load the buffselect scene and progess the player
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
     }

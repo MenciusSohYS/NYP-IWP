@@ -19,6 +19,10 @@ public class CanvasScript : MonoBehaviour
     public GameObject PausePanel;
     public Slider SliderForBGM;
     public Slider SliderForWeapon;
+    public GameObject Pause;
+    public TextMeshProUGUI PauseTMP;
+    public GameObject BigMapPanel;
+    public GameObject MiniMap;
 
     [SerializeField] TextMeshProUGUI Coin;
     [SerializeField] TextMeshProUGUI AmmoText;
@@ -26,7 +30,9 @@ public class CanvasScript : MonoBehaviour
     [SerializeField] RectTransform AmmoIndicator;
     [SerializeField] RectTransform Crosshair;
     [SerializeField] RectTransform Base;
+    [SerializeField] TextMeshProUGUI FPSCounter;
     private Vector3 Offset;
+    float TimeElapsed = 0;
     // Start is called before the first frame update
     void Awake()
     {
@@ -35,7 +41,7 @@ public class CanvasScript : MonoBehaviour
         GameOverGO.SetActive(false);
         GetComponent<Canvas>().worldCamera = Camera.main;
         GetComponent<Canvas>().sortingLayerName = "Default";
-        GetComponent<Canvas>().sortingLayerID = 1;
+        GetComponent<Canvas>().sortingLayerID = 3;
         isRecharged = true;
         CircleCreatorScript = SkillCoolDownImage.transform.GetChild(0).GetComponent<CircleCreator>();
 
@@ -46,6 +52,9 @@ public class CanvasScript : MonoBehaviour
         PausePanel.SetActive(false);
         SliderForBGM.value = PlayFabHandler.BGMSliderValue;
         SliderForWeapon.value = PlayFabHandler.WeaponSliderValue;
+        MiniMap = GameObject.FindGameObjectWithTag("MiniMap");
+
+        BigMapPanel.SetActive(false);
         //debug of text file
         {
             //string[] Scores = TxtHandler.ReadFile(@"PlayerStats.txt"); //read from file and return an array
@@ -60,6 +69,14 @@ public class CanvasScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (TimeElapsed < 0)
+        {
+            FPSCounter.text = "FPS: " + Mathf.RoundToInt(1f / Time.unscaledDeltaTime);
+            TimeElapsed = 0.5f;
+        }
+        else
+            TimeElapsed -= Time.unscaledTime;
+
         if (BGHP.value > Health.value)
         {
             BGHP.value -= (Time.deltaTime * (BGHP.maxValue*0.05f));
@@ -81,19 +98,40 @@ public class CanvasScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F10))
         {
-            PausePanelInteraction();
+            PauseClicked();
+        }
+        else if (Input.GetKeyDown(KeyCode.M))
+        {
+            BigMapInteraction();
         }
     }
 
-    public void PausePanelInteraction()
+    public bool IsBigMapPanelActive()
     {
-        if (PausePanel.activeSelf)
+        return BigMapPanel.activeSelf;
+    }
+
+    public void BigMapInteraction()
+    {
+        if (MiniMap.GetComponent<CameraScript>().ReturnPauseCamera())
+            return;
+
+        if (BigMapPanel.activeSelf)
         {
-            PausePanel.SetActive(false);
+            BigMapPanel.SetActive(false);
+
+            MiniMap.GetComponent<CameraScript>().ChangeOpenedBigMap(false);
+            MiniMap.GetComponent<CameraScript>().ResumeCamera();
+            MiniMap.GetComponent<Camera>().orthographicSize = 30f;
+            MiniMap.GetComponent<Camera>().backgroundColor = Color.black;
         }
         else
         {
-            PausePanel.SetActive(true);
+            BigMapPanel.SetActive(true);
+
+            MiniMap.GetComponent<CameraScript>().ChangeOpenedBigMap(true);
+            MiniMap.GetComponent<Camera>().orthographicSize = 150f;
+            MiniMap.GetComponent<Camera>().backgroundColor = Color.black;
         }
     }
 
@@ -155,7 +193,9 @@ public class CanvasScript : MonoBehaviour
 
     public void SetGameOver()
     {
+        Cursor.visible = true;
         GameOverGO.SetActive(true);
+        PlayFabHandler.PushScore(Globalvariables.EnemiesKilled);
     }
 
     public void LogOut()
@@ -192,6 +232,26 @@ public class CanvasScript : MonoBehaviour
             //Debug.Log("Not Recharged");
             isRecharged = true;
             SkillCoolDownImage.color = SkillCoolDownImage.color - new Color(0, 100, 0);
+        }
+    }
+    public void PauseClicked()
+    {
+        if (Pause.activeSelf)
+        {
+            PauseTMP.text = "II";
+            Cursor.visible = false;
+            Pause.SetActive(false);
+            PlayFabHandler.BGMSliderValue = SliderForBGM.value;
+            PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
+            PlayFabHandler.PushAudioPreferences();
+            Time.timeScale = 1;
+        }
+        else
+        {
+            Cursor.visible = true;
+            PauseTMP.text = ">";
+            Pause.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 }

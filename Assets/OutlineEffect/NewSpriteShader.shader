@@ -14,6 +14,7 @@ Shader "Custom/NewSpriteShader"
             Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
             LOD 100
 
+            ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
 
             Pass

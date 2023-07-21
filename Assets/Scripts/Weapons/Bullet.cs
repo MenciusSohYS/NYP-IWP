@@ -9,35 +9,58 @@ public class Bullet : MonoBehaviour
     public bool PlayerFriendly;
     [SerializeField] GameObject DamageNumber;
     public int VelocityOfBullet;
-    private bool HitHalfCover;
-    int piercecapped; //if have pierce cap do make this false
+    [SerializeField] int piercecapped; //if have pierce cap do make this false
     [SerializeField] GameObject ExplosionEffect;
+    [SerializeField] bool CanBounce;
+    Vector3 LastVelo;
 
     // Start is called before the first frame update
     private void Start()
     {
         if (VelocityOfBullet < 0)
             VelocityOfBullet = 30;
-        HitHalfCover = false;
         rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, 3.0f);
+
     }
 
     // Update is called once per frame
     private void FixedUpdate()
     {
+        LastVelo = rb.velocity;
         rb.velocity = transform.up * VelocityOfBullet;
     }
 
     public void ShotBy(bool ByPlayer)
     {
+        SpriteRenderer SP = GetComponent<SpriteRenderer>();
+
         if (!ByPlayer)
         {
             PlayerFriendly = false;
-            GetComponent<SpriteRenderer>().color = Color.red;
+            SP.material.SetColor("_SpriteColor", Color.red);
         }
         else
+        {
             PlayerFriendly = true;
+        }
+        SP.material.SetFloat("_OutlineWidth", 1);
+        SP.material.SetColor("_OutlineColor", Color.cyan);
+    }
+
+    public void ShotByNoOutline(bool ByPlayer)
+    {
+        SpriteRenderer SP = GetComponent<SpriteRenderer>();
+
+        if (!ByPlayer)
+        {
+            PlayerFriendly = false;
+            SP.material.SetColor("_SpriteColor", Color.red);
+        }
+        else
+        {
+            PlayerFriendly = true;
+        }
     }
     public void AssignDamage(int Dmg)
     {
@@ -53,22 +76,27 @@ public class Bullet : MonoBehaviour
         piercecapped = AmountAvailable;
     }
 
+    public void SetCanBounce(bool TOF)
+    {
+        CanBounce = TOF;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         bool HitSomethingWithHealth = false;
 
-        if (collision.transform.name.Contains("Bullet"))
+        if (collision.transform.GetComponent<Bullet>())
         {
             return;
         }
 
         if (collision.transform.tag == "Player" && !PlayerFriendly)
         {
-            if (HitHalfCover && collision.transform.name.Contains("Dwarf"))
-                return;
-
             HitSomethingWithHealth = collision.transform.GetComponent<PlayerMechanics>().MinusHP(DamageToDo);
-            collision.GetComponent<Rigidbody2D>().AddForce(rb.velocity * 5);
+
+            if (!collision.transform.GetComponent<PlayerMechanics>().IsTouchinghalfCover())
+                collision.GetComponent<Rigidbody2D>().AddForce(rb.velocity * 5);
+
             --piercecapped;
         }
         else if (collision.transform.tag == "Enemy" && PlayerFriendly)
@@ -83,6 +111,10 @@ public class Bullet : MonoBehaviour
             }
 
             collision.transform.GetComponent<EnemyMechanics>().MinusHP(DamageToDo);
+            if (Globalvariables.FlamingBullet)
+            {
+                collision.transform.GetComponent<EnemyMechanics>().SetDOT((int)(DamageToDo * 0.3)); //do 1/3 of original damage
+            }
             HitSomethingWithHealth = true;
             --piercecapped;
         }
@@ -91,15 +123,18 @@ public class Bullet : MonoBehaviour
             float tempdmg = DamageToDo;
             tempdmg *= 0.5f;
             DamageToDo = (int)tempdmg;
-            HitHalfCover = true;
         }
         else if (collision.transform.tag == "Fullcover")
         {
             piercecapped = 0;
         }
-        else if (collision.transform.tag == "Walls")
+        else if (collision.transform.tag == "OuterWalls")
+        {
             piercecapped = 0;
+        }
         else if (collision.transform.tag == "Melee")
+            piercecapped = 0;
+        else if (collision.transform.tag == "Shield" && !PlayerFriendly)
             piercecapped = 0;
 
         if (HitSomethingWithHealth)
@@ -112,9 +147,17 @@ public class Bullet : MonoBehaviour
         if (piercecapped <= 0)
         {
             if (ExplosionEffect != null)
-                Instantiate(ExplosionEffect, transform.position, Quaternion.identity); //create an explosive if you can
+            {
+                GameObject Explosion = Instantiate(ExplosionEffect, transform.position, Quaternion.identity); //create an explosive if you can
+                if (Explosion.GetComponent<AOEScript>()) //if aoe script exists
+                {
+                    Explosion.GetComponent<AOEScript>().AssignDTD((int)(DamageToDo * 0.5f));
+                    Debug.Log("Exists");
+                }
+            }
 
             Destroy(gameObject);
         }
     }
+
 }

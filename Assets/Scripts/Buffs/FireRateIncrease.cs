@@ -12,7 +12,7 @@ public class FireRateIncrease : BuffScript
     public override void ApplyBuffs()
     {
         Player.GetComponent<PlayerMechanics>().IncreaseFireRate(0.8f);
-        Debug.Log("increased fire rate");
+        //Debug.Log("increased fire rate");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

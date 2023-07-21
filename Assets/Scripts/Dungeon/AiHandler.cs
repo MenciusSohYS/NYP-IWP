@@ -105,6 +105,10 @@ public class AiHandler : MonoBehaviour
                 break;
             case PlayerStates.Shooting:
                 DungeonScript.GoHide(PlayerGO.transform.position, false);
+                if (RangedEnemyCount > 0)
+                {
+                    DungeonScript.RangedTryToLookForPlayer(PlayerGO.transform.position);
+                }
                 break;
             case PlayerStates.NotShooting:
                 if (RangedEnemyCount > 0)

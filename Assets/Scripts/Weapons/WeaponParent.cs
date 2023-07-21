@@ -68,10 +68,10 @@ public class WeaponParent : MonoBehaviour
         PlayShootingSound();
 
         GameObject BulletShot = Instantiate(Projectile, fromhere.position, fromhere.rotation);
-        BulletShot.GetComponent<Bullet>().ShotBy(ShotByPlayer); //shot by enemy
+        BulletShot.GetComponent<Bullet>().ShotBy(ShotByPlayer); //shot by enemy or player
         BulletShot.GetComponent<Bullet>().AssignDamage(Damage);
         BulletShot.GetComponent<Bullet>().AssignVelocity(BulletVelocity);
-        BulletShot.GetComponent<Bullet>().AssignPierce(Piercing);
+        BulletShot.GetComponent<Bullet>().AssignPierce(Piercing + Globalvariables.BulletPierce);
         BulletShot.transform.up += new Vector3(RandomX, RandomY, 0);
 
         SetNewBulletsLeft(1); //set new bullets left (-1)
@@ -100,12 +100,18 @@ public class WeaponParent : MonoBehaviour
     {
         BulletVelocity = newVelocity;
     }
+    public void MultiplyVelocity(float multiplyby)
+    {
+        float tempvelo = BulletVelocity;
+        tempvelo *= multiplyby;
+        BulletVelocity = (int)tempvelo;
+    }
 
     public void SetMaxHeat(float newheat)
     {
         HeatMax = newheat;
 
-        Debug.Log("New Heat");
+        //Debug.Log("New Heat");
     }
     public void SetSpread(float spreadtoset)
     {
@@ -143,6 +149,7 @@ public class WeaponParent : MonoBehaviour
         tempdamage *= multiplyby;
         Damage = (int)tempdamage;
     }
+
 
 
     public int GetDamage()
@@ -265,7 +272,7 @@ public class WeaponParent : MonoBehaviour
         return CurrentUpgrade;
     }
 
-    public void SetCurrentUpgrades(int ByHowMuch)
+    public virtual void SetCurrentUpgrades(int ByHowMuch)
     {
         CurrentUpgrade += ByHowMuch;
     }

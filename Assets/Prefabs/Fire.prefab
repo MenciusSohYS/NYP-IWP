@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7144060030536494297}
   - component: {fileID: 1196450894725228840}
   - component: {fileID: 221911900428022468}
+  - component: {fileID: 1110196853751327687}
   m_Layer: 0
   m_Name: Fire
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 4091046959981945672}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.99999994, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -71,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 647760671
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c65f9d3610e2c7448812a8733f80e6b2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -97,3 +98,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be476531d0a80c4c8e8c35a5d5e6f43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Pictures:
+  - {fileID: 21300000, guid: c65f9d3610e2c7448812a8733f80e6b2, type: 3}
+  - {fileID: 21300000, guid: 50343f8af271a67478ba2da174bcc2b1, type: 3}
+  - {fileID: 21300000, guid: 696f82b913f42d24bbc91fb5579d6043, type: 3}
+  - {fileID: 21300000, guid: 9796281f7b04c144fbf3e2f0703629c2, type: 3}
+  - {fileID: 21300000, guid: e57c07698ba18094a9eb20bd39f73e18, type: 3}
+  - {fileID: 21300000, guid: db6869373bbda4340b7d675f4958fc2d, type: 3}
+  CurrentImage: 0
+  CountDownToChange: 0
+  DamageToDo: 0
+  DamageNumber: {fileID: 1311177426580020759, guid: 19cb6c83ae668944b9ee83e3763fc17f, type: 3}
+--- !u!61 &1110196853751327687
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4091046959981945672}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 6.26, y: 1.96}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

@@ -55,10 +55,10 @@ public class BowScript : WeaponParent
         if (CurrentHeat > 0)
         {
             GameObject BulletShot = Instantiate(ArrowPrefab, FromHere.position, FromHere.rotation);
-            BulletShot.GetComponent<Bullet>().ShotBy(isShotByPlayer); //shot by enemy
+            BulletShot.GetComponent<Bullet>().ShotBy(isShotByPlayer); //shot by enemy or player
             BulletShot.GetComponent<Bullet>().AssignDamage((int)(Damage * CurrentHeat));
             BulletShot.GetComponent<Bullet>().AssignVelocity((int)(20 + (BulletVelocity * CurrentHeat)));
-            BulletShot.GetComponent<Bullet>().AssignPierce((int)(Piercing * CurrentHeat) + 1);
+            BulletShot.GetComponent<Bullet>().AssignPierce((int)(Piercing * CurrentHeat) + 1 + Globalvariables.BulletPierce);
 
             //Debug.Log((int)(BulletVelocity * CurrentHeat));
 

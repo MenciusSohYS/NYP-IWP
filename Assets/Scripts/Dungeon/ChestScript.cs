@@ -8,6 +8,7 @@ public class ChestScript : MonoBehaviour
     private bool CanInteract;
     private PlayerMechanics PlayerMechs;
     public GameObject[] ThisToSpawn;
+    public Sprite OpenedSprite;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +33,7 @@ public class ChestScript : MonoBehaviour
                 {
                     NewObj.GetComponent<WeaponDropped>().enabled = true;
                 }
-
+                GetComponent<SpriteRenderer>().sprite = OpenedSprite;
                 GetComponent<CircleCollider2D>().enabled = false;
             }
         }

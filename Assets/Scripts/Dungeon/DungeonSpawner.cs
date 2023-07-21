@@ -49,6 +49,7 @@ public class DungeonSpawner : MonoBehaviour
                             PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignNewGun(NewWeapon, false, false); //replace current gun and tell the game that we have picked it up, just instantiating
                             PlayerGO.transform.GetChild(0).GetComponent<GunScript>().AssignWeaponBuffsAfterLevelOne(); //Assign the buffs
                             Destroy(PlayerGO.transform.GetChild(0).GetChild(PlayerGO.transform.GetChild(0).childCount - 1).gameObject); //remove the last gameobject
+                            break;
                         }
                     }
                 }

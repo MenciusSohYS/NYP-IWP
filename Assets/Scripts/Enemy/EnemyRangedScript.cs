@@ -13,6 +13,7 @@ public class EnemyRangedScript : MonoBehaviour
     private bool Reloading;
     private float ReloadTimer;
     private SpriteRenderer spriteRenderer;
+    private SpriteRenderer ParentspriteRenderer;
     private bool ShootNow;
     void Start()
     {
@@ -35,11 +36,15 @@ public class EnemyRangedScript : MonoBehaviour
         if (WeaponScript == null)
         {
             WeaponScript = transform.GetChild(0).GetChild(0).GetComponent<WeaponParent>(); //if its a melee weapon
-            WeaponScript.GetComponent<SwordScript>().SetIsPlayer(false);
+            if (WeaponScript.GetComponent<SwordScript>())
+                WeaponScript.GetComponent<SwordScript>().SetIsPlayer(false);
+            else
+                WeaponScript.GetComponent<ScytheScript>().SetIsPlayer(false);
         }
 
         WeaponScript.SetDamage(0.5f);
         spriteRenderer = WeaponScript.GetComponent<SpriteRenderer>();
+        ParentspriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
     }
     void Update()
     {
@@ -73,12 +78,16 @@ public class EnemyRangedScript : MonoBehaviour
             if (currPosition.x < transform.position.x && !spriteRenderer.flipY)
             {
                 spriteRenderer.flipY = true;
-                BulletSpawner.transform.localPosition = new Vector3(BulletSpawner.transform.localPosition.x, -BulletSpawner.transform.localPosition.y);
+                if (BulletSpawner)
+                    BulletSpawner.transform.localPosition = new Vector3(BulletSpawner.transform.localPosition.x, -BulletSpawner.transform.localPosition.y);
+                ParentspriteRenderer.flipX = true;
             }
             else if (currPosition.x > transform.position.x && spriteRenderer.flipY)
             {
                 spriteRenderer.flipY = false;
-                BulletSpawner.transform.localPosition = new Vector3(BulletSpawner.transform.localPosition.x, -BulletSpawner.transform.localPosition.y);
+                if (BulletSpawner)  
+                    BulletSpawner.transform.localPosition = new Vector3(BulletSpawner.transform.localPosition.x, -BulletSpawner.transform.localPosition.y);
+                ParentspriteRenderer.flipX = false;
             }
         }
 
@@ -109,6 +118,28 @@ public class EnemyRangedScript : MonoBehaviour
     public void SetShootNow(bool setto)
     {
         ShootNow = setto;
+    }
+
+    public void IncreaseDamage(float ByHowMuch)
+    {
+        if (WeaponScript == null)
+        {
+            WeaponScript = transform.GetChild(0).GetChild(0).GetComponent<WeaponParent>(); //if its a melee weapon
+            if (WeaponScript.GetComponent<SwordScript>())
+                WeaponScript.GetComponent<SwordScript>().SetIsPlayer(false);
+            else
+                WeaponScript.GetComponent<ScytheScript>().SetIsPlayer(false);
+        }
+        WeaponScript.SetDamage(ByHowMuch);
+        if (WeaponScript.GetDamage() > 100)
+        {
+            WeaponScript.SetDamageByNumber(100); //max cap the damage at 100 or the player might get 1 shotted and it might be too unfair
+        }
+    }
+
+    public void ChangeBulletVelo(float ByHowMuch)
+    {
+        WeaponScript.MultiplyVelocity(ByHowMuch);
     }
 
     public bool ReturnShootNow()

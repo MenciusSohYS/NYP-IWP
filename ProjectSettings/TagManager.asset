@@ -19,6 +19,9 @@ TagManager:
   - Melee
   - Tutor
   - BGM
+  - Shield
+  - OuterWalls
+  - Leaderboard
   layers:
   - Default
   - TransparentFX
@@ -27,7 +30,7 @@ TagManager:
   - Water
   - UI
   - Fog
-  - 
+  - RadialShield
   - 
   - 
   - 

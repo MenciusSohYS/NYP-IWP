@@ -26,30 +26,31 @@ public class SpecialBossScript : MonoBehaviour
         return CurrentPhaseNumber;
     }
 
-    public bool CheckForPhaseChange(int Health)
+    public bool CheckForPhaseChange(int Health) //hp is in percentage
     {
-        if (Health > 950) //technically phase0
+        //Debug.Log(Health);
+        if (Health > 95) //technically phase0
             return false;
 
-        if (Health > 900) //phase depends on hp
+        if (Health > 90) //phase depends on hp
         {
             ++CurrentPhaseNumber;
             if (CurrentPhaseNumber > Phase.Phase1)
                 CurrentPhaseNumber = Phase.Phase1;
         }
-        else if (Health > 750)
+        else if (Health > 75)
         {
             ++CurrentPhaseNumber;
             if (CurrentPhaseNumber > Phase.Phase2)
                 CurrentPhaseNumber = Phase.Phase2;
         }
-        else if (Health > 500)
+        else if (Health > 50)
         {
             ++CurrentPhaseNumber;
             if (CurrentPhaseNumber > Phase.Phase3)
                 CurrentPhaseNumber = Phase.Phase3;
         }
-        else if (Health > 250)
+        else if (Health > 25)
         {
             ++CurrentPhaseNumber;
             if (CurrentPhaseNumber > Phase.Phase4)

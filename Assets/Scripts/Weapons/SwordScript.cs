@@ -28,6 +28,7 @@ public class SwordScript : WeaponParent
     //private string[] animationNames = { "SwordAttack", "SwordAttack2" }; //append here
     private TrailRenderer Trail;
     private bool IsPlayer;
+    public Sprite[] SwordSprites;
 
     private void Start()
     {
@@ -42,7 +43,9 @@ public class SwordScript : WeaponParent
 
         foreach (AnimationClip clip in AnimClips)
         {
-            //Debug.Log("Animation duration: " + duration + " seconds");
+            if (clip.name.Contains("Idle"))
+                continue;
+
             Animations.Add(clip.length);
         }
 
@@ -94,9 +97,9 @@ public class SwordScript : WeaponParent
         //using
         isAttacking = true;
 
-        //Debug.Log(AttackNumber);
+        //Debug.Log(AnimatorField.GetCurrentAnimatorStateInfo(0).normalizedTime);
         //SwordCollider.isTrigger = false;
-        AnimatorField.SetInteger("Attack", AttackNumber); //attack number is the sequence of the attack, if one combo has 5 attacks then maximum number should be 4
+        AnimatorField.SetInteger("Attack", AttackNumber); //attack number is the sequence of the attack
 
         //Debug.Log(FireRate + "*" + Animations[AttackNumber]);
         AnimatorField.SetFloat("Speed",  Animations[AttackNumber] / FireRate); //converts the animation to the proper multiplier
@@ -105,7 +108,8 @@ public class SwordScript : WeaponParent
         timerforattacking = FireRate; //timerforattacking is to tell the sword if the attack is over
 
         Trail.emitting = true;
-        return FireRate + ReloadTime;
+
+        return FireRate + 0.1f;
     }
 
     void MeleeSound()
@@ -114,6 +118,17 @@ public class SwordScript : WeaponParent
         {
             AudioSourceField.clip = ShootingSoundEffects[AttackNumber];
             AudioSourceField.Play();
+        }
+    }
+
+    public override void SetCurrentUpgrades(int ByHowMuch)
+    {
+        base.SetCurrentUpgrades(ByHowMuch);
+        if (CurrentUpgrade > 0)
+        {
+            GetComponent<SpriteRenderer>().sprite = SwordSprites[1];
+            GetComponent<BoxCollider2D>().size = new Vector2 (2, 4.5f);
+            GetComponent<BoxCollider2D>().offset = new Vector2 (3, -0.7f);
         }
     }
 
@@ -159,9 +174,13 @@ public class SwordScript : WeaponParent
             //Debug.Log(AttackNumber);
 
             isAttacking = false;
-            AnimatorField.SetInteger("Attack", 4);
+            AnimatorField.SetInteger("Attack", 4); //4 sets it back to idle, there's actually only 2 animations
             Trail.emitting = false;
             //SwordCollider.isTrigger = true;
+        }
+        else
+        {
+            //Debug.Log(AnimatorField.GetCurrentAnimatorStateInfo(0).normalizedTime + " " + AttackNumber);
         }
     }
 

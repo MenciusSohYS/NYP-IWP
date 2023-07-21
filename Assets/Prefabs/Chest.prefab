@@ -120,6 +120,8 @@ MonoBehaviour:
   - {fileID: 2325470093786714973, guid: 44d199cc97500af4fbb26420b5d4bcd8, type: 3}
   - {fileID: 4575172184027129287, guid: 3adaa26bdaaf2894bab5d6b7c9122b97, type: 3}
   - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
+  - {fileID: 2325470093786714973, guid: 8024498cca7b93a4c877a7d206892656, type: 3}
+  OpenedSprite: {fileID: 21300000, guid: 2f50d134207234d4bb81ecae08ed64d6, type: 3}
 --- !u!50 &-5517428305415004185
 Rigidbody2D:
   serializedVersion: 4

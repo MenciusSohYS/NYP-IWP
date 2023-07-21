@@ -17,7 +17,6 @@ public class Staff : WeaponParent
         PositionToParent = new Vector3(0, 1f, 0);
         BulletVelocity = 35;
         Chambered = true;
-        Piercing = 1;
     }
     public GameObject CannonBall;
     private float cooldownbeforerestore = 0.5f;
@@ -81,7 +80,7 @@ public class Staff : WeaponParent
         BulletShot.GetComponent<Bullet>().ShotBy(ShotByPlayer); //shot by enemy or player
         BulletShot.GetComponent<Bullet>().AssignDamage(Damage);
         BulletShot.GetComponent<Bullet>().AssignVelocity(BulletVelocity);
-        BulletShot.GetComponent<Bullet>().AssignPierce(Piercing);
+        BulletShot.GetComponent<Bullet>().AssignPierce(Piercing + Globalvariables.BulletPierce);
         BulletShot.transform.up += new Vector3(RandomX, RandomY, 0);
 
 

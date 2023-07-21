@@ -10,12 +10,12 @@ public class CannonScript : WeaponParent
         Spread = 0.1f;
         MaxMagSize = 1;
         BulletsRemaining = 1;
-        ReloadTime = 4f;
+        ReloadTime = 3f;
         HeatMax = 1f;
         PositionToParent = new Vector3(0, 1f, 0);
-        BulletVelocity = 70;
+        BulletVelocity = 65;
         Chambered = true;
-        Piercing = 2;
+        Piercing = 0;
     }
     public GameObject CannonBall;
     private Rigidbody2D PlayerRB;
@@ -38,7 +38,7 @@ public class CannonScript : WeaponParent
         BulletShot.GetComponent<Bullet>().ShotBy(ShotByPlayer); //shot by enemy or player
         BulletShot.GetComponent<Bullet>().AssignDamage(Damage);
         BulletShot.GetComponent<Bullet>().AssignVelocity(BulletVelocity);
-        BulletShot.GetComponent<Bullet>().AssignPierce(Piercing);
+        BulletShot.GetComponent<Bullet>().AssignPierce(1);
         BulletShot.transform.up += new Vector3(RandomX, RandomY, 0);
 
         Vector2 recoilForce = -BulletShot.transform.up * BulletVelocity * 20;

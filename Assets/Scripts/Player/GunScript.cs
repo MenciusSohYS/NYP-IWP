@@ -130,18 +130,18 @@ public class GunScript : MonoBehaviour
 
             if (Reloading)
             {
-                GunTransform.Rotate(0, 0, 10);
-                ReloadTimer = WeaponScript.DoReload(ReloadTimer, Time.deltaTime); //push the calculation to the gun for storing and dynamic reload
-
-                if (WeaponScript.ReturnChambered())
-                    PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
-
-                if (ReloadTimer <= 0)
+                if (ReloadTimer <= 0 || WeaponScript.ReturnFullReload() == -1)
                 {
                     GunTransform.localRotation = Quaternion.Euler(0, 0, 90);
                     PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
                     Reloading = false; //completed reload
+                    return;
                 }
+                GunTransform.Rotate(0, 0, 2000 * Time.deltaTime);
+                ReloadTimer = WeaponScript.DoReload(ReloadTimer, Time.deltaTime); //push the calculation to the gun for storing and dynamic reload
+
+                if (WeaponScript.ReturnChambered())
+                    PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
             }
             else if (Shooting && timerforshooting <= 0 && WeaponScript.ReturnCurrentMag() > 0) //if the player is shooting, can shoot after fire rate cool down and has more than 0 bullet
             {
@@ -153,6 +153,12 @@ public class GunScript : MonoBehaviour
                     WeaponScript.StartReload();
                     if (ReloadTimer == -1)
                     {
+                        if (WeaponScript.gameObject.name.Contains("CrankGun"))
+                        {
+                            PlayerMovement PMS = transform.parent.GetComponent<PlayerMovement>(); //get speed and half it
+                            int Speed = PMS.ReturnSpeed();
+                            PMS.DecreaseSpeed(-Speed);
+                        }
                         DestroyTempWeapon();
                         return;
                     }
@@ -234,6 +240,13 @@ public class GunScript : MonoBehaviour
             //since its an override and there is another weapon that exists, we should:
             //then make the other gun inactive, this code assumes we only have 2 guns
             transform.GetChild(transform.childCount - 1).gameObject.SetActive(false);
+
+            if (NewGun.name.Contains("CrankGun"))
+            {
+                PlayerMovement PMS = transform.parent.GetComponent<PlayerMovement>(); //get speed and half it
+                int Speed = (int)(PMS.ReturnSpeed() * 0.5f);
+                PMS.DecreaseSpeed(Speed);
+            }
         }
         else if (GunTransform != null)
         {
@@ -258,6 +271,9 @@ public class GunScript : MonoBehaviour
 
         if (GunTransform.GetComponent<SpriteRenderer>() == null) //if no sprite renderer, it should be a melee weapon
         {
+            //next two lines is called here because melee weapon drop script and collider are placed in different areas
+            GunTransform.GetComponent<WeaponDropped>().enabled = false; //disable the script for when the weapon gets dropped
+            GunTransform.GetComponent<CircleCollider2D>().enabled = false; //disable the collider that goes with the script
             GunTransform.GetComponent<Animator>().enabled = true;
             GunTransform = GunTransform.GetChild(0);
             NewGun = NewGun.transform.GetChild(0).gameObject;
@@ -345,6 +361,7 @@ public class GunScript : MonoBehaviour
         WeaponScript.SetVelocity(Globalvariables.WeaponComponents.Velocity);
         WeaponScript.TellitsAttachedToPlayer();
         CurrentUpgrade = Globalvariables.WeaponComponents.CurrentUpgrades;
+        WeaponScript.SetCurrentUpgrades(CurrentUpgrade);
     }
 
     public bool GetReloading()
@@ -355,5 +372,16 @@ public class GunScript : MonoBehaviour
     public bool GetIsShooting()
     {
         return Shooting;
+    }
+
+    public void IncreaseAccuracy()
+    {
+        Debug.Log("Increasing");
+        WeaponScript.SetSpread(WeaponScript.GetSpread() * 0.5f);
+    }
+    public void DecreaseAccuracy()
+    {
+        Debug.Log("Decreasing");
+        WeaponScript.SetSpread(WeaponScript.GetSpread() * 2);
     }
 }

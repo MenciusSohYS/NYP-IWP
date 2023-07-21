@@ -6,14 +6,20 @@ public class WizardAbility : AbilityParent
 {
     public WizardAbility()
     {
-        CoolDown = 1;
+        CoolDown = 2;
         Timer = 0;
         Name = "Fire walker";
+    }
+    PlayerMovement PlayerMovementScript;
+
+    public override void CallAtStart()
+    {
+        PlayerMovementScript = GetComponent<PlayerMovement>();
     }
 
     public override int UseAbility()
     {
-        if (Timer <= 0)
+        if (Timer <= 0 && !PlayerMovementScript.IsRolling())
         {
             //Debug.Log("Wiz Ability");
             Timer = CoolDown;

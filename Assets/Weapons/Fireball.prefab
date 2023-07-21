@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -8566088621412789158}
   - component: {fileID: 2334514568928695241}
   - component: {fileID: 2406809382461384209}
-  - component: {fileID: 8409122748024870857}
+  - component: {fileID: 2205945033681749665}
   m_Layer: 3
   m_Name: Fireball
   m_TagString: Untagged
@@ -55,7 +55,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: f8194a52fd29c3c44995f5593dc7baa5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101,8 +101,8 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_AngularDrag: 0
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -124,8 +124,10 @@ MonoBehaviour:
   PlayerFriendly: 0
   DamageNumber: {fileID: 1311177426580020759, guid: 19cb6c83ae668944b9ee83e3763fc17f, type: 3}
   VelocityOfBullet: 0
-  ExplosionEffect: {fileID: 4260809992281458750, guid: 17874f1a5c1406943a1cfa844324698b, type: 3}
---- !u!58 &8409122748024870857
+  piercecapped: 0
+  ExplosionEffect: {fileID: 4260809992281458750, guid: 2e9eea7a10c1ee1418dcfb3fb6c4708f, type: 3}
+  CanBounce: 0
+--- !u!58 &2205945033681749665
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -140,4 +142,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 2.85

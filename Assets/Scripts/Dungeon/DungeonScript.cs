@@ -6,6 +6,7 @@ public class DungeonScript : MonoBehaviour
 {
     public static int MAX_COST_FOR_ENEMIES = 3;
     public GameObject[] walls; //0 is North (Top), 1 is South (bottom), 2 is East (right), 3 is West (left)
+    public GameObject[] outerwalls; //0 is North (Top), 1 is South (bottom), 2 is East (right), 3 is West (left)
 
     public GameObject[] doors;
 
@@ -15,6 +16,7 @@ public class DungeonScript : MonoBehaviour
     public GameObject HCoverPrefab;
     public GameObject WeaponWorkbenchPrefab;
     public GameObject[] EnemyList;
+    public GameObject[] EnemyReinforcementList;
     public GameObject ChestPrefab;
 
     //containers
@@ -33,9 +35,12 @@ public class DungeonScript : MonoBehaviour
 
     bool SpawnMoreEnemies;
 
+    float Scalevalue;
+
     // Start is called before the first frame update
     void Start()
     {
+        Scalevalue = 0;
         SpawnMoreEnemies = false;
         Covers = new GameObject[10];
         GridReference = GetComponent<TestGrid>();
@@ -128,8 +133,15 @@ public class DungeonScript : MonoBehaviour
                 Enemies.Add(Instantiate(EnemyList[RandomEnemyNumber - 1], this.transform.position + new Vector3(x, y), Quaternion.identity));
                 EnemyCost -= RandomEnemyNumber;
                 Enemies[Enemies.Count - 1].transform.SetParent(RoomEnemies.transform); //put enemies inside of the room's container, for easier reference
-            }
 
+                if (Enemies.Count > 12)
+                {
+                    Scalevalue = EnemyCost * 0.1f;
+                    Debug.Log(Scalevalue);
+                    EnemyCost = 0;
+                }
+            }
+            //Debug.Log("difficulty " + Globalvariables.Difficulty);
             //add these new enemies to the list
             for (int i = 0; i < Enemies.Count; ++i)
             {
@@ -150,8 +162,8 @@ public class DungeonScript : MonoBehaviour
         {
             //if its a boss room
             //create the boss
-            //int randomboss = Random.Range(0, EnemyList.Length); //randomise him
-            Enemies.Add(Instantiate(EnemyList[0], transform.position, Quaternion.identity)); //create and add him to the list            
+            int randomboss = Random.Range(0, EnemyList.Length); //randomise him
+            Enemies.Add(Instantiate(EnemyList[randomboss], transform.position, Quaternion.identity)); //create and add him to the list            
             Enemies[0].transform.SetParent(RoomEnemies.transform);
         }
         else if (transform.tag == "UpgradeRoom")
@@ -165,6 +177,8 @@ public class DungeonScript : MonoBehaviour
         SidesWithCorridors.Add(Side);
         doors[Side].SetActive(true);
         walls[Side].SetActive(false);
+        //Debug.Log(transform.name);
+        outerwalls[Side].SetActive(false);
     }
 
     public void RemoveFog()
@@ -177,20 +191,51 @@ public class DungeonScript : MonoBehaviour
 
         for (int i = 0; i < Enemies.Count; ++i)
         {
+            EnemyRangedScript Enemyrangedscript = Enemies[i].transform.GetChild(0).GetComponent<EnemyRangedScript>();
+            EnemyMechanics EnemyMechanicScript = Enemies[i].GetComponent<EnemyMechanics>();
+
             Enemies[i].GetComponent<EnemyMovement>().enabled = true;
-            Enemies[i].GetComponent<EnemyMechanics>().enabled = true;
-            Enemies[i].transform.GetChild(0).GetComponent<EnemyRangedScript>().enabled = true;
-            Enemies[i].GetComponent<EnemyMechanics>().AssignRoom(gameObject);
+            EnemyMechanicScript.enabled = true;
+            Enemyrangedscript.enabled = true;
+            EnemyMechanicScript.AssignRoom(gameObject);
+
+            if (Scalevalue > 1)
+            {
+                if (Scalevalue > 9)
+                    Scalevalue = 9;
+
+                Enemyrangedscript.IncreaseDamage(Scalevalue);
+                EnemyMechanicScript.MultiplyHP(1 + (Scalevalue));
+            }
+            else if (transform.tag == "BossRoom" && Globalvariables.CurrentLevel > 1)
+            {
+                Enemyrangedscript.IncreaseDamage(Globalvariables.CurrentLevel * 0.75f);
+                EnemyMechanicScript.MultiplyHP(Globalvariables.CurrentLevel * 0.75f);
+            }
+            
+            float MultiplicationValueForDifficulty = (Globalvariables.Difficulty * 0.1f) + 0.4f;
+
+            //change damage, hp and bullet velo based on difficulty
+            Enemyrangedscript.IncreaseDamage(MultiplicationValueForDifficulty);
+            Enemyrangedscript.ChangeBulletVelo(MultiplicationValueForDifficulty);
+            EnemyMechanicScript.MultiplyHP(MultiplicationValueForDifficulty);
 
         }
         for (int i = 0; i < SidesWithCorridors.Count; ++i)
         {
             doors[SidesWithCorridors[i]].SetActive(false);
             walls[SidesWithCorridors[i]].SetActive(true);
+            outerwalls[SidesWithCorridors[i]].SetActive(true);
         }
 
         //fix minimap cam to the room
         GameObject MiniMap = GameObject.FindGameObjectWithTag("MiniMap");
+
+        if (MiniMap.GetComponent<CameraScript>().ReturnOpenedBigMap())
+        {
+            GameObject.Find("Canvas").GetComponent<CanvasScript>().BigMapInteraction();
+        }
+
         MiniMap.GetComponent<CameraScript>().StopCamera();
         MiniMap.transform.position = this.transform.position + new Vector3(0, 0, -10);
         MiniMap.GetComponent<Camera>().orthographicSize = 17.5f;
@@ -200,6 +245,7 @@ public class DungeonScript : MonoBehaviour
 
     public void RemoveEnemyFromList(GameObject Enemy)
     {
+        ++Globalvariables.EnemiesKilled;
         Enemies.Remove(Enemy);
         if (RangedEnemies.Contains(Enemy))
         {
@@ -216,6 +262,7 @@ public class DungeonScript : MonoBehaviour
             {
                 doors[SidesWithCorridors[i]].SetActive(true);
                 walls[SidesWithCorridors[i]].SetActive(false);
+                outerwalls[SidesWithCorridors[i]].SetActive(false);
             }
             GridReference.DestoryGrid();
 
@@ -224,6 +271,11 @@ public class DungeonScript : MonoBehaviour
             MiniMap.GetComponent<CameraScript>().ResumeCamera();
             MiniMap.GetComponent<Camera>().orthographicSize = 30f;
             MiniMap.GetComponent<Camera>().backgroundColor = Color.black;
+
+            GameObject Player = GameObject.FindGameObjectWithTag("Player");
+            int HealAmount = (int)(2 * (10 - Globalvariables.Difficulty));
+            Player.GetComponent<PlayerMechanics>().Heal(HealAmount);
+            //Debug.Log(HealAmount);
 
             if (!transform.name.Contains("BossRoom"))
                 Instantiate(ChestPrefab, transform.position + new Vector3(0, 0, -0.1f), Quaternion.identity);
@@ -281,12 +333,15 @@ public class DungeonScript : MonoBehaviour
         if (!SetRanged)
             NewEnemyList = MeleeEnemies;
 
+
+
         PlayerLocation = new Vector3(Mathf.Round(PlayerLocation.x), Mathf.Round(PlayerLocation.y));
 
         //see if enemy can hit player first
         foreach (GameObject Enemies in NewEnemyList)
         {
             EnemyGoAndHide(Enemies, PlayerLocation);
+            Enemies.transform.GetChild(0).GetComponent<EnemyRangedScript>().SetShootNow(false);
         }
     }
 
@@ -463,8 +518,8 @@ public class DungeonScript : MonoBehaviour
                 while (!CanEnemySeePlayer)
                 {
                     //randomise new location to walk/run to
-                    RandomX = Random.Range(-15, 15) + (int)transform.position.x;
-                    RandomY = Random.Range(-15, 15) + (int)transform.position.y;
+                    RandomX = Random.Range(-14, 14) + (int)transform.position.x;
+                    RandomY = Random.Range(-14, 14) + (int)transform.position.y;
                     //Debug.Log(RandomX + " " + RandomY);
                     CanEnemySeePlayer = CanSeePlayer(new Vector3(RandomX, RandomY, 0), PlayerPos);
                 }
@@ -487,8 +542,8 @@ public class DungeonScript : MonoBehaviour
     void CheckHPOfBoss(GameObject Boss)
     {
         SpecialBossScript SPBossScript = Boss.transform.GetComponent<SpecialBossScript>();
-        int Health = Boss.transform.GetComponent<EnemyMechanics>().GetHP();
-
+        int Health = Boss.transform.GetComponent<EnemyMechanics>().GetHPPercentage();
+        //Debug.Log(Health);
         bool Changed = SPBossScript.CheckForPhaseChange(Health); //check phase
 
         if (Changed)
@@ -520,23 +575,24 @@ public class DungeonScript : MonoBehaviour
         if (!SpawnMoreEnemies)
             return 0;
 
+        int RandInt = Random.Range(0, EnemyReinforcementList.Length);
         switch (WhichIteration)
         {
             case 0:
                 ++WhichIteration;
-                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(14, 14), Quaternion.identity));
+                Enemies.Add(Instantiate(EnemyReinforcementList[RandInt], this.transform.position + new Vector3(14, 14), Quaternion.identity));
                 break;
             case 1:
                 ++WhichIteration;
-                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(14, -14), Quaternion.identity));
+                Enemies.Add(Instantiate(EnemyReinforcementList[RandInt], this.transform.position + new Vector3(14, -14), Quaternion.identity));
                 break;
             case 2:
                 ++WhichIteration;
-                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(-14, 14), Quaternion.identity));
+                Enemies.Add(Instantiate(EnemyReinforcementList[RandInt], this.transform.position + new Vector3(-14, 14), Quaternion.identity));
                 break;
             case 3:
                 ++WhichIteration;
-                Enemies.Add(Instantiate(EnemyList[1], this.transform.position + new Vector3(-14, -14), Quaternion.identity));
+                Enemies.Add(Instantiate(EnemyReinforcementList[RandInt], this.transform.position + new Vector3(-14, -14), Quaternion.identity));
                 SpawnMoreEnemies = false;
                 break;
         }

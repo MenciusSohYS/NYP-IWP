@@ -13,5 +13,6 @@ public class GoldenRevolver : WeaponParent
         HeatMax = 0.5f;
         PositionToParent = new Vector3(0, 0.6f, 0);
         Chambered = true;
+        BulletVelocity = 75;
     }
 }

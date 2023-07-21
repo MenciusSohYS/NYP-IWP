@@ -73,7 +73,7 @@ public class EnemyMovement : MonoBehaviour
 
         PathVectorList = PathFinding.Instance.FindPath(transform.position, TargetPos);
 
-        DrawDebugRay();
+        //DrawDebugRay();
         //if (PathFinding.Instance.GetNode((int)transform.position.x + 14, (int)transform.position.y + 14).IsWalkable)
         {
             //PathFinding.Instance.GetNode((int)TargetPos.x + 14, (int)TargetPos.y + 14).SetIsWalkable(false);

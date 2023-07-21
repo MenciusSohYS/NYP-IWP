@@ -6,24 +6,30 @@ using TMPro;
 
 public class CharacterSelectScript : MonoBehaviour
 {
+    public AudioSource SoundForBGM;
     //enable audio listener, mechanics, movement, gunscript, flip sprite script
     [SerializeField] GameObject[] Characters2;
     [SerializeField] int CurrentIndex;
     public GameObject Camera;
     private GameObject Trader;
     private GameObject Tutor;
+    private GameObject Leaderboard;
     public TextMeshProUGUI Description;
     public TextMeshProUGUI Coins;
     public GameObject Lock;
     public GameObject Pause;
+    public GameObject Difficulty;
     public TextMeshProUGUI Notification;
     public TextMeshProUGUI PauseTMP;
+    public TextMeshProUGUI DifficultyDescription;
+    public TextMeshProUGUI DifficultyLevelText;
     private bool ConfirmPurchase;
     private bool FadeOut;
     private int CurrentCost;
     private int CurrentDialogue;
     public Slider SliderForBGM;
     public Slider SliderForWeapon;
+    int DifficultyLevel;
     public class HandlerNumberToLocalNumber
     {
         public int LocalNumber;
@@ -36,6 +42,7 @@ public class CharacterSelectScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DifficultyLevel = 5;
         CurrentCost = 0; //cost of buying the character
         ConfirmPurchase = false; //for the buying of characters
         //PlayFabHandler.GetPlayerInventory();
@@ -68,6 +75,7 @@ public class CharacterSelectScript : MonoBehaviour
 
         Trader = GameObject.FindGameObjectWithTag("Trader");
         Tutor = GameObject.FindGameObjectWithTag("Tutor");
+        Leaderboard = GameObject.FindGameObjectWithTag("Leaderboard");
         Camera.transform.position = handlerNumberToLocalNumber[0].CharacterGO.transform.position - new Vector3(0, 0, 5); //shift the camera to where ever the first character is
         WriteText(); //lock camera to the first player the game can find and write its description
         Coins.text = PlayFabHandler.Coins.ToString();
@@ -83,6 +91,7 @@ public class CharacterSelectScript : MonoBehaviour
 
         SliderForBGM.value = PlayFabHandler.BGMSliderValue;
         SliderForWeapon.value = PlayFabHandler.WeaponSliderValue;
+        Difficulty.SetActive(false);
     }
 
     // Update is called once per frame
@@ -139,6 +148,7 @@ public class CharacterSelectScript : MonoBehaviour
         //set trader's player
         Trader.GetComponent<TraderScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
         Tutor.GetComponent<Tutor>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
+        Leaderboard.GetComponent<LeaderboardHandler>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
 
         Description.transform.parent.gameObject.SetActive(false);//disable the panel
         Notification.gameObject.SetActive(false); //disable the notification text
@@ -238,6 +248,11 @@ public class CharacterSelectScript : MonoBehaviour
         GetComponent<ShopScript>().ShopPanel.SetActive(false);
         handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<PlayerMovement>().enabled = true;
     }
+    public void BackButton2()
+    {
+        GetComponent<LeaderBoardScript>().LeaderboadGO.SetActive(false);
+        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<PlayerMovement>().enabled = true;
+    }
 
     public void UpdateCoins(int AmountToMinus)
     {
@@ -274,7 +289,7 @@ public class CharacterSelectScript : MonoBehaviour
         switch(CurrentDialogue)
         {
             case 0:
-                Description.text = "Alright, basics, <size=37.5>WASD</size> to move, <size=37.5>Left Click</size> to shoot and R to reload";
+                Description.text = "Alright, basics, <size=37.5>WASD</size> to move, <size=37.5>Left Click</size> to shoot and <size=37.5>R</size> to reload";
                 break;
             case 1:
                 Description.text = "Got that? Well on to the next part, <size=37.5>Space</size> to roll, you can avoid damage with it.";
@@ -292,6 +307,12 @@ public class CharacterSelectScript : MonoBehaviour
                 Description.text = "You can only have <size=37.5>1</size> weapon at once, upgrades bought with the workbench <size=37.5>only</size> applies to that weapon";
                 break;
             case 6:
+                Description.text = "There's two types of cover, <size=37.5>Half</size> and <size=37.5>Full</size>, first reduces damage received by half, the other destorys projectiles";
+                break;
+            case 7:
+                Description.text = "Press <size=37.5>M</size> to open the map, it fills up as you're moving along. Try not to get lost.";
+                break;
+            case 8:
                 Description.text = "And thats it, good luck out there, <size=38>You're Gonna Need It</size>";
                 break;
             default:
@@ -302,4 +323,48 @@ public class CharacterSelectScript : MonoBehaviour
         ++CurrentDialogue;
         return false;
     }
+
+    public void LoadIntoGame()
+    {
+        Globalvariables.timerforsound = SoundForBGM.time;
+        Globalvariables.Difficulty = DifficultyLevel;
+        //Debug.Log(Globalvariables.timerforsound);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+    }
+
+    public void ChooseDifficulty()
+    {
+        for (int i = 0; i < transform.childCount - 1; ++i)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
+        transform.GetChild(transform.childCount - 1).gameObject.SetActive(true);
+    }
+
+    public void SliderChange(float SliderValue)
+    {
+        DifficultyLevel = (int)SliderValue;
+        DifficultyLevelText.text = "Difficulty: " + DifficultyLevel;
+        if (SliderValue > 9)
+        {
+            DifficultyDescription.text = "MAX Difficulty, you may or may not survive till the end, all the best";
+        }
+        else if (SliderValue > 7)
+        {
+            DifficultyDescription.text = "Hard difficulty, enemies on this level are very very painful to deal with";
+        }
+        else if (SliderValue > 4)
+        {
+            DifficultyDescription.text = "Medium Difficulty, enemies are hard but honestly, with good positioning, its easy";
+        }
+        else if (SliderValue > 1)
+        {
+            DifficultyDescription.text = "Easy Difficulty, great if you just started or want a stroll in the park";
+        }
+        else
+        {
+            DifficultyDescription.text = "Well, baby steps am I right";
+        }
+    }
+
 }

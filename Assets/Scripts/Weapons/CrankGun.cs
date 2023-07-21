@@ -5,9 +5,9 @@ using UnityEngine;
 public class CrankGun : WeaponParent
 {    public CrankGun()
     {
-        Damage = 3;
+        Damage = 8;
         FireRate = 0.1f;
-        Spread = 0.5f;
+        Spread = 0.4f;
         MaxMagSize = 100;
         BulletsRemaining = 100;
         ReloadTime = -1f;
