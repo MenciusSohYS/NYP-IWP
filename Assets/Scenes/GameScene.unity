@@ -173,6 +173,7 @@ MonoBehaviour:
   CorridorPrefab: {fileID: 443287862054578753, guid: 36a5b106c436ab747a8c5dcdfda1b442, type: 3}
   BossRoomPrefab: {fileID: 443287862054578753, guid: ba504e31cb3bfc04687b2c3e12e27099, type: 3}
   UpgradeRoomPrefab: {fileID: 443287862054578753, guid: 4d744972b0d8f2045948ab648e94ed9b, type: 3}
+  TutorialManPrefab: {fileID: 7053520479292743139, guid: 0ed0f825cb31a374db33510dc70d0395, type: 3}
   TestMap: 0000000000000000020000000200000002000000010000000100000003000000030000000000000002000000
   PlayerPrefabs:
   - {fileID: 4293842565912521357, guid: 9dafb77adf8e73546a415139e70d31d6, type: 3}
@@ -505,6 +506,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 313258999925855536, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313258999925855536, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 745948731995300716, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -557,6 +566,26 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7554849288049943853, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7554849288049943853, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7884071479150923710, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7884071479150923710, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7884071479150923710, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8785077346972993088, guid: 0d51ca6d64885bb41a9489cc1fb0c234, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -592,7 +621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4701907520134420231, guid: 3b6f127d76fc4e940b053a0713f28820, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 4701907520134420231, guid: 3b6f127d76fc4e940b053a0713f28820, type: 3}
       propertyPath: m_LocalRotation.w

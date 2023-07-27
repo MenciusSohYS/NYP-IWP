@@ -15,6 +15,7 @@ public static class PlayFabHandler
 
     public static float BGMSliderValue = 1;
     public static float WeaponSliderValue = 1;
+    public static float InteractionSliderValue = 1;
     public static int HighScore = 0;
 
     public struct PlayerBoughtSkills
@@ -179,6 +180,7 @@ public static class PlayFabHandler
     public static void LogOut()
     {
         PushAudioPreferences();
+        Globalvariables.ForgetEverything();
         UnlockedMercenary = false;
         UnlockedElf = false;
         UnlockedBounty = true;
@@ -190,8 +192,8 @@ public static class PlayFabHandler
         Characters = new List<Character>();
         BGMSliderValue = 1;
         WeaponSliderValue = 1;
+        InteractionSliderValue = 1;
         HighScore = 0;
-        Globalvariables.ForgetEverything();
         PlayFabClientAPI.ForgetAllCredentials();
         Cursor.visible = true;
         UnityEngine.SceneManagement.SceneManager.LoadScene("LoginScene");
@@ -204,10 +206,11 @@ public static class PlayFabHandler
             Data = new Dictionary<string, string>()
                 {
                     {"BGM", BGMSliderValue.ToString() },
-                    {"Weapon", WeaponSliderValue.ToString() }
+                    {"Weapon", WeaponSliderValue.ToString() },
+                    {"Interaction", WeaponSliderValue.ToString() }
                 }
         },
-            result => Debug.Log("Pushed " + BGMSliderValue + " and "+ WeaponSliderValue),
+            result => Debug.Log("Pushed " + BGMSliderValue + " and "+ WeaponSliderValue + " and "+ InteractionSliderValue),
             error =>
             {
                 Debug.Log("Error in getting user data");

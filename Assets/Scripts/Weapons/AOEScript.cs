@@ -43,7 +43,7 @@ public class AOEScript : MonoBehaviour
 
                     GameObject numberobject = Instantiate(DamageNumber, collider.transform.position, Quaternion.identity);
 
-                    numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString());
+                    numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString(), false);
                 }
             }
 

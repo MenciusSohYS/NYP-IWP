@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -11,8 +12,7 @@ public class Bullet : MonoBehaviour
     public int VelocityOfBullet;
     [SerializeField] int piercecapped; //if have pierce cap do make this false
     [SerializeField] GameObject ExplosionEffect;
-    [SerializeField] bool CanBounce;
-    Vector3 LastVelo;
+    [SerializeField] bool Crit;
 
     // Start is called before the first frame update
     private void Start()
@@ -27,7 +27,6 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        LastVelo = rb.velocity;
         rb.velocity = transform.up * VelocityOfBullet;
     }
 
@@ -62,6 +61,12 @@ public class Bullet : MonoBehaviour
             PlayerFriendly = true;
         }
     }
+
+    public void SetCrit(bool IsCrit)
+    {
+        Crit = IsCrit;
+        DamageToDo *= 2;
+    }
     public void AssignDamage(int Dmg)
     {
         DamageToDo = Dmg;
@@ -76,10 +81,6 @@ public class Bullet : MonoBehaviour
         piercecapped = AmountAvailable;
     }
 
-    public void SetCanBounce(bool TOF)
-    {
-        CanBounce = TOF;
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -141,7 +142,15 @@ public class Bullet : MonoBehaviour
         {
             GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
 
-            numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString());
+            string DamageNum = "";
+
+            if (Crit)
+            {
+                DamageNum += "CRIT!\n";
+            }
+            DamageNum += DamageToDo.ToString();
+
+            numberobject.GetComponent<DamageNumbers>().SetNumber(DamageNum, Crit);
         }
 
         if (piercecapped <= 0)

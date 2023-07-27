@@ -142,7 +142,13 @@ public class SwordScript : WeaponParent
 
                 GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
 
-                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString());
+                int IsCrit = Random.Range(0, 101);
+                bool DidCrit = false;
+
+                if (IsCrit <= CritRate)
+                    DidCrit = true;
+
+                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString(), DidCrit);
             }
             else if (collision.transform.tag == "Player" && !IsPlayer)
             {
@@ -150,7 +156,7 @@ public class SwordScript : WeaponParent
 
                 GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
 
-                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString());
+                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString(), false);
             }
         }
     }

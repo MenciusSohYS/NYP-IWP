@@ -6,12 +6,13 @@ public class MiniGun : WeaponParent
 {    public MiniGun()
     {
         Damage = 10;
-        FireRate = 0.05f;
+        FireRate = 0.09f;
         Spread = 0.9f;
         MaxMagSize = 300;
         BulletsRemaining = 300;
         ReloadTime = 3f;
         HeatMax = 1f;
+        BulletVelocity = 40;
     }
 
     public override float Attack(Transform fromhere, GameObject Projectile, bool ShotByPlayer)

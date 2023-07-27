@@ -332,6 +332,14 @@ public class PlayFabUserMgtTMP : MonoBehaviour
                 {
                     PlayFabHandler.WeaponSliderValue = float.Parse(result.Data["Weapon"].Value);
                 }
+                if (result.Data == null || !result.Data.ContainsKey("Interaction"))
+                {
+                    Debug.Log("No InteractionSFX");
+                }
+                else
+                {
+                    PlayFabHandler.InteractionSliderValue = float.Parse(result.Data["Interaction"].Value);
+                }
                 GetPlayerHighScore();
             }
             , (error) =>

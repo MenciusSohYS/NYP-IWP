@@ -29,6 +29,7 @@ public class CharacterSelectScript : MonoBehaviour
     private int CurrentDialogue;
     public Slider SliderForBGM;
     public Slider SliderForWeapon;
+    public Slider SliderForInteraction;
     int DifficultyLevel;
     public class HandlerNumberToLocalNumber
     {
@@ -42,6 +43,7 @@ public class CharacterSelectScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1;
         DifficultyLevel = 5;
         CurrentCost = 0; //cost of buying the character
         ConfirmPurchase = false; //for the buying of characters
@@ -91,6 +93,7 @@ public class CharacterSelectScript : MonoBehaviour
 
         SliderForBGM.value = PlayFabHandler.BGMSliderValue;
         SliderForWeapon.value = PlayFabHandler.WeaponSliderValue;
+        SliderForInteraction.value = PlayFabHandler.InteractionSliderValue;
         Difficulty.SetActive(false);
     }
 
@@ -140,14 +143,14 @@ public class CharacterSelectScript : MonoBehaviour
 
         //if player chooses the character, destroy all the others and enable the chosen's scripts
         //then set the camera to follow it
-        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<AudioListener>().enabled = true;
         handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<PlayerMovement>().enabled = true;
+        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<AudioListener>().enabled = true;
         Camera.GetComponent<Camera>().fieldOfView = 80;
         Camera.GetComponent<CameraScript>().enabled = true;
         Camera.GetComponent<CameraScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
         //set trader's player
         Trader.GetComponent<TraderScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
-        Tutor.GetComponent<Tutor>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
+        Tutor.GetComponent<Tutor>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO, false);
         Leaderboard.GetComponent<LeaderboardHandler>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
 
         Description.transform.parent.gameObject.SetActive(false);//disable the panel
@@ -267,6 +270,7 @@ public class CharacterSelectScript : MonoBehaviour
             Pause.SetActive(false);
             PlayFabHandler.BGMSliderValue = SliderForBGM.value;
             PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
+            PlayFabHandler.InteractionSliderValue = SliderForInteraction.value;
             PlayFabHandler.PushAudioPreferences();
         }
         else
@@ -280,6 +284,7 @@ public class CharacterSelectScript : MonoBehaviour
     {
         PlayFabHandler.BGMSliderValue = SliderForBGM.value;
         PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
+        PlayFabHandler.InteractionSliderValue = SliderForInteraction.value;
         PlayFabHandler.LogOut();
     }
 
@@ -313,6 +318,9 @@ public class CharacterSelectScript : MonoBehaviour
                 Description.text = "Press <size=37.5>M</size> to open the map, it fills up as you're moving along. Try not to get lost.";
                 break;
             case 8:
+                Description.text = "Hold <size=37.5>Tab</size> to see your weapon's stats";
+                break;
+            case 9:
                 Description.text = "And thats it, good luck out there, <size=38>You're Gonna Need It</size>";
                 break;
             default:

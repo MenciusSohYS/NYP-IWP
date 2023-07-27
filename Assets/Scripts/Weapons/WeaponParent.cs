@@ -25,6 +25,8 @@ public class WeaponParent : MonoBehaviour
     protected float ReloadPitch;
     protected bool CanUpdate = false;
     protected int Piercing = 1;
+    protected float ReduceNextReload = 0;
+    protected int CritRate = 40;
 
     private void Start()
     {
@@ -53,6 +55,15 @@ public class WeaponParent : MonoBehaviour
             AudioSourceField.Pause();
     }
 
+    public int ReturnPiercing()
+    {
+        return Piercing;
+    }
+    public void SetPierce(int Num)
+    {
+        Piercing = Num;
+    }
+
     public virtual void TellitsAttachedToPlayer()
     {
         if (AudioSourceField == null)
@@ -73,6 +84,11 @@ public class WeaponParent : MonoBehaviour
         BulletShot.GetComponent<Bullet>().AssignVelocity(BulletVelocity);
         BulletShot.GetComponent<Bullet>().AssignPierce(Piercing + Globalvariables.BulletPierce);
         BulletShot.transform.up += new Vector3(RandomX, RandomY, 0);
+
+        int IsCrit = Random.Range(0, 101);
+
+        if (IsCrit <= CritRate)
+            BulletShot.GetComponent<Bullet>().SetCrit(true);
 
         SetNewBulletsLeft(1); //set new bullets left (-1)
         if (CurrentHeat < HeatMax)
@@ -110,9 +126,20 @@ public class WeaponParent : MonoBehaviour
     public void SetMaxHeat(float newheat)
     {
         HeatMax = newheat;
-
-        //Debug.Log("New Heat");
     }
+
+    public void ReduceReload()
+    {
+        //Debug.Log(CurrentReload);
+        SetReloadTimeByNumber(ReturnFullReload() * 0.5f);
+    }
+    
+    public void IncreaseReload()
+    {
+        //Debug.Log(CurrentReload);
+        SetReloadTimeByNumber(ReturnFullReload() * 2);
+    }
+
     public void SetSpread(float spreadtoset)
     {
         Spread = spreadtoset;
@@ -294,5 +321,19 @@ public class WeaponParent : MonoBehaviour
     public void StartCanUpdate()
     {
         CanUpdate = true;
+    }
+
+    public int ReturnCrit()
+    {
+        return CritRate;
+    }
+
+    public void AddCrit(int Add)
+    {
+        CritRate += Add;
+    }
+    public void SetCrit(int SetTo)
+    {
+        CritRate = SetTo;
     }
 }

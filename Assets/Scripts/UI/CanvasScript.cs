@@ -7,6 +7,8 @@ using TMPro;
 public class CanvasScript : MonoBehaviour
 {
     public GameObject Player;
+    public GameObject PlayerGun;
+    public GameObject PlayerBulleSpawner;
     public Slider Health;
     public TextMeshProUGUI Alertmessage;
     public Slider BGHP; //background hpbar
@@ -19,10 +21,18 @@ public class CanvasScript : MonoBehaviour
     public GameObject PausePanel;
     public Slider SliderForBGM;
     public Slider SliderForWeapon;
+    public Slider SliderForInteration;
     public GameObject Pause;
     public TextMeshProUGUI PauseTMP;
     public GameObject BigMapPanel;
     public GameObject MiniMap;
+    public GameObject LobbyButton;
+    public Slider BossHP;
+    public TextMeshProUGUI BossValue;
+    public RectTransform GunStats;
+    int CurrentDialogue;
+    public TextMeshProUGUI Description;
+
 
     [SerializeField] TextMeshProUGUI Coin;
     [SerializeField] TextMeshProUGUI AmmoText;
@@ -36,6 +46,8 @@ public class CanvasScript : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        GunStats.gameObject.SetActive(false);
+        BossHP.gameObject.SetActive(false);
         Cursor.visible = false;
         //find player
         GameOverGO.SetActive(false);
@@ -52,9 +64,12 @@ public class CanvasScript : MonoBehaviour
         PausePanel.SetActive(false);
         SliderForBGM.value = PlayFabHandler.BGMSliderValue;
         SliderForWeapon.value = PlayFabHandler.WeaponSliderValue;
+        SliderForInteration.value = PlayFabHandler.InteractionSliderValue;
         MiniMap = GameObject.FindGameObjectWithTag("MiniMap");
 
         BigMapPanel.SetActive(false);
+        CurrentDialogue = 0;
+        Description.transform.parent.gameObject.SetActive(false);
         //debug of text file
         {
             //string[] Scores = TxtHandler.ReadFile(@"PlayerStats.txt"); //read from file and return an array
@@ -77,6 +92,8 @@ public class CanvasScript : MonoBehaviour
         else
             TimeElapsed -= Time.unscaledTime;
 
+
+
         if (BGHP.value > Health.value)
         {
             BGHP.value -= (Time.deltaTime * (BGHP.maxValue*0.05f));
@@ -90,11 +107,17 @@ public class CanvasScript : MonoBehaviour
             }
         }
         Vector3 positionToMove = Input.mousePosition;
-
         positionToMove.z = Base.position.z;
 
         AmmoIndicator.position = Camera.main.ScreenToWorldPoint(positionToMove + Offset);
         Crosshair.position = Camera.main.ScreenToWorldPoint(positionToMove);
+
+        if (PlayerBulleSpawner)
+        {
+            Vector3 NewPos = Camera.main.WorldToScreenPoint(PlayerBulleSpawner.transform.position);
+            NewPos.z = Base.position.z;
+            GunStats.position = Camera.main.ScreenToWorldPoint(NewPos);
+        }
 
         if (Input.GetKeyDown(KeyCode.F10))
         {
@@ -103,6 +126,20 @@ public class CanvasScript : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.M))
         {
             BigMapInteraction();
+        }
+        else if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (!GunStats.gameObject.activeSelf)
+            {
+                GunStats.gameObject.SetActive(true);
+                GunStats.GetComponent<GunStatScript>().enabled = true;
+                GunStats.GetComponent<GunStatScript>().AssignPlayerGun(PlayerGun);
+            }
+            else
+            {
+                GunStats.gameObject.SetActive(false);
+                GunStats.GetComponent<GunStatScript>().enabled = false;
+            }
         }
     }
 
@@ -138,8 +175,39 @@ public class CanvasScript : MonoBehaviour
     public void TellPlayerGameObjectHasSpawned()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
+        PlayerGun = Player.transform.GetChild(0).GetChild(0).gameObject;
+        PlayerBulleSpawner = PlayerGun.transform.GetChild(0).gameObject;
 
         SkillCoolDown.maxValue = Player.GetComponent<PlayerMechanics>().ReturnMaxCoolDown();
+    }
+
+    public void AssignPlayerGun(GameObject NewPlayerGun)
+    {
+        PlayerGun = NewPlayerGun;
+        PlayerBulleSpawner = PlayerGun.transform.GetChild(0).gameObject;
+        GunStats.GetComponent<GunStatScript>().AssignPlayerGun(PlayerGun);
+    }
+
+    public void SetMaxHpForBoss(int Max)
+    {
+        BossHP.maxValue = Max;
+        BossHP.value = BossHP.maxValue;
+        BossValue.text = BossHP.value.ToString();
+    }
+
+    public void SetHpForBoss(int CurrentHp)
+    {
+        BossHP.value = CurrentHp;
+        BossValue.text = CurrentHp.ToString();
+        if (BossHP.value <= 0)
+        {
+            BossHP.gameObject.SetActive(false);
+        }
+    }
+
+    public void SetBossHpActive()
+    {
+        BossHP.gameObject.SetActive(true);
     }
 
     public void SetMaxNCurrentHP(int Max, int Curr)
@@ -195,6 +263,7 @@ public class CanvasScript : MonoBehaviour
     {
         Cursor.visible = true;
         GameOverGO.SetActive(true);
+        LobbyButton.SetActive(true);
         PlayFabHandler.PushScore(Globalvariables.EnemiesKilled);
     }
 
@@ -202,11 +271,14 @@ public class CanvasScript : MonoBehaviour
     {
         PlayFabHandler.BGMSliderValue = SliderForBGM.value;
         PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
+        PlayFabHandler.InteractionSliderValue = SliderForInteration.value;
         PlayFabHandler.LogOut();
     }
 
     public void ReturnToLobby()
     {
+        Time.timeScale = 1;
+        SendScore();
         Globalvariables.ForgetEverything();
         Cursor.visible = true;
         UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
@@ -243,6 +315,7 @@ public class CanvasScript : MonoBehaviour
             Pause.SetActive(false);
             PlayFabHandler.BGMSliderValue = SliderForBGM.value;
             PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
+            PlayFabHandler.InteractionSliderValue = SliderForInteration.value;
             PlayFabHandler.PushAudioPreferences();
             Time.timeScale = 1;
         }
@@ -253,5 +326,49 @@ public class CanvasScript : MonoBehaviour
             Pause.SetActive(true);
             Time.timeScale = 0;
         }
+    }
+
+    public bool CycleThroughDialogue()
+    {
+        Description.transform.parent.gameObject.SetActive(true);//enable the panel
+        switch (CurrentDialogue)
+        {
+            case 0:
+                Description.text = "<size=37.5>WASD</size> to move, <size=37.5>Left Click</size> to shoot and <size=37.5>R</size> to reload";
+                break;
+            case 1:
+                Description.text = "Rolling (<size=37.5>SPACE</size>) is very crucial, it makes you invulnerable for its duration";
+                break;
+            case 2:
+                Description.text = "Hold <size=37.5>Ctrl</size> to move slowly, helps with positioning";
+                break;
+            case 3:
+                Description.text = "Press <size=37.5>M</size> to open the map, it fills up as you're moving along. Try not to get lost.";
+                break;
+            case 4:
+                Description.text = "You can only have <size=37.5>1</size> weapon at once, upgrades bought with the workbench <size=37.5>only</size> applies to that weapon";
+                break;
+            case 5:
+                Description.text = "<size=37.5>Half</size> covers reduce damage recieved and increases accuracy.";
+                break;
+            case 6:
+                Description.text = " <size=37.5>Full</size> covers protects you from projectiles and reduces your reload time";
+                break;
+            case 7:
+                Description.text = "Press <size=37.5>F</size> to use your ability, different characters different abilities";
+                break;
+            case 8:
+                Description.text = "Hold <size=37.5>Tab</size> to see your weapon's stats";
+                break;
+            case 9:
+                Description.text = "And thats it, good luck out there, <size=38>You're Gonna Need It</size>";
+                break;
+            default:
+                CurrentDialogue = 0;
+                Description.transform.parent.gameObject.SetActive(false);
+                return true;
+        }
+        ++CurrentDialogue;
+        return false;
     }
 }

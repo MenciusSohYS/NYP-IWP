@@ -17,6 +17,7 @@ public class BowScript : WeaponParent
         PositionToParent = new Vector3(0, 0.6f, 0);
         BulletVelocity = 40;
         Piercing = 4;
+        CritRate = 70;
     }
 
     public Sprite[] Sprites;
@@ -25,6 +26,7 @@ public class BowScript : WeaponParent
     public GameObject ArrowPrefab;
     private Transform FromHere;
     private bool isShotByPlayer;
+    public AudioClip[] ArrowSFX;
 
     private void Start()
     {
@@ -36,6 +38,7 @@ public class BowScript : WeaponParent
     {
         if (CurrentHeat == 0)
         {
+            PlayShootingSound();
             BowStringSpriteRenderer.sprite = Sprites[Sprites.Length - 1];
             BowStringTransform.GetChild(0).gameObject.SetActive(true);
         }
@@ -49,18 +52,41 @@ public class BowScript : WeaponParent
         }
         return 0;
     }
+    protected override void PlayShootingSound()
+    {
+        //int RandomShootingSound = Random.Range(0, ShootingSoundEffects.Length); //use if I decide to put in more sound
+        AudioSourceField.clip = ShootingSoundEffects[0];
+        //Debug.Log(ShootingSoundEffects[RandomShootingSound].name);
+        AudioSourceField.Play();
+        //Debug.Log("Playing Revolver Sound");
+    }
 
     public override void SetWeaponHeat(float ElapsedTime)
     {
         if (CurrentHeat > 0)
         {
+
             GameObject BulletShot = Instantiate(ArrowPrefab, FromHere.position, FromHere.rotation);
             BulletShot.GetComponent<Bullet>().ShotBy(isShotByPlayer); //shot by enemy or player
             BulletShot.GetComponent<Bullet>().AssignDamage((int)(Damage * CurrentHeat));
             BulletShot.GetComponent<Bullet>().AssignVelocity((int)(20 + (BulletVelocity * CurrentHeat)));
             BulletShot.GetComponent<Bullet>().AssignPierce((int)(Piercing * CurrentHeat) + 1 + Globalvariables.BulletPierce);
 
+            int IsCrit = Random.Range(0, 101);
+
+            if (IsCrit <= CritRate)
+                BulletShot.GetComponent<Bullet>().SetCrit(true);
             //Debug.Log((int)(BulletVelocity * CurrentHeat));
+            if (CurrentHeat >= HeatMax)
+            {
+                AudioSourceField.clip = ArrowSFX[1];
+                AudioSourceField.Play();
+            }
+            else
+            {
+                GetComponent<AudioSource>().clip = ArrowSFX[0];
+                AudioSourceField.Play();
+            }
 
             SetNewBulletsLeft(1); //set new bullets left (-1)
             SetBowStringScale(0.1f);

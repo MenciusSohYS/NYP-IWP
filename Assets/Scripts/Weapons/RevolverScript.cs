@@ -14,6 +14,7 @@ public class RevolverScript : WeaponParent
         HeatMax = 0.5f;
         PositionToParent = new Vector3(0, 0.6f, 0);
         Chambered = true;
+        CritRate = 70;
     }
     private float timeforonebullet;
 
@@ -22,7 +23,8 @@ public class RevolverScript : WeaponParent
         //Debug.Log(ReloadSound.clip.length + "/" + remainingReloadTime + "=" + ReloadSound.clip.length / remainingReloadTime);
         //Debug.Log(ReloadPitch);
 
-        timeforonebullet = (MaxMagSize / ReloadTime);
+        timeforonebullet = (MaxMagSize / (ReloadTime - ReduceNextReload));
+        ReduceNextReload = 0;
     }
 
     public override void SetReloadTimeByNumber(float setto)

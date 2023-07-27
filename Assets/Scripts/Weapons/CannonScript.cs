@@ -41,6 +41,11 @@ public class CannonScript : WeaponParent
         BulletShot.GetComponent<Bullet>().AssignPierce(1);
         BulletShot.transform.up += new Vector3(RandomX, RandomY, 0);
 
+        int IsCrit = Random.Range(0, 101);
+
+        if (IsCrit <= CritRate)
+            BulletShot.GetComponent<Bullet>().SetCrit(true);
+
         Vector2 recoilForce = -BulletShot.transform.up * BulletVelocity * 20;
 
         PlayerRB.AddForce(recoilForce);

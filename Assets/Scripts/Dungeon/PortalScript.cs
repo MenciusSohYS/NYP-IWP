@@ -35,7 +35,7 @@ public class PortalScript : MonoBehaviour
 
                 //Debug.Log(Globalvariables.CurrentLevel);
 
-                if (Globalvariables.CurrentLevel >= 10)
+                if (Globalvariables.CurrentLevel >= 5 + Globalvariables.Difficulty * 0.5f)
                 {
                     PlayFabHandler.PushScore(Globalvariables.EnemiesKilled);
                     Globalvariables.ForgetEverything();
@@ -72,6 +72,8 @@ public class PortalScript : MonoBehaviour
                 Globalvariables.WeaponComponents.Spread = PlayerWeaponScript.GetSpread();
                 Globalvariables.WeaponComponents.HeatMax = PlayerWeaponScript.ReturnMaxHeat();
                 Globalvariables.WeaponComponents.Velocity = PlayerWeaponScript.ReturnVelocity();
+                Globalvariables.WeaponComponents.WeaponPierce = PlayerWeaponScript.ReturnPiercing();
+                Globalvariables.WeaponComponents.CritRate = PlayerWeaponScript.ReturnCrit();
                 Globalvariables.WeaponComponents.CurrentUpgrades = PlayerGunScript.ReturnCurrentUpgrade();
 
 

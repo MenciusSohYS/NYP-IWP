@@ -12,6 +12,7 @@ public class CrankGun : WeaponParent
         BulletsRemaining = 100;
         ReloadTime = -1f;
         HeatMax = 1f;
+        CritRate = 30;
     }
 
     public override void CallFlipped(bool ToF)

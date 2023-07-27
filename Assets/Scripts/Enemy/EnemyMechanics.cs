@@ -26,9 +26,11 @@ public class EnemyMechanics : MonoBehaviour
         BasicRanged,
         BasicMelee,
         SniperRanged,
-        BossRanged
+        BossRanged,
+        BossMelee
     }
     [SerializeField] EnemyType enemyType;
+    private SpecialBossScript SpecialBossScriptField;
 
     // Start is called before the first frame update
     void Start()
@@ -42,11 +44,13 @@ public class EnemyMechanics : MonoBehaviour
         ////Debug.Log("First");
         //CurrentHealth = 100;
 
-        if (enemyType == EnemyType.BossRanged)
+        if (enemyType == EnemyType.BossRanged || enemyType == EnemyType.BossMelee)
         {
             MaxHP = CurrentHealth;
+            SpecialBossScriptField = GetComponent<SpecialBossScript>();
         }
     }
+
     private void Update()
     {
         if (DOTDuration <= 0)
@@ -69,7 +73,7 @@ public class EnemyMechanics : MonoBehaviour
 
         GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
 
-        numberobject.GetComponent<DamageNumbers>().SetNumber(DOTDamage.ToString());
+        numberobject.GetComponent<DamageNumbers>().SetNumber(DOTDamage.ToString(), false);
         numberobject.GetComponent<TextMeshPro>().color = new Color(1, 0, 0);
 
         DOTCountDown = 0.5f;
@@ -101,10 +105,23 @@ public class EnemyMechanics : MonoBehaviour
 
     public void MinusHP(int MinusBy)
     {
+        if (InsideThisRoom == null)
+            return;
+
         if (CurrentHealth > MinusBy)
+        {
             CurrentHealth -= MinusBy;
+            if (enemyType == EnemyType.BossRanged || enemyType == EnemyType.BossMelee)
+            {
+                SpecialBossScriptField.SetBossHpOnCanvas(CurrentHealth);
+            }
+        }
         else
         {
+            if (enemyType == EnemyType.BossRanged || enemyType == EnemyType.BossMelee)
+            {
+                SpecialBossScriptField.SetBossHpOnCanvas(0);
+            }
             //Debug.Log(CostOfEnemy);
             Player.GetComponent<PlayerMechanics>().SetCoins(CostOfEnemy);
             InsideThisRoom.GetComponent<DungeonScript>().RemoveEnemyFromList(gameObject);

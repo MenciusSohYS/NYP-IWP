@@ -360,6 +360,7 @@ MonoBehaviour:
   CharacterAbility: {fileID: 0}
   PlayerMoveScript: {fileID: 0}
   SpriteRender: {fileID: 0}
+  InvulnerableDebug: 0
 --- !u!58 &3619627602483614714
 CircleCollider2D:
   m_ObjectHideFlags: 0

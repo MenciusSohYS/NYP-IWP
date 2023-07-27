@@ -34,9 +34,13 @@ public class InputfieldScript : MonoBehaviour
             itemScript.ChangeItemTotalCost(parsedValue - MinimumNumber); //change the item total cost (display it to user)
             return;
         }
-        else
+        else if (parsedValue < MinimumNumber)
         {
             inputField.text = MinimumNumber.ToString();
+        }
+        else if (parsedValue > 5)
+        {
+            inputField.text = "5";
         }
     }
 

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpecialBossScript : MonoBehaviour
-{    public enum Phase
+{
+    public enum Phase
     {
         Phase0,
         Phase1,
@@ -14,11 +15,33 @@ public class SpecialBossScript : MonoBehaviour
 
     [SerializeField] Phase CurrentPhaseNumber;
     [SerializeField] Phase PreviousPhaseNumber;
+    private CanvasScript Canvas;
 
     private void Start()
     {
         CurrentPhaseNumber = Phase.Phase0;
         PreviousPhaseNumber = Phase.Phase0;
+        CheckIfCanvasNull();
+    }
+
+    void CheckIfCanvasNull()
+    {
+        if (Canvas != null)
+            return;
+
+        Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
+    }
+
+    public void SetBossHP(int Max)
+    {
+        CheckIfCanvasNull();
+        Canvas.SetMaxHpForBoss(Max);
+        Canvas.SetBossHpActive();
+    }
+
+    public void SetBossHpOnCanvas(int HowMuch)
+    {
+        Canvas.SetHpForBoss(HowMuch);
     }
 
     public Phase ReturnCurrentPhaseNumber()

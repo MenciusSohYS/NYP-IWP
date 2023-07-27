@@ -10,7 +10,7 @@ public static class Globalvariables
     public static int MaxHP = 200;
     public static int CurrentHP = 200;
     public static int Speed = 12;
-    public static float timerforsound;
+    public static float timerforsound = 0;
     public static float Difficulty = 1;
     public static bool FlamingBullet = false;
     public static int BulletPierce = 0;
@@ -33,13 +33,15 @@ public static class Globalvariables
         public static int Velocity;
         public static int CurrentUpgrades;
         public static string WeaponName;
+        public static int WeaponPierce;
+        public static int CritRate;
     };
 
     public static void ForgetEverything()
     {
         MaxHP = 200;
         CurrentHP = 200;
-        Speed = 12;
+        Speed = 0;
         CurrentLevel = 1;
         FlamingBullet = false;
         BulletPierce = 0;
@@ -48,5 +50,8 @@ public static class Globalvariables
         DOTStacks = 0;
         HealthOrb = 0;
         EnemiesKilled = 0;
+        Playerprefabname = "";
+        timerforsound = 0;
+        Difficulty = 1;
     }
 }

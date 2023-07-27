@@ -5,15 +5,20 @@ using TMPro;
 
 public class DamageNumbers : MonoBehaviour
 {
+    public TextMeshPro textfield;
     // Start is called before the first frame update
     void Start()
     {
         Destroy(gameObject, 0.5f);
     }
 
-    public void SetNumber(string Number)
+    public void SetNumber(string Number, bool Crit)
     {
-        GetComponent<TextMeshPro>().text = Number;
+        textfield.text = Number;
+        if (Crit)
+        {
+            textfield.color = Color.red;
+        }
     }
 
 

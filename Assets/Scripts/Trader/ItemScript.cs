@@ -109,6 +109,7 @@ public class ItemScript : MonoBehaviour
             CanvasGO.GetComponent<CharacterSelectScript>().UpdateCoins(currentcost * (int.Parse(AmountOwnedText.text) - OriginalAmount)); //update the current coins
             SetItemAmount(int.Parse(AmountOwnedText.text));
             CanvasGO.GetComponent<ShopScript>().SetText("Bought");
+            ChangeItemTotalCost(0);
         }
         else if (int.Parse(AmountOwnedText.text) != 0)
         {

@@ -137,6 +137,11 @@ public class EnemyRangedScript : MonoBehaviour
         }
     }
 
+    public void SetMaxMagCap(int AmountToSet)
+    {
+        WeaponScript.SetMaxMagSize(AmountToSet);
+    }
+
     public void ChangeBulletVelo(float ByHowMuch)
     {
         WeaponScript.MultiplyVelocity(ByHowMuch);

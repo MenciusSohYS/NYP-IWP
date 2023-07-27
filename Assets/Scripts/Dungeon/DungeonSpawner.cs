@@ -10,6 +10,7 @@ public class DungeonSpawner : MonoBehaviour
     public GameObject CorridorPrefab;
     public GameObject BossRoomPrefab;
     public GameObject UpgradeRoomPrefab;
+    public GameObject TutorialManPrefab;
     private int[][] GridOfDungeon = new int[GridSize][]; //create a grid
     [SerializeField] int[] TestMap;
     public GameObject[] PlayerPrefabs;
@@ -33,9 +34,19 @@ public class DungeonSpawner : MonoBehaviour
             if (PlayerPrefabs[i].name == Globalvariables.Playerprefabname)
             {
                 GameObject PlayerGO = Instantiate(PlayerPrefabs[i], new Vector3(0, 0, -0.05f), Quaternion.identity);
-                mainCamera.GetComponent<CameraScript>().SetPlayer(PlayerGO);
+
+                mainCamera.GetComponent<CameraScript>().StopCamera();
+                mainCamera.transform.SetParent(PlayerGO.transform);
+                mainCamera.transform.position = new Vector3(0, 0, -10);
+                mainCamera.GetComponent<Camera>().fieldOfView = 100;
+
                 miniMap.GetComponent<CameraScript>().SetPlayer(PlayerGO);
 
+                if (Globalvariables.Difficulty <= 3)
+                {
+                    GameObject Tutor = Instantiate(TutorialManPrefab, new Vector3(2, 2, -0.05f), Quaternion.identity);
+                    Tutor.GetComponent<Tutor>().SetPlayer(PlayerGO, true);
+                }
 
                 if (Globalvariables.CurrentLevel > 1)
                 {

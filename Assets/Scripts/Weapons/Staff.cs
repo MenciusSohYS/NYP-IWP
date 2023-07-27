@@ -81,6 +81,12 @@ public class Staff : WeaponParent
         BulletShot.GetComponent<Bullet>().AssignDamage(Damage);
         BulletShot.GetComponent<Bullet>().AssignVelocity(BulletVelocity);
         BulletShot.GetComponent<Bullet>().AssignPierce(Piercing + Globalvariables.BulletPierce);
+
+        int IsCrit = Random.Range(0, 101);
+
+        if (IsCrit <= CritRate)
+            BulletShot.GetComponent<Bullet>().SetCrit(true);
+
         BulletShot.transform.up += new Vector3(RandomX, RandomY, 0);
 
 

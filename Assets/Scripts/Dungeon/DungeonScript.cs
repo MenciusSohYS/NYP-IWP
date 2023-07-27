@@ -29,6 +29,8 @@ public class DungeonScript : MonoBehaviour
     public List<GameObject> MeleeEnemies; //all enemies
     public List<GameObject> RangedEnemies; //all enemies
 
+    public GameObject RoomNotCleared; //all enemies
+
     [SerializeField] List<int> SidesWithCorridors;
 
     private TestGrid GridReference;
@@ -183,11 +185,22 @@ public class DungeonScript : MonoBehaviour
 
     public void RemoveFog()
     {
-        Fog.SetActive(false);
+        if (RoomNotCleared == null)
+            return;
+
+        if (Fog.activeSelf)
+        {
+            Fog.SetActive(false);
+            RoomNotCleared.SetActive(true);
+        }
     }
 
     public void EnableEnemies() //enable enemy ai and also shut the doors so the player cannot escape
     {
+        if (RoomNotCleared)
+        {
+            RoomNotCleared.SetActive(false);
+        }
 
         for (int i = 0; i < Enemies.Count; ++i)
         {
@@ -217,9 +230,21 @@ public class DungeonScript : MonoBehaviour
 
             //change damage, hp and bullet velo based on difficulty
             Enemyrangedscript.IncreaseDamage(MultiplicationValueForDifficulty);
-            Enemyrangedscript.ChangeBulletVelo(MultiplicationValueForDifficulty);
             EnemyMechanicScript.MultiplyHP(MultiplicationValueForDifficulty);
 
+            if (EnemyMechanicScript.ReturnEnemyType() == EnemyMechanics.EnemyType.BasicRanged)
+            {
+                Enemyrangedscript.SetMaxMagCap(20);
+            }
+            else if (EnemyMechanicScript.ReturnEnemyType() == EnemyMechanics.EnemyType.BossMelee || EnemyMechanicScript.ReturnEnemyType() == EnemyMechanics.EnemyType.BossRanged)
+            {
+                Enemies[i].GetComponent<SpecialBossScript>().SetBossHP(EnemyMechanicScript.GetHP());
+            }
+
+            if (EnemyMechanicScript.ReturnEnemyType() == EnemyMechanics.EnemyType.BasicRanged || EnemyMechanicScript.ReturnEnemyType() == EnemyMechanics.EnemyType.SniperRanged)
+            {
+                Enemyrangedscript.ChangeBulletVelo(0.5f);
+            }
         }
         for (int i = 0; i < SidesWithCorridors.Count; ++i)
         {
@@ -303,15 +328,19 @@ public class DungeonScript : MonoBehaviour
 
     public void RangedTryToLookForPlayer(Vector3 PlayerLocation) //world coords
     {
+        int Attacking = 0;
+        int Hiding = 0;
         foreach (GameObject RangedEnemy in RangedEnemies)
         {
-            if (RangedEnemy.transform.GetChild(0).GetComponent<EnemyRangedScript>().ReturnIsReloading()) //if they are reloading, they should run
+            if (RangedEnemy.transform.GetChild(0).GetComponent<EnemyRangedScript>().ReturnIsReloading() || Hiding < Attacking) //if they are reloading, they should run
             {
                 EnemyGoAndHide(RangedEnemy, PlayerLocation);
+                ++Hiding;
             }
             else
             {
                 EnemyFindPlayer(RangedEnemy, PlayerLocation);
+                ++Attacking;
             }
         }
     }

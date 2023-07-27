@@ -102,7 +102,7 @@ public class ScytheScript : WeaponParent
 
                 GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
 
-                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString());
+                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString(), false);
             }
             else if (collision.transform.tag == "Player" && !IsPlayer)
             {
@@ -110,7 +110,7 @@ public class ScytheScript : WeaponParent
 
                 GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
 
-                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString());
+                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString(), false);
             }
         }
     }

@@ -190,6 +190,7 @@ public class GunScript : MonoBehaviour
             WeaponScript.SetFireRateByNumber((WeaponScript.GetFireRate() * 0.8f)); //lower the firerate the faster the gun shoots
             WeaponScript.SetReloadTimeByNumber(WeaponScript.ReturnFullReload() * 0.75f); //lower the reload time the faster
             WeaponScript.SetSpread(WeaponScript.GetSpread() * 0.8f); //lower the spread the better
+            WeaponScript.AddCrit(5); //more crit
 
             if (!WeaponScript.transform.name.Contains("Staff"))
             {
@@ -301,7 +302,10 @@ public class GunScript : MonoBehaviour
         GunSprite = NewGun.GetComponent<SpriteRenderer>();
         //set new bullets left
         if (PlayerMechanicsScript != null) //dungeon might call it before its assigned, but we will call the bottom script later when the thing properly initializes
+        {
             PlayerMechanicsScript.ShowAmmoLeft(WeaponScript.ReturnCurrentMag());
+            PlayerMechanicsScript.UpdateWeaponStats(transform.GetChild(0).gameObject);
+        }
 
         if (GunTransform.GetComponent<WeaponDropped>() != null) //if it exists
         {
@@ -359,6 +363,8 @@ public class GunScript : MonoBehaviour
         WeaponScript.SetSpread(Globalvariables.WeaponComponents.Spread);
         WeaponScript.SetMaxHeat(Globalvariables.WeaponComponents.HeatMax);
         WeaponScript.SetVelocity(Globalvariables.WeaponComponents.Velocity);
+        WeaponScript.SetPierce(Globalvariables.WeaponComponents.WeaponPierce);
+        WeaponScript.SetCrit(Globalvariables.WeaponComponents.CritRate);
         WeaponScript.TellitsAttachedToPlayer();
         CurrentUpgrade = Globalvariables.WeaponComponents.CurrentUpgrades;
         WeaponScript.SetCurrentUpgrades(CurrentUpgrade);
@@ -376,12 +382,23 @@ public class GunScript : MonoBehaviour
 
     public void IncreaseAccuracy()
     {
-        Debug.Log("Increasing");
+        //Debug.Log("Increasing");
         WeaponScript.SetSpread(WeaponScript.GetSpread() * 0.5f);
     }
     public void DecreaseAccuracy()
     {
-        Debug.Log("Decreasing");
+        //Debug.Log("Decreasing");
         WeaponScript.SetSpread(WeaponScript.GetSpread() * 2);
+    }
+
+    public void ReduceReload()
+    {
+        //Debug.Log("Decrease Reload");
+        WeaponScript.ReduceReload();
+    }
+    public void IncreaseReload()
+    {
+        //Debug.Log("Increase Reload");
+        WeaponScript.IncreaseReload();
     }
 }

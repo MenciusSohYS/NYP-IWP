@@ -19,11 +19,12 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] PlayerMovement PlayerMoveScript;
     [SerializeField] SpriteRenderer SpriteRender;
     private GunScript PlayergunScript;
-    
+    public bool InvulnerableDebug;
 
     // Start is called before the first frame update
     void Start()
     {
+        InvulnerableDebug = false;
         InvulnTime = 0;
         Currency = 0;
         CharacterAbility = GetComponent<AbilityParent>();
@@ -104,6 +105,8 @@ public class PlayerMechanics : MonoBehaviour
         {
             if (CurrentHealth - howmuchtominus <= 0)
             {
+                GameObject.FindGameObjectWithTag("MainCamera").transform.SetParent(null);
+
                 gameObject.SetActive(false);
                 gameObject.GetComponent<CircleCollider2D>().enabled = false;
                 Canvas.SetText("Game Over", -1);
@@ -138,7 +141,7 @@ public class PlayerMechanics : MonoBehaviour
             HowMuchToHeal *= Globalvariables.HealthOrb;
         }
 
-        Debug.Log(HowMuchToHeal);
+        //Debug.Log(HowMuchToHeal);
 
         CurrentHealth += HowMuchToHeal;
         if (MaxHealth < CurrentHealth)
@@ -172,6 +175,14 @@ public class PlayerMechanics : MonoBehaviour
             Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
 
         Canvas.UpdateAmmo(Ammo);
+    }
+
+    public void UpdateWeaponStats(GameObject NewGun)
+    {
+        if (Canvas == null && SceneManager.GetActiveScene().name != "LobbyScene")
+            Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
+
+        Canvas.AssignPlayerGun(NewGun);
     }
 
     public void IncreaseMaxHP(int ByHowMuch)

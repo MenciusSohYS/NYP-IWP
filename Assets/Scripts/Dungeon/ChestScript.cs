@@ -9,6 +9,7 @@ public class ChestScript : MonoBehaviour
     private PlayerMechanics PlayerMechs;
     public GameObject[] ThisToSpawn;
     public Sprite OpenedSprite;
+    public AudioSource ASource;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +35,8 @@ public class ChestScript : MonoBehaviour
                     NewObj.GetComponent<WeaponDropped>().enabled = true;
                 }
                 GetComponent<SpriteRenderer>().sprite = OpenedSprite;
+                transform.GetChild(0).gameObject.SetActive(false);
+                ASource.Pause();
                 GetComponent<CircleCollider2D>().enabled = false;
             }
         }

@@ -244,8 +244,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ReloadSoundEffect: {fileID: 0}
   ShootingSoundEffects:
-  - {fileID: 8300000, guid: 73072c3257f0f8549b944b09149c4830, type: 3}
-  - {fileID: 8300000, guid: 4115c9c06035bd742b842d5345f511f6, type: 3}
+  - {fileID: 8300000, guid: e82f888729668b842b75a7027b4df511, type: 3}
+  - {fileID: 8300000, guid: 1d5af2bf8f1a0464c872f0de29d24053, type: 3}
   DamageNumber: {fileID: 1311177426580020759, guid: 19cb6c83ae668944b9ee83e3763fc17f, type: 3}
   SlashWave: {fileID: 5057738742393006419, guid: 5750e2aa53e3e8a4cb75f3d01762b7e1, type: 3}
   SlashSpawnPoint: {fileID: 8331906321255711262}

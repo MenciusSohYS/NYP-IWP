@@ -28,6 +28,7 @@ public class WeaponBenchScript : MonoBehaviour
             Player.GetComponent<PlayerMechanics>().MessagePlayer("Press E to upgrade weapon");
             if (Input.GetKeyDown(KeyCode.E))
             {
+                Player.GetComponent<PlayerMechanics>().MessagePlayer("Upgraded!");
                 UpgradeWeapon();
                 foreach (BoxCollider2D collider in colliders)
                 {

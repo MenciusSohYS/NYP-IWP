@@ -54,7 +54,7 @@ public class FirePanning : MonoBehaviour
 
             GameObject numberobject = Instantiate(DamageNumber, collision.transform.position, Quaternion.identity);
 
-            numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString());
+            numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString(), false);
 
             collision.transform.GetComponent<EnemyMechanics>().SetDOT(DamageToDo);
         }

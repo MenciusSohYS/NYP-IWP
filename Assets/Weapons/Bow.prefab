@@ -101,11 +101,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ReloadSoundEffect: {fileID: 0}
-  ShootingSoundEffects: []
+  ShootingSoundEffects:
+  - {fileID: 8300000, guid: 21d79e0b0fb799747b68dfb8317fee37, type: 3}
   Sprites:
   - {fileID: 21300000, guid: 0aec9bb6f23722d469126047c6e3e0e9, type: 3}
   - {fileID: 21300000, guid: baa5ca3fab52bba41b0fc7ac8cba0091, type: 3}
   ArrowPrefab: {fileID: 5057738742393006419, guid: 628ef067784ce71438f6ddb4d12e69c9, type: 3}
+  ArrowSFX:
+  - {fileID: 8300000, guid: bb6649107ea531e449cdce39aafcba10, type: 3}
+  - {fileID: 8300000, guid: b35659443ec32c64ab609826fe92d7f7, type: 3}
 --- !u!82 &2351484142959052787
 AudioSource:
   m_ObjectHideFlags: 0
@@ -115,7 +119,7 @@ AudioSource:
   m_GameObject: {fileID: 2325470093786714973}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 33affef7954f14b45aa75788b655121b, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

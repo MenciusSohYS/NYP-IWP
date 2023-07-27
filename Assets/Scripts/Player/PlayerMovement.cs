@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 Movement;
     int speed;
     Rigidbody2D rb;
+    SpriteRenderer playerSP;
     [SerializeField] float Rolling;
     [SerializeField] float RollingCooldown;
     [SerializeField] float FlyingTimer;
@@ -22,12 +23,12 @@ public class PlayerMovement : MonoBehaviour
     {
         touchinghalfcover = false;
         CheckSpeed();
-        Rolling = 0;
-        RollingCooldown = 0;
+        Rolling = -0.1f;
+        RollingCooldown = -0.1f;
         FlyingTimer = 0;
         rollingleft = true;
         rb = GetComponent<Rigidbody2D>();
-
+        playerSP = GetComponent<SpriteRenderer>();
         if (Globalvariables.CurrentLevel > 1)
         {
             speed = Globalvariables.Speed;
@@ -69,23 +70,39 @@ public class PlayerMovement : MonoBehaviour
                         rollingleft = false;
                 }
             }
+
             else if (Input.GetKey(KeyCode.LeftControl))
+            {
                 rb.velocity = new Vector2(Movement.x * speed * 0.5f, Movement.y * speed * 0.5f);
+                if (playerSP.color.a > 0.8f)
+                    playerSP.color = new Color(playerSP.color.r, playerSP.color.g, playerSP.color.b, 0.75f);
+            }
             else
+            {
                 rb.velocity = new Vector2(Movement.x * speed, Movement.y * speed);
+                if (playerSP.color.a < 1)
+                    playerSP.color = new Color(playerSP.color.r, playerSP.color.g, playerSP.color.b, 1);
+            }
         }
         else if (FlyingTimer <= 0)
         {
             if (rollingleft)
+            {
                 transform.Rotate(0, 0, 1000 * Time.deltaTime);
+                transform.GetChild(transform.childCount - 1).Rotate(0, 0, -1000 * Time.deltaTime);
+            }
             else
+            {
                 transform.Rotate(0, 0, -1000 * Time.deltaTime);
+                transform.GetChild(transform.childCount - 1).Rotate(0, 0, 1000 * Time.deltaTime);
+            }
 
             Rolling -= Time.deltaTime;
             rb.velocity = new Vector2(MovementAxisForRolling.x * (speed + 2), MovementAxisForRolling.y * (speed + 2));
             if (Rolling <= 0)
             {
                 transform.localRotation = Quaternion.Euler(0, 0, 0);
+                transform.GetChild(transform.childCount - 1).localRotation = Quaternion.Euler(0, 0, 0);
                 RollingCooldown = 0.5f;
             }
         }
@@ -163,6 +180,7 @@ public class PlayerMovement : MonoBehaviour
 
     void CheckSpeed()
     {
+        //Debug.Log("Before: " + speed);
         if (speed < 1)
         {
             speed = 12;
@@ -177,16 +195,13 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
+        //Debug.Log("After: " + speed);
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.transform.tag.Contains("HalfCover"))
+        if (collision.tag.Contains("HalfCover"))
         {
-            if (PlayerGS == null)
-            {
-                PlayerGS = transform.GetChild(0).GetComponent<GunScript>();
-            }
+            CheckPGS();
 
             if (PlayerGS) //if dont have means its a melee and melee isnt affected by this
             {
@@ -194,23 +209,45 @@ public class PlayerMovement : MonoBehaviour
             }
             touchinghalfcover = true;
         }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.transform.tag.Contains("HalfCover"))
+        else if (collision.tag.Contains("Fullcover"))
         {
-            if (PlayerGS == null)
-            {
-                PlayerGS = transform.GetChild(0).GetComponent<GunScript>();
-            }
+            CheckPGS();
 
+            if (PlayerGS) //if dont have means its a melee and melee isnt affected by this
+            {
+                PlayerGS.ReduceReload();
+            }
+            touchinghalfcover = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag.Contains("HalfCover"))
+        {
+            CheckPGS();
             if (PlayerGS) //if dont have means its a melee and melee isnt affected by this
             {
                 PlayerGS.DecreaseAccuracy();
             }
             touchinghalfcover = false;
         }
+        else if (collision.tag.Contains("Fullcover"))
+        {
+            CheckPGS();
+
+            if (PlayerGS) //if dont have means its a melee and melee isnt affected by this
+            {
+                PlayerGS.IncreaseReload();
+            }
+            touchinghalfcover = false;
+        }
+    }
+
+    void CheckPGS()
+    {
+        if (PlayerGS != null)
+            return;
+        PlayerGS = transform.GetChild(0).GetComponent<GunScript>();
     }
 
     public bool IsTouchingHalfCover()
