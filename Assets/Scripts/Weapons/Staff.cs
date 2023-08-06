@@ -35,7 +35,7 @@ public class Staff : WeaponParent
 
     public override void SetWeaponHeat(float ElapsedTime)
     {
-        if (AudioSourceField.clip != ReloadSoundEffect && CurrentHeat > HeatMax * 0.3f)
+        if (AudioSourceField.clip != ReloadSoundEffect && CurrentHeat > HeatMax * 0.5f)
         {
             AudioSourceField.clip = ReloadSoundEffect;
             AudioSourceField.Play();
@@ -60,8 +60,19 @@ public class Staff : WeaponParent
             return;
         }
 
-        CurrentHeat -= Time.deltaTime * 0.5f;
+        float Modifier = 0.5f * (4 / ReloadTime);
+        if (CurrentHeat > HeatMax)
+        {
+            Modifier = 0.25f;
+        }
+        CurrentHeat -= Time.deltaTime * Modifier;
         BulletsRemaining = (int)((HeatMax - CurrentHeat) * 100);
+    }
+
+    public override void SetReloadTimeByNumber(float setto)
+    {
+        ReloadTime = setto;
+        ReloadPitch = ReloadSoundDuration / ReloadTime; //pitch for reload will probably only change here
     }
 
     public override float Attack(Transform fromhere, GameObject Projectile, bool ShotByPlayer)
@@ -81,6 +92,18 @@ public class Staff : WeaponParent
         BulletShot.GetComponent<Bullet>().AssignDamage(Damage);
         BulletShot.GetComponent<Bullet>().AssignVelocity(BulletVelocity);
         BulletShot.GetComponent<Bullet>().AssignPierce(Piercing + Globalvariables.BulletPierce);
+        {
+            // Convert mouse position to world position
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z = 10f; // Set an arbitrary distance from the camera
+
+            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            Vector3 direction = mouseWorldPosition - BulletShot.transform.position;
+            direction.z = 0f; // Ensure the Z-component is zero since it's a 2D game
+
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            BulletShot.transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+        }
 
         int IsCrit = Random.Range(0, 101);
 

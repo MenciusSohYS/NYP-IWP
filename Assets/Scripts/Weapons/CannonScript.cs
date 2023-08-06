@@ -33,7 +33,6 @@ public class CannonScript : WeaponParent
 
         PlayShootingSound();
 
-
         GameObject BulletShot = Instantiate(CannonBall, fromhere.position, fromhere.rotation);
         BulletShot.GetComponent<Bullet>().ShotBy(ShotByPlayer); //shot by enemy or player
         BulletShot.GetComponent<Bullet>().AssignDamage(Damage);
@@ -46,7 +45,7 @@ public class CannonScript : WeaponParent
         if (IsCrit <= CritRate)
             BulletShot.GetComponent<Bullet>().SetCrit(true);
 
-        Vector2 recoilForce = -BulletShot.transform.up * BulletVelocity * 20;
+        Vector2 recoilForce = 20 * BulletVelocity * -BulletShot.transform.up;
 
         PlayerRB.AddForce(recoilForce);
 

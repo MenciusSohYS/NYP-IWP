@@ -7,8 +7,10 @@ public class BuffScript : MonoBehaviour
     protected GameObject Player;
     bool TriggeredOnce;
     public AudioSource ASource;
+    bool Alreadyused;
     void Start()
     {
+        Alreadyused = false;
         TriggeredOnce = false;
         Player = GameObject.FindGameObjectWithTag("Player");
     }
@@ -19,8 +21,10 @@ public class BuffScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == Player && TriggeredOnce)
+        if (collision.gameObject == Player && TriggeredOnce && !Alreadyused)
         {
+            Debug.Log("used");
+            Alreadyused = true;
             ApplyBuffs();
             ASource.Play();
             TellPickup();

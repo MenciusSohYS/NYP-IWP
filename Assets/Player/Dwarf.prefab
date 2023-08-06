@@ -276,6 +276,7 @@ MonoBehaviour:
   CharacterAbility: {fileID: 0}
   PlayerMoveScript: {fileID: 0}
   SpriteRender: {fileID: 0}
+  InvulnerableDebug: 0
 --- !u!58 &3619627602483614714
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -350,7 +351,7 @@ GameObject:
   - component: {fileID: 8487950321317945614}
   - component: {fileID: 6153203866511483412}
   m_Layer: 0
-  m_Name: EyePatch
+  m_Name: Hair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

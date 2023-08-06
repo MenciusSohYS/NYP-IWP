@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: -3268501826042247732}
   - component: {fileID: 3274407190642926928}
   - component: {fileID: 3605000810307885199}
+  - component: {fileID: 6375765721918899114}
   m_Layer: 0
   m_Name: MiniGunBoss
   m_TagString: Enemy
@@ -315,8 +316,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23bb03c91edda32458afa98d27d9dd30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CircleCreatorScript: {fileID: 6375765721918899114}
   CurrentPhaseNumber: 0
   PreviousPhaseNumber: 0
+--- !u!114 &6375765721918899114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7888168876331056701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eeca9e915e997147a1f0d95bc6c7818, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CirclePrefab: {fileID: 5121818944977584596, guid: 3aadb1ff82458b7478abde24ed8e41ee, type: 3}
 --- !u!1001 &3934756738296002458
 PrefabInstance:
   m_ObjectHideFlags: 0

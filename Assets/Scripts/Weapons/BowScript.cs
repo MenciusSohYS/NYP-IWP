@@ -7,7 +7,7 @@ public class BowScript : WeaponParent
     const float BOWSCALE = 3.333333333333f;
     public BowScript()
     {
-        Damage = 100;
+        Damage = (int)(100 * (1 + (Globalvariables.CurrentLevel * 0.2f)));
         FireRate = 0.2f;
         Spread = 0.01f;
         BulletsRemaining = 5;
@@ -16,7 +16,7 @@ public class BowScript : WeaponParent
         HeatMax = 1f; //we will use heat to determine how much the string has been pulled
         PositionToParent = new Vector3(0, 0.6f, 0);
         BulletVelocity = 40;
-        Piercing = 4;
+        Piercing = (int)(4 * (1 + (Globalvariables.CurrentLevel * 0.2f)));
         CritRate = 70;
     }
 

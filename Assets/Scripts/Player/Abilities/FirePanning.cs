@@ -17,7 +17,7 @@ public class FirePanning : MonoBehaviour
         SpriteRendererField = GetComponent<SpriteRenderer>();
         CountDownToChange = 0.2f;
         CurrentImage = 0;
-        DamageToDo = 10;
+        DamageToDo = (int)(10 * (1 + (Globalvariables.CurrentLevel * 0.3f)));
 
         Destroy(gameObject, 5);
     }

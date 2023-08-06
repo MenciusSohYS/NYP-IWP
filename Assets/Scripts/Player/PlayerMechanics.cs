@@ -110,6 +110,7 @@ public class PlayerMechanics : MonoBehaviour
                 gameObject.SetActive(false);
                 gameObject.GetComponent<CircleCollider2D>().enabled = false;
                 Canvas.SetText("Game Over", -1);
+                Canvas.SetTextSize(60);
                 Canvas.SendScore();
                 Canvas.SetGameOver();
             }
@@ -207,7 +208,19 @@ public class PlayerMechanics : MonoBehaviour
 
     public void IncreaseFireRate(float byhowmuch)
     {
-        transform.GetChild(0).GetComponent<GunScript>().ChangeFireRate(byhowmuch);
+       PlayergunScript.ChangeFireRate(byhowmuch);
+    }
+    public void IncreaseMaxMagCap(int ByHowMuch)
+    {
+       PlayergunScript.IncreaseMaxMagCap(ByHowMuch);
+    }
+    public void ReduceSpread(float percentage)
+    {
+       PlayergunScript.ReduceSpread(percentage);
+    }
+    public void ReduceReload(float percentage)
+    {
+       PlayergunScript.ReduceRelaodBy(percentage);
     }
 
     public void MessagePlayer(string Message)
@@ -238,7 +251,7 @@ public class PlayerMechanics : MonoBehaviour
                 return;
             case 1:
                 {
-                    Heal(20);
+                    Heal(20 + (Globalvariables.CurrentLevel * 10));
                     return;
                 }
             case 2:

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class ItemScript : MonoBehaviour
+public class ItemScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public TextMeshProUGUI Description;
     public TextMeshProUGUI Name;
@@ -115,5 +116,15 @@ public class ItemScript : MonoBehaviour
         {
             CanvasGO.GetComponent<ShopScript>().SetText("Not Enough Money!");
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        CanvasGO.GetComponent<ShopScript>().SetUpgradeTextOn(Description.text + "\nCost: " + currentcost);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        CanvasGO.GetComponent<ShopScript>().SetUpgradeTextOff();
     }
 }

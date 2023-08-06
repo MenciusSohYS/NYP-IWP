@@ -21,7 +21,7 @@ public class GunStatScript : MonoBehaviour
         Text.text += "Reload: " + PlayerWeaponScript.ReturnFullReload().ToString("F2") + '\n';
         Text.text += "Mag Cap: " + PlayerWeaponScript.GetMaxMagSize() + '\n';
         Text.text += "Bullet Speed: " + PlayerWeaponScript.ReturnVelocity() + '\n';
-        Text.text += "Bullet Pierce: " + PlayerWeaponScript.ReturnPiercing() + '\n';
+        Text.text += "Bullet Pierce: " + (PlayerWeaponScript.ReturnPiercing() + Globalvariables.BulletPierce)+ '\n';
         Text.text += "Max Heat: " + PlayerWeaponScript.ReturnMaxHeat().ToString("F2") + '\n';
         Text.text += "Max Spread: " + PlayerWeaponScript.GetSpread().ToString("F2") + '\n';
         Text.text += "Crit Rate: " + PlayerWeaponScript.ReturnCrit() + '\n';

@@ -319,6 +319,7 @@ public class PlayFabUserMgtTMP : MonoBehaviour
                 if (result.Data == null || !result.Data.ContainsKey("BGM"))
                 {
                     Debug.Log("No BGM");
+                    PlayFabHandler.BGMSliderValue = 0.5f;
                 }
                 else
                 {
@@ -327,6 +328,7 @@ public class PlayFabUserMgtTMP : MonoBehaviour
                 if (result.Data == null || !result.Data.ContainsKey("Weapon"))
                 {
                     Debug.Log("No WeaponSFX");
+                    PlayFabHandler.WeaponSliderValue = 0.5f;
                 }
                 else
                 {
@@ -335,6 +337,7 @@ public class PlayFabUserMgtTMP : MonoBehaviour
                 if (result.Data == null || !result.Data.ContainsKey("Interaction"))
                 {
                     Debug.Log("No InteractionSFX");
+                    PlayFabHandler.InteractionSliderValue = 0.5f;
                 }
                 else
                 {

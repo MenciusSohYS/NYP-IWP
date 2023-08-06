@@ -8,7 +8,7 @@ public class CanvasScript : MonoBehaviour
 {
     public GameObject Player;
     public GameObject PlayerGun;
-    public GameObject PlayerBulleSpawner;
+    public GameObject PlayerBulletSpawner;
     public Slider Health;
     public TextMeshProUGUI Alertmessage;
     public Slider BGHP; //background hpbar
@@ -23,6 +23,7 @@ public class CanvasScript : MonoBehaviour
     public Slider SliderForWeapon;
     public Slider SliderForInteration;
     public GameObject Pause;
+    public GameObject PauseButton;
     public TextMeshProUGUI PauseTMP;
     public GameObject BigMapPanel;
     public GameObject MiniMap;
@@ -33,19 +34,29 @@ public class CanvasScript : MonoBehaviour
     int CurrentDialogue;
     public TextMeshProUGUI Description;
 
+    public GameObject PlaceToInitUpgrades;
+    public GameObject UpgradePrefab;
+    public GameObject UpgradePanel;
+    public Sprite[] PrefabsForUpgrade;
+    public List<GameObject> UpgradeList = new List<GameObject>();
+    public GameObject DefaultGunStatArea;
+    public GameObject UpgradeGunStatArea;
 
     [SerializeField] TextMeshProUGUI Coin;
     [SerializeField] TextMeshProUGUI AmmoText;
     [SerializeField] int MakeDarker;
     [SerializeField] RectTransform AmmoIndicator;
+    [SerializeField] RectTransform UpgradeDescription;
     [SerializeField] RectTransform Crosshair;
     [SerializeField] RectTransform Base;
     [SerializeField] TextMeshProUGUI FPSCounter;
     private Vector3 Offset;
+    private Vector3 OffsetForUpgradeDescription;
     float TimeElapsed = 0;
     // Start is called before the first frame update
     void Awake()
     {
+        UpgradePanel.SetActive(false);
         GunStats.gameObject.SetActive(false);
         BossHP.gameObject.SetActive(false);
         Cursor.visible = false;
@@ -57,6 +68,7 @@ public class CanvasScript : MonoBehaviour
         isRecharged = true;
         CircleCreatorScript = SkillCoolDownImage.transform.GetChild(0).GetComponent<CircleCreator>();
 
+        UpgradeDescription.gameObject.SetActive(false);
         Offset = new Vector3(45, 30, 0);
         SkillCoolDown.interactable = false;
         Health.interactable = false;
@@ -79,6 +91,62 @@ public class CanvasScript : MonoBehaviour
             //    Debug.Log(Scores[i] + '\t'); //print them out
             //}
         }
+    }
+
+    public void OpenUpgradePanel()
+    {
+        Time.timeScale = 0;
+        Cursor.visible = true;
+        UpgradePanel.SetActive(true);
+        for (int i = 0; i < UpgradeList.Count; ++i)
+        {
+            Destroy(UpgradeList[i]);
+        }
+        UpgradeList = new List<GameObject>();
+        CreateUpgrades();
+        GunStats.gameObject.SetActive(true);
+        GunStats.GetComponent<GunStatScript>().enabled = true;
+        GunStats.GetComponent<GunStatScript>().AssignPlayerGun(PlayerGun);
+        GunStats.SetParent(UpgradeGunStatArea.transform, false);
+        GunStats.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 300);
+        GunStats.GetComponent<GunStatScript>().Text.fontSize = 20;
+    }
+
+    public void CloseUpgradePanel()
+    {
+        Time.timeScale = 1;
+        Cursor.visible = false;
+        UpgradePanel.SetActive(false);
+        GunStats.gameObject.SetActive(false);
+        GunStats.GetComponent<GunStatScript>().enabled = false;
+        GunStats.SetParent(DefaultGunStatArea.transform);
+        GunStats.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 150);
+        GunStats.GetComponent<GunStatScript>().Text.fontSize = 10;
+    }
+
+    public void CreateUpgrades()
+    {
+        for (int i = 0; i < PrefabsForUpgrade.Length; ++i)
+        {
+            GameObject NewUpgrade = Instantiate(UpgradePrefab, transform.position, Quaternion.identity);
+
+            NewUpgrade.transform.SetParent(PlaceToInitUpgrades.transform, false);
+            NewUpgrade.GetComponent<UpgradUIScript>().SpriteImage.sprite = PrefabsForUpgrade[i];
+            NewUpgrade.GetComponent<UpgradUIScript>().Assigntext(PrefabsForUpgrade[i].name);
+
+            UpgradeList.Add(NewUpgrade);
+        }
+    }
+
+    public void UpgradeDescriptionOpen(string Description)
+    {
+        UpgradeDescription.gameObject.SetActive(true);
+        UpgradeDescription.GetChild(0).GetComponent<TextMeshProUGUI>().text = Description;
+    }
+    
+    public void UpgradeDescriptionClose()
+    {
+        UpgradeDescription.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -112,11 +180,26 @@ public class CanvasScript : MonoBehaviour
         AmmoIndicator.position = Camera.main.ScreenToWorldPoint(positionToMove + Offset);
         Crosshair.position = Camera.main.ScreenToWorldPoint(positionToMove);
 
-        if (PlayerBulleSpawner)
+        if (PlayerBulletSpawner && !UpgradePanel.activeSelf)
         {
-            Vector3 NewPos = Camera.main.WorldToScreenPoint(PlayerBulleSpawner.transform.position);
+            Vector3 NewPos = Camera.main.WorldToScreenPoint(PlayerBulletSpawner.transform.position);
             NewPos.z = Base.position.z;
             GunStats.position = Camera.main.ScreenToWorldPoint(NewPos);
+        }
+        else
+        {
+            float Y = UpgradeDescription.sizeDelta.y + 10;
+            float X = UpgradeDescription.sizeDelta.x + 10;
+            if (Input.mousePosition.x > Screen.width * 0.5f)
+            {
+                X = -X;
+            }
+            if (Input.mousePosition.y > Screen.height * 0.5f)
+            {
+                Y = -Y;
+            }
+            OffsetForUpgradeDescription = new Vector3(X, Y, 0);
+            UpgradeDescription.position = Camera.main.ScreenToWorldPoint(positionToMove + OffsetForUpgradeDescription);
         }
 
         if (Input.GetKeyDown(KeyCode.F10))
@@ -147,16 +230,22 @@ public class CanvasScript : MonoBehaviour
     {
         return BigMapPanel.activeSelf;
     }
+    public void OpenMapClicked()
+    {
+        BigMapInteraction();
+    }
 
     public void BigMapInteraction()
     {
+        Debug.Log("Called:");
         if (MiniMap.GetComponent<CameraScript>().ReturnPauseCamera())
             return;
 
         if (BigMapPanel.activeSelf)
         {
+            PauseButton.SetActive(true);
             BigMapPanel.SetActive(false);
-
+            Cursor.visible = false;
             MiniMap.GetComponent<CameraScript>().ChangeOpenedBigMap(false);
             MiniMap.GetComponent<CameraScript>().ResumeCamera();
             MiniMap.GetComponent<Camera>().orthographicSize = 30f;
@@ -164,8 +253,9 @@ public class CanvasScript : MonoBehaviour
         }
         else
         {
+            PauseButton.SetActive(false);
             BigMapPanel.SetActive(true);
-
+            Cursor.visible = true;
             MiniMap.GetComponent<CameraScript>().ChangeOpenedBigMap(true);
             MiniMap.GetComponent<Camera>().orthographicSize = 150f;
             MiniMap.GetComponent<Camera>().backgroundColor = Color.black;
@@ -176,7 +266,7 @@ public class CanvasScript : MonoBehaviour
     {
         Player = GameObject.FindGameObjectWithTag("Player");
         PlayerGun = Player.transform.GetChild(0).GetChild(0).gameObject;
-        PlayerBulleSpawner = PlayerGun.transform.GetChild(0).gameObject;
+        PlayerBulletSpawner = PlayerGun.transform.GetChild(0).gameObject;
 
         SkillCoolDown.maxValue = Player.GetComponent<PlayerMechanics>().ReturnMaxCoolDown();
     }
@@ -184,7 +274,7 @@ public class CanvasScript : MonoBehaviour
     public void AssignPlayerGun(GameObject NewPlayerGun)
     {
         PlayerGun = NewPlayerGun;
-        PlayerBulleSpawner = PlayerGun.transform.GetChild(0).gameObject;
+        PlayerBulletSpawner = PlayerGun.transform.GetChild(0).gameObject;
         GunStats.GetComponent<GunStatScript>().AssignPlayerGun(PlayerGun);
     }
 
@@ -251,6 +341,10 @@ public class CanvasScript : MonoBehaviour
             Alertmessage.alpha = 1f; //change alpha to 0 during updtae
 
         this.MakeDarker = MakeDarker; //make it darker or brighter
+    }
+    public void SetTextSize(int NewSize)
+    {
+        Alertmessage.fontSize = NewSize;
     }
 
     public void SendScore()

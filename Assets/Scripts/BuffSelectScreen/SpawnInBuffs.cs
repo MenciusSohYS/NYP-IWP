@@ -78,7 +78,7 @@ public class SpawnInBuffs : MonoBehaviour
         }
         else if (DescriptionOfBuff.text.Contains("pierce"))
         {
-            ++Globalvariables.BulletPierce;
+            Globalvariables.BulletPierce += 2;
         }
         else if (DescriptionOfBuff.text.Contains("radial blast"))
         {

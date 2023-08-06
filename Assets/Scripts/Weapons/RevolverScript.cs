@@ -5,7 +5,7 @@ public class RevolverScript : WeaponParent
 
     public RevolverScript()
     {
-        Damage = 10;
+        Damage = 15;
         FireRate = 0.5f;
         Spread = 0.1f;
         BulletsRemaining = 6;
@@ -15,6 +15,7 @@ public class RevolverScript : WeaponParent
         PositionToParent = new Vector3(0, 0.6f, 0);
         Chambered = true;
         CritRate = 70;
+        BulletVelocity = 60;
     }
     private float timeforonebullet;
 
@@ -48,6 +49,11 @@ public class RevolverScript : WeaponParent
         //Debug.Log("Called in Assign " + ReloadPitch);
     }
 
+    public override void SetMaxMagSize(int newMaxMagSize)
+    {
+        SetReloadTimeByNumber((ReloadTime / MaxMagSize * newMaxMagSize));
+        MaxMagSize = newMaxMagSize;
+    }
     public override float GetReloadTime()
     {
         if (CurrentReload <= 0)

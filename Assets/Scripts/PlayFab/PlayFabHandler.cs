@@ -134,6 +134,23 @@ public static class PlayFabHandler
                 GetVirtualCurrencies();
             }, OnError);
     }
+
+    public static void DeductCoins(int Cost)
+    {
+        var DeductReq = new SubtractUserVirtualCurrencyRequest
+        {
+            Amount = Cost,
+            VirtualCurrency = "CN",
+        };
+        PlayFabClientAPI.SubtractUserVirtualCurrency(DeductReq,
+            result =>
+            {
+                Debug.Log("Bought Skin!");
+                
+                GetVirtualCurrencies();
+            }, OnError);
+    }
+
     public static void BuySkill(string NameOfSkill, int cost, int TimesDone, int DoThisAmountOfTimes)
     {
         if (TimesDone < DoThisAmountOfTimes)
@@ -174,7 +191,7 @@ public static class PlayFabHandler
 
     static void OnError(PlayFabError e)
     {
-        Debug.Log("ERROR WITH PLAYFAB");
+        Debug.Log("ERROR WITH PLAYFAB: " + e.ErrorMessage);
     }
 
     public static void LogOut()

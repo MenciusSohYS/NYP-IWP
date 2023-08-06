@@ -44,6 +44,12 @@ public class WeaponParent : MonoBehaviour
         }
     }
 
+    public void IncreasePierce(int ByHowMuch)
+    {
+
+        Piercing += ByHowMuch;
+    }
+
     public virtual void CallFlipped(bool ToF)
     {
 
@@ -131,12 +137,16 @@ public class WeaponParent : MonoBehaviour
     public void ReduceReload()
     {
         //Debug.Log(CurrentReload);
+        if (ReloadTime == -1)
+            return;
         SetReloadTimeByNumber(ReturnFullReload() * 0.5f);
     }
     
     public void IncreaseReload()
     {
         //Debug.Log(CurrentReload);
+        if (ReloadTime == -1)
+            return;
         SetReloadTimeByNumber(ReturnFullReload() * 2);
     }
 
@@ -148,12 +158,15 @@ public class WeaponParent : MonoBehaviour
     {
         BulletsRemaining = newCurrentmag;
     }
-    public void SetMaxMagSize(int newMaxMagSize)
+    public virtual void SetMaxMagSize(int newMaxMagSize)
     {
         MaxMagSize = newMaxMagSize;
     }
     public virtual void SetReloadTimeByNumber(float setto)
     {
+        if (ReloadTime == -1)
+            return;
+
         ReloadTime = setto;
         ReloadPitch = ReloadSoundDuration / ReloadTime; //pitch for reload will probably only change here
     }

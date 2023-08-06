@@ -13,17 +13,39 @@ public class ShopScript : MonoBehaviour
     public GameObject ShopPanel;
     public TextMeshProUGUI ShopNotif;
     public Texture2D[] ImagesForShop;
+    [SerializeField] RectTransform UpgradeDescription;
     private float TimerForNotif;
     private bool NotifTrue;
+    private Vector3 OffsetForUpgradeDescription;
     // Start is called before the first frame update
     void Start()
     {
         GetCatalog();
         ShopPanel.SetActive(false);
+        UpgradeDescription.gameObject.SetActive(false);
     }
 
     private void Update()
     {
+        if (ShopPanel.activeSelf)
+        {
+            Vector3 positionToMove = Input.mousePosition;
+            //Debug.Log(positionToMove);
+            positionToMove.z = -10;
+            float Y = UpgradeDescription.sizeDelta.y + 10;
+            float X = UpgradeDescription.sizeDelta.x + 10;
+            if (Input.mousePosition.x > Screen.width * 0.5f)
+            {
+                X = -X;
+            }
+            if (Input.mousePosition.y > Screen.height * 0.5f)
+            {
+                Y = -Y;
+            }
+            OffsetForUpgradeDescription = new Vector3(X, Y, 0);
+            UpgradeDescription.position = (positionToMove + OffsetForUpgradeDescription);
+        }
+
         if (!NotifTrue)
             return;
 
@@ -34,6 +56,17 @@ public class ShopScript : MonoBehaviour
             ShopNotif.text = "";
         }
     }
+
+    public void SetUpgradeTextOn(string NewText)
+    {
+        UpgradeDescription.gameObject.SetActive(true);
+        UpgradeDescription.GetChild(0).GetComponent<TextMeshProUGUI>().text = NewText;
+    }
+    public void SetUpgradeTextOff()
+    {
+        UpgradeDescription.gameObject.SetActive(false);
+    }
+
     public void GetCatalog()
     {
         var catreq = new GetCatalogItemsRequest

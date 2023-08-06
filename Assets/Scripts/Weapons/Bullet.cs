@@ -119,13 +119,13 @@ public class Bullet : MonoBehaviour
             HitSomethingWithHealth = true;
             --piercecapped;
         }
-        else if (collision.transform.tag == "HalfCover")
+        else if (collision.transform.tag == "HalfCover" && !collision.isTrigger)
         {
             float tempdmg = DamageToDo;
             tempdmg *= 0.5f;
             DamageToDo = (int)tempdmg;
         }
-        else if (collision.transform.tag == "Fullcover")
+        else if (collision.transform.tag == "Fullcover" && !collision.isTrigger)
         {
             piercecapped = 0;
         }
@@ -136,6 +136,8 @@ public class Bullet : MonoBehaviour
         else if (collision.transform.tag == "Melee")
             piercecapped = 0;
         else if (collision.transform.tag == "Shield" && !PlayerFriendly)
+            piercecapped = 0;
+        else if (collision.transform.tag == "BossShield" && PlayerFriendly)
             piercecapped = 0;
 
         if (HitSomethingWithHealth)
@@ -161,7 +163,7 @@ public class Bullet : MonoBehaviour
                 if (Explosion.GetComponent<AOEScript>()) //if aoe script exists
                 {
                     Explosion.GetComponent<AOEScript>().AssignDTD((int)(DamageToDo * 0.5f));
-                    Debug.Log("Exists");
+                    //Debug.Log("Exists");
                 }
             }
 

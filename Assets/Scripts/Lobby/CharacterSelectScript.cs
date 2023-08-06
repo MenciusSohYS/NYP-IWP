@@ -40,6 +40,9 @@ public class CharacterSelectScript : MonoBehaviour
 
     List<HandlerNumberToLocalNumber> handlerNumberToLocalNumber;
 
+    public GameObject PanelForSelectingColor;
+    public TextMeshProUGUI TextForCostOfSkin;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -95,6 +98,7 @@ public class CharacterSelectScript : MonoBehaviour
         SliderForWeapon.value = PlayFabHandler.WeaponSliderValue;
         SliderForInteraction.value = PlayFabHandler.InteractionSliderValue;
         Difficulty.SetActive(false);
+        PanelForSelectingColor.SetActive(false);
     }
 
     // Update is called once per frame
@@ -109,6 +113,7 @@ public class CharacterSelectScript : MonoBehaviour
             Notification.gameObject.SetActive(false);
             FadeOut = false;
         }
+
         //reduce alpha channel for fade out
     }
 
@@ -133,28 +138,22 @@ public class CharacterSelectScript : MonoBehaviour
         WriteText();
     }
 
-    public void EnableCharacter()
+    public void ChooseThisCharacter()
     {
+        //destroy all others
         for (int i = 0; i < handlerNumberToLocalNumber.Count; ++i)
         {
             if (i != CurrentIndex)
                 Destroy(handlerNumberToLocalNumber[i].CharacterGO);
         }
-
-        //if player chooses the character, destroy all the others and enable the chosen's scripts
-        //then set the camera to follow it
-        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<PlayerMovement>().enabled = true;
         handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<AudioListener>().enabled = true;
-        Camera.GetComponent<Camera>().fieldOfView = 80;
-        Camera.GetComponent<CameraScript>().enabled = true;
-        Camera.GetComponent<CameraScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
         //set trader's player
         Trader.GetComponent<TraderScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
         Tutor.GetComponent<Tutor>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO, false);
         Leaderboard.GetComponent<LeaderboardHandler>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
-
         Description.transform.parent.gameObject.SetActive(false);//disable the panel
         Notification.gameObject.SetActive(false); //disable the notification text
+
         for (int i = 0; i < transform.childCount; ++i)
         {
             if (transform.GetChild(i).GetComponent<Button>() != null && transform.GetChild(i).name != "Pause")
@@ -162,9 +161,134 @@ public class CharacterSelectScript : MonoBehaviour
                 transform.GetChild(i).gameObject.SetActive(false); //find each child in canvas and disable all those that has a button variable
             }
         }
-
+        PanelForSelectingColor.SetActive(true);
         //lastly, push the gameobject to the global variables so that we know which to instaniate later
         Globalvariables.Playerprefabname = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.name;
+    }
+
+    public void ColorPickerR(float Color)
+    {
+        SpriteRenderer SP = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>();
+        SP.color = new Color(Color, SP.color.g, SP.color.b);
+        UpdatePrice(SP);
+    }
+    public void ColorPickerG(float Color)
+    {
+        SpriteRenderer SP = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>();
+        SP.color = new Color(SP.color.r, Color, SP.color.b);
+        UpdatePrice(SP);
+    }
+    public void ColorPickerB(float Color)
+    {
+        SpriteRenderer SP = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>();
+        SP.color = new Color(SP.color.r, SP.color.g, Color);
+        UpdatePrice(SP);
+    }
+
+    void UpdatePrice(SpriteRenderer PlayerSP)
+    {
+        int Price = 0;
+        int StatsChanged = 0;
+        if (PlayerSP.color.r < 1)
+        {
+            //Debug.Log("IncreasePrice");
+            ++StatsChanged;
+        }
+        if (PlayerSP.color.g < 1)
+        {
+            //Debug.Log("IncreasePrice");
+            ++StatsChanged;
+        }
+        if (PlayerSP.color.b < 1)
+        {
+            //Debug.Log("IncreasePrice");
+            ++StatsChanged;
+        }
+
+        switch (StatsChanged)
+        {
+            case 0:
+                break;
+            case 1:
+                Price = 100;
+                break;
+            case 2:
+                Price = 1000;
+                break;
+            case 3:
+                Price = 2000;
+                break;
+        }
+
+        TextForCostOfSkin.text = ("Cost: " + Price).ToString();
+    }
+
+    bool CanBuySkin()
+    {
+        SpriteRenderer SP = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>();
+
+        int Price = 0;
+        int StatsChanged = 0;
+        if (SP.color.r < 1)
+        {
+            //Debug.Log("IncreasePrice");
+            ++StatsChanged;
+        }
+        if (SP.color.g < 1)
+        {
+            //Debug.Log("IncreasePrice");
+            ++StatsChanged;
+        }
+        if (SP.color.b < 1)
+        {
+            //Debug.Log("IncreasePrice");
+            ++StatsChanged;
+        }
+
+        switch (StatsChanged)
+        {
+            case 0:
+                break;
+            case 1:
+                Price = 100;
+                break;
+            case 2:
+                Price = 1000;
+                break;
+            case 3:
+                Price = 2000;
+                break;
+        }
+
+        if (int.Parse(Coins.text) < Price)
+        {
+            TextForCostOfSkin.text = "Not Enough";
+            return false;
+        }
+        else if (Price > 0)
+        {
+            PlayFabHandler.DeductCoins(Price);
+            Coins.text = (int.Parse(Coins.text) - Price).ToString();
+            return true;
+        }
+        else
+            return true;
+    }
+
+    public void EnableCharacter()
+    {
+        if (!CanBuySkin())
+            return;
+
+        Globalvariables.ColorForPlayer = handlerNumberToLocalNumber[CurrentIndex].CharacterGO.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().color;
+        //Enable the chosen's scripts
+        //then set the camera to follow it
+        handlerNumberToLocalNumber[CurrentIndex].CharacterGO.GetComponent<PlayerMovement>().enabled = true;
+        Camera.GetComponent<Camera>().fieldOfView = 80;
+        Camera.GetComponent<CameraScript>().enabled = true;
+        Camera.GetComponent<CameraScript>().SetPlayer(handlerNumberToLocalNumber[CurrentIndex].CharacterGO);
+
+        PanelForSelectingColor.SetActive(false);
     }
 
     public void BuyCharacter()
@@ -374,5 +498,4 @@ public class CharacterSelectScript : MonoBehaviour
             DifficultyDescription.text = "Well, baby steps am I right";
         }
     }
-
 }

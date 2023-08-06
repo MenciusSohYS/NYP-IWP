@@ -120,6 +120,13 @@ public class EnemyRangedScript : MonoBehaviour
         ShootNow = setto;
     }
 
+    public void ForceReload()
+    {
+        Reloading = true;
+        WeaponScript.StartReload();
+        ReloadTimer = WeaponScript.GetReloadTime();
+    }
+
     public void IncreaseDamage(float ByHowMuch)
     {
         if (WeaponScript == null)

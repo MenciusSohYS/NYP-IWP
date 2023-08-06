@@ -41,6 +41,11 @@ public class CorridorScript : MonoBehaviour
         NextRoom.GetComponent<DungeonScript>().EnableEnemies(); //enables the enemy AI
     }
 
+    public bool CheckIfRoomEnabled()
+    {
+        return NextRoom.GetComponent<TestGrid>().enabled;
+    }
+
     public int GetEnemyCount()
     {
         return NextRoom.GetComponent<DungeonScript>().GetEnemyCount();

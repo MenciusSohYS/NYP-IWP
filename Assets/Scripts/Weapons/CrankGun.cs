@@ -5,11 +5,11 @@ using UnityEngine;
 public class CrankGun : WeaponParent
 {    public CrankGun()
     {
-        Damage = 8;
+        Damage = (int)(8 * (1 + (Globalvariables.CurrentLevel * 0.1f)));
         FireRate = 0.1f;
         Spread = 0.4f;
-        MaxMagSize = 100;
-        BulletsRemaining = 100;
+        MaxMagSize = (int)(100 * (1 + (Globalvariables.CurrentLevel * 0.2f)));
+        BulletsRemaining = (int)(100 * (1 + (Globalvariables.CurrentLevel * 0.2f)));
         ReloadTime = -1f;
         HeatMax = 1f;
         CritRate = 30;
@@ -30,6 +30,7 @@ public class CrankGun : WeaponParent
     public override void TellitsAttachedToPlayer()
     {
         base.TellitsAttachedToPlayer();
+        Debug.Log(BulletsRemaining * (1 + (8 * 0.2f)));
     }
     public override float Attack(Transform fromhere, GameObject Projectile, bool ShotByPlayer)
     {

@@ -303,7 +303,11 @@ public class DungeonScript : MonoBehaviour
             //Debug.Log(HealAmount);
 
             if (!transform.name.Contains("BossRoom"))
+            {
+                Debug.Log("Cleared Room");
+
                 Instantiate(ChestPrefab, transform.position + new Vector3(0, 0, -0.1f), Quaternion.identity);
+            }
 
             PlayFabHandler.UpdateMoney(GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>().GetCoins() - PlayFabHandler.Coins); //push the update money to playfab
 
@@ -334,7 +338,13 @@ public class DungeonScript : MonoBehaviour
         {
             if (RangedEnemy.transform.GetChild(0).GetComponent<EnemyRangedScript>().ReturnIsReloading() || Hiding < Attacking) //if they are reloading, they should run
             {
+                if (RangedEnemy.transform.GetChild(0).GetComponent<EnemyRangedScript>().ReturnShootNow())
+                {
+                    RangedEnemy.transform.GetChild(0).GetComponent<EnemyRangedScript>().SetShootNow(false);
+                    RangedEnemy.transform.GetChild(0).GetComponent<EnemyRangedScript>().ForceReload();
+                }
                 EnemyGoAndHide(RangedEnemy, PlayerLocation);
+
                 ++Hiding;
             }
             else

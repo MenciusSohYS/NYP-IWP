@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SpecialBossScript : MonoBehaviour
 {
+    EnemyMechanics EnemyMechanicsScript;
+    public CircleCreator CircleCreatorScript;
+    float Timer;
+    GameObject playerGO;
     public enum Phase
     {
         Phase0,
@@ -22,6 +26,27 @@ public class SpecialBossScript : MonoBehaviour
         CurrentPhaseNumber = Phase.Phase0;
         PreviousPhaseNumber = Phase.Phase0;
         CheckIfCanvasNull();
+        EnemyMechanicsScript = GetComponent<EnemyMechanics>();
+        Timer = 0;
+        playerGO = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    private void Update()
+    {
+        if (EnemyMechanicsScript.ReturnEnemyType() == EnemyMechanics.EnemyType.BossRanged && Timer < 0)
+        {
+            CircleCreatorScript.Create(Color.blue);
+            if (Vector2.Distance(playerGO.transform.position, transform.position) < 4)
+            {
+                Timer = 2f;
+            }
+            else
+                Timer = 5f;
+        }
+        else
+        {
+            Timer -= Time.deltaTime;
+        }
     }
 
     void CheckIfCanvasNull()

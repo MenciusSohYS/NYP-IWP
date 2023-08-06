@@ -30,6 +30,9 @@ public class PortalScript : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
+                GunScript PlayerGunScript = Player.transform.GetChild(0).GetComponent<GunScript>();
+
+                PlayerGunScript.DestroyTempWeaponAtPortal();
                 //push level, current hp and max hp to global variables
                 ++Globalvariables.CurrentLevel;
 
@@ -57,7 +60,7 @@ public class PortalScript : MonoBehaviour
                     PlayerWeaponScript = Player.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<WeaponParent>();
                 }
 
-                GunScript PlayerGunScript = Player.transform.GetChild(0).GetComponent<GunScript>();
+                Debug.Log(PlayerWeaponScript.GetMaxMagSize());
 
                 //if (PlayerWeaponScript != null)
                 //    Debug.Log(Player.transform.GetChild(0).name);

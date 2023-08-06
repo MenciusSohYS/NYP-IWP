@@ -19,6 +19,7 @@ public static class Globalvariables
     public static int DOTStacks = 0;
     public static int HealthOrb = 0;
     public static int EnemiesKilled = 0;
+    public static Color ColorForPlayer = Color.white;
 
     //Weapon stats
     public struct WeaponComponents
@@ -53,5 +54,6 @@ public static class Globalvariables
         Playerprefabname = "";
         timerforsound = 0;
         Difficulty = 1;
+        ColorForPlayer = Color.white;
     }
 }

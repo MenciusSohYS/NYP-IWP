@@ -45,13 +45,14 @@ public class DungeonSpawner : MonoBehaviour
                 if (Globalvariables.Difficulty <= 3)
                 {
                     GameObject Tutor = Instantiate(TutorialManPrefab, new Vector3(2, 2, -0.05f), Quaternion.identity);
-                    Tutor.GetComponent<Tutor>().SetPlayer(PlayerGO, true);
+                    Tutor.GetComponent<Tutor>().SetPlayer(PlayerGO, true); //if lower difficulty they might need help
                 }
 
                 if (Globalvariables.CurrentLevel > 1)
                 {
                     for (int j = 0; j < WeaponPrefabs.Length; ++j)
                     {
+                        //Debug.Log(WeaponPrefabs[j].transform.name);
                         //Debug.Log(Globalvariables.WeaponComponents.WeaponName.Contains(WeaponPrefabs[j].transform.name));
                         if (Globalvariables.WeaponComponents.WeaponName.Contains(WeaponPrefabs[j].transform.name))
                         {
@@ -64,6 +65,8 @@ public class DungeonSpawner : MonoBehaviour
                         }
                     }
                 }
+
+                PlayerGO.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().color = Globalvariables.ColorForPlayer;
 
                 break;
             }
@@ -79,11 +82,26 @@ public class DungeonSpawner : MonoBehaviour
         GameObject PrevRoom;
         Vector2 currentcoords = new Vector2(7, 7);
 
-        AmountOfRooms = Random.Range(8, 11); //randomise amount of rooms
+        int MinAmountOfRooms = 8;
+
+        int MaxAmountOfRooms = 11;
+
+        if (Globalvariables.Difficulty > 7)
+        {
+            MinAmountOfRooms += (int)Globalvariables.Difficulty - 7;
+            MaxAmountOfRooms += (int)Globalvariables.Difficulty - 7;
+        }
+
+        AmountOfRooms = Random.Range(MinAmountOfRooms, MaxAmountOfRooms); //randomise amount of rooms
 
         int changedirections = (int)((AmountOfRooms - 1) * 0.5f); //when to branch off
 
         int UpgradeRoomLocation = Random.Range(1, AmountOfRooms - 2);
+
+        if (Globalvariables.Difficulty > 7)
+        {
+            UpgradeRoomLocation = Random.Range(1, changedirections);
+        }
 
         PrevRoom = Instantiate(StartRoomPrefab, new Vector3(0, 0, 0), Quaternion.identity); //create the first room
         CurrRoom = PrevRoom;
@@ -163,7 +181,14 @@ public class DungeonSpawner : MonoBehaviour
                 GameObject CreateThisRoom;
 
                 if (i == UpgradeRoomLocation)
+                {
                     CreateThisRoom = UpgradeRoomPrefab;
+
+                    if (Globalvariables.Difficulty > 7)
+                    {
+                        UpgradeRoomLocation = Random.Range(changedirections, AmountOfRooms - 2);
+                    }
+                }
                 else if (i != AmountOfRooms - 1)
                     CreateThisRoom = RoomPrefab;
                 else
@@ -276,7 +301,7 @@ public class DungeonSpawner : MonoBehaviour
                 corridor.GetComponent<CorridorScript>().AssignNeighbours(CurrRoom, PrevRoom, LocationOfNewRoomRelativeToCurrent); //tell the corridor who is infront and tell the corridor who is behind
                 GridOfDungeon[(int)currentcoords.x][(int)currentcoords.y] = 1; //tell the list that the area is occupied
 
-                if (i != UpgradeRoomLocation) //if the room is not a upgrade room (or rooms without enemies, you do not need grids for pathfinding)
+                if (CurrRoom.GetComponent<TestGrid>()) //if the room is not a upgrade room (or rooms without enemies, you do not need grids for pathfinding)
                     CurrRoom.GetComponent<TestGrid>().enabled = false;
 
                 PrevRoom = CurrRoom;

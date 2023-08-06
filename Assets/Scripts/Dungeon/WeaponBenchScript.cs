@@ -9,7 +9,7 @@ public class WeaponBenchScript : MonoBehaviour
     BoxCollider2D[] colliders;
     public CircleCreator CircleCreatorScript;
     public AudioSource AudioSourceField;
-
+    CanvasScript CVScript;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +17,7 @@ public class WeaponBenchScript : MonoBehaviour
         Player = GameObject.FindGameObjectWithTag("Player");
         CanMoveOn = false;
         colliders = GetComponentsInChildren<BoxCollider2D>(true); //true to include those that are inactive
+        CVScript = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasScript>();
         //Debug.Log(colliders.Length);
     }
 
@@ -25,15 +26,35 @@ public class WeaponBenchScript : MonoBehaviour
     {
         if (CanMoveOn)
         {
-            Player.GetComponent<PlayerMechanics>().MessagePlayer("Press E to upgrade weapon");
+            if (Player.transform.GetChild(0).GetComponent<GunScript>().ReturnCurrentUpgrade() == 0)
+            {
+                Player.GetComponent<PlayerMechanics>().MessagePlayer("Press E to upgrade weapon");
+            }
+            else
+            {
+                Player.GetComponent<PlayerMechanics>().MessagePlayer("Press E to spend 100 Coins to upgrade");
+            }
+
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Player.GetComponent<PlayerMechanics>().MessagePlayer("Upgraded!");
-                UpgradeWeapon();
-                foreach (BoxCollider2D collider in colliders)
+                if (Player.transform.GetChild(0).GetComponent<GunScript>().ReturnCurrentUpgrade() > 0 && CVScript.GetCoins() < 100)
                 {
-                    collider.enabled = false;
-                    CanMoveOn = false;
+                    Player.GetComponent<PlayerMechanics>().MessagePlayer("NOT ENOUGH MONEY!");
+                }
+                else
+                {
+                    if (Player.transform.GetChild(0).GetComponent<GunScript>().ReturnCurrentUpgrade() > 0)
+                    {
+                        PlayFabHandler.DeductCoins(100);
+                        CVScript.SetCoins(CVScript.GetCoins() - 100);
+                    }
+                    Player.GetComponent<PlayerMechanics>().MessagePlayer("Upgraded!");
+                    UpgradeWeapon();
+                    foreach (BoxCollider2D collider in colliders)
+                    {
+                        collider.enabled = false;
+                        CanMoveOn = false;
+                    }
                 }
             }
         }
@@ -56,8 +77,16 @@ public class WeaponBenchScript : MonoBehaviour
 
     private void UpgradeWeapon()
     {
+        if (Player.transform.GetChild(0).GetComponent<GunScript>().ReturnCurrentUpgrade() == 0)
+        {
+            Player.transform.GetChild(0).GetComponent<GunScript>().UpgradeWeapon(1);
+        }
+        else
+        {
+            CVScript.OpenUpgradePanel();
+        }
+
         AudioSourceField.Play();
-        Player.transform.GetChild(0).GetComponent<GunScript>().UpgradeWeapon(1);
         CircleCreatorScript.Create(new Color(0, 255, 0));
     }
 }

@@ -13,7 +13,7 @@ public class ShieldScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.localScale += new Vector3(0.005f, 0.005f, 0.005f);
+        transform.localScale += new Vector3(0.5f * Time.deltaTime, 0.5f * Time.deltaTime);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

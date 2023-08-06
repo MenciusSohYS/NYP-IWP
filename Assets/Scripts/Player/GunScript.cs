@@ -68,7 +68,7 @@ public class GunScript : MonoBehaviour
 
         if (transform.childCount > 0) //if theres a weapon we can do all these
         {
-            if (currPosition.x < Screen.width / 2)
+            if (currPosition.x < Screen.width * 0.5f)
             {
                 GunSprite.flipY = true;
                 WeaponScript.CallFlipped(true);
@@ -168,9 +168,47 @@ public class GunScript : MonoBehaviour
         }
     }
 
+    public void DestroyTempWeaponAtPortal()
+    {
+        if (WeaponScript.ReturnFullReload() != -1)
+        {
+            return;
+        }
+
+        ReloadTimer = WeaponScript.ReturnFullReload(); 
+        
+        if (WeaponScript.gameObject.name.Contains("CrankGun"))
+        {
+            PlayerMovement PMS = transform.parent.GetComponent<PlayerMovement>(); //get speed and half it
+            int Speed = PMS.ReturnSpeed();
+            PMS.DecreaseSpeed(-Speed);
+        }
+        DestroyTempWeapon();
+    }
+
     public void ChangeFireRate(float ByHowMuch)
     {
         WeaponScript.SetFireRate(ByHowMuch);
+    }
+
+    public void ReduceSpread(float Percentage)
+    {
+        WeaponScript.SetSpread(WeaponScript.GetSpread() * Percentage);
+    }
+
+    public void IncreaseMaxMagCap(int IncreaseByHowMuch)
+    {
+        if (WeaponScript.name.Contains("Revolver") || WeaponScript.name.Contains("Cannon"))
+        {
+            WeaponScript.SetMaxMagSize(WeaponScript.GetMaxMagSize() + 1);
+        }
+        else if (WeaponScript.name.Contains("Staff"))
+        {
+            WeaponScript.SetMaxHeat(WeaponScript.ReturnMaxHeat() + (IncreaseByHowMuch * 0.01f)); //lower the heat the better
+            WeaponScript.SetSpread(WeaponScript.GetSpread() * 0.9f);
+        }
+        else
+            WeaponScript.SetMaxMagSize(WeaponScript.GetMaxMagSize() + IncreaseByHowMuch);
     }
 
     public void UpgradeWeapon(int ByHowMuch)
@@ -201,6 +239,11 @@ public class GunScript : MonoBehaviour
                 WeaponScript.SetMaxHeat(WeaponScript.ReturnMaxHeat() * 1.2f);
             }
         }
+    }
+
+    public void IncreaseDamage(float Amount)
+    {
+        WeaponScript.SetDamage(Amount);
     }
 
     public int ReturnCurrentUpgrade()
@@ -314,6 +357,20 @@ public class GunScript : MonoBehaviour
         }
     }
 
+    public void IncreasePierce(int ByHowMuch)
+    {
+        WeaponScript.IncreasePierce(ByHowMuch);
+    }
+    public void IncreaseVelocity(float Percent)
+    {
+        WeaponScript.MultiplyVelocity(Percent);
+    }
+
+    public void IncreaseCrit(int Add)
+    {
+        WeaponScript.AddCrit(Add);
+    }
+
     void DropWeapon()
     {
         GunTransform.position += new Vector3(0, 0, 0.21f); //set the position on the Z axis
@@ -389,6 +446,11 @@ public class GunScript : MonoBehaviour
     {
         //Debug.Log("Decreasing");
         WeaponScript.SetSpread(WeaponScript.GetSpread() * 2);
+    }
+
+    public void ReduceRelaodBy(float percentage)
+    {
+        WeaponScript.SetReloadTimeByNumber(WeaponScript.ReturnFullReload() * percentage);
     }
 
     public void ReduceReload()

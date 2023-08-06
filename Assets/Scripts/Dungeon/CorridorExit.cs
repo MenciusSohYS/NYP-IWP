@@ -61,7 +61,7 @@ public class CorridorExit : MonoBehaviour
                     break;
             }
 
-            if (ExitedCorrectly && transform.parent.parent.GetComponent<CorridorScript>().GetEnemyCount() > 0)
+            if (ExitedCorrectly && transform.parent.parent.GetComponent<CorridorScript>().GetEnemyCount() > 0 && !transform.parent.parent.GetComponent<CorridorScript>().CheckIfRoomEnabled())
             {
                 //Debug.Log("Player exited corridor and entered room");
                 collision.transform.GetComponent<PlayerMechanics>().AnnounceRoomEntered();

@@ -22,6 +22,7 @@ TagManager:
   - Shield
   - OuterWalls
   - Leaderboard
+  - BossShield
   layers:
   - Default
   - TransparentFX
