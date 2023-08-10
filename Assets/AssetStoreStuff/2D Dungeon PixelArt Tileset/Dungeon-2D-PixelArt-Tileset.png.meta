@@ -872,8 +872,8 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Bottom_Middle_Dungeon_Door_Closed: -6085209271259904505
-      Bottom_Middle_Dungeon_Door_Opened: -6975971501963557229
       Bottom_Right_Dungeon_Door_Opened: -7265388314283571386
+      Dungeon-2D-PixelArt-Tileset_5: 2056942473736830267
       Top_Right_Dungeon_Door_Opened: 7145941756167820797
       Bottom_Left_Dungeon_Door_Closed: 2365339308313440513
       Floor_Tiled_flat: 5170418447652190022
@@ -897,10 +897,10 @@ TextureImporter:
       Mossy_Wall_Tile2: 3957419326524138300
       Floor_Cracked: -9141938605990679566
       Mossy_Wall_Tile3: 2161171272659936262
+      Bottom_Middle_Dungeon_Door_Opened: -6975971501963557229
       Top_Wall_Tile: -2672306381724259459
       Floor_Flat: 4017470158936073506
       Top_Right_Corner_Tile: 6764832518669002963
-      Dungeon-2D-PixelArt-Tileset_5: 2056942473736830267
       Floor_Tiled_Cracked2: -8859803436593824983
   spritePackingTag: 
   pSDRemoveMatte: 0

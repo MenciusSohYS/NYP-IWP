@@ -107,9 +107,22 @@ public class CanvasScript : MonoBehaviour
         GunStats.gameObject.SetActive(true);
         GunStats.GetComponent<GunStatScript>().enabled = true;
         GunStats.GetComponent<GunStatScript>().AssignPlayerGun(PlayerGun);
+        GunStats.transform.localPosition = Vector3.zero;
         GunStats.SetParent(UpgradeGunStatArea.transform, false);
         GunStats.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 300);
         GunStats.GetComponent<GunStatScript>().Text.fontSize = 20;
+    }
+
+    public void ShowHideFPS()
+    {
+        if (FPSCounter.gameObject.activeSelf)
+        {
+            FPSCounter.gameObject.SetActive(false);
+        }
+        else
+        {
+            FPSCounter.gameObject.SetActive(true);
+        }
     }
 
     public void CloseUpgradePanel()
@@ -202,7 +215,7 @@ public class CanvasScript : MonoBehaviour
             UpgradeDescription.position = Camera.main.ScreenToWorldPoint(positionToMove + OffsetForUpgradeDescription);
         }
 
-        if (Input.GetKeyDown(KeyCode.F10))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             PauseClicked();
         }

@@ -10,7 +10,7 @@ public class RifleScript : WeaponParent
         Spread = 0.5f;
         MaxMagSize = 30;
         BulletsRemaining = 30;
-        ReloadTime = MaxMagSize * 0.1f;
+        ReloadTime = 3;
         HeatMax = 1f;
         PositionToParent = new Vector3(0, 0.6f, 0);
     }

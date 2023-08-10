@@ -118,7 +118,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ThisToSpawn:
+  - {fileID: 4575172184027129287, guid: 3adaa26bdaaf2894bab5d6b7c9122b97, type: 3}
+  - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
   - {fileID: 4575172184027129287, guid: 67a56eb6b555f9245aac9ea80e00b709, type: 3}
+  - {fileID: 4575172184027129287, guid: 53193b05a3381a44a96f40fea7596e6a, type: 3}
+  - {fileID: 4575172184027129287, guid: 8d05bfe46476b87408c051dd6e5424b6, type: 3}
   OpenedSprite: {fileID: 21300000, guid: 2f50d134207234d4bb81ecae08ed64d6, type: 3}
   ASource: {fileID: 185134975420573168}
 --- !u!50 &-5517428305415004185

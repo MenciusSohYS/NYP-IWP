@@ -12,8 +12,8 @@ public class CannonScript : WeaponParent
         BulletsRemaining = 1;
         ReloadTime = 3f;
         HeatMax = 1f;
-        PositionToParent = new Vector3(0, 1f, 0);
         BulletVelocity = 65;
+        PositionToParent = new Vector3(0, 1f, 0);
         Chambered = true;
         Piercing = 0;
     }

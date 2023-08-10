@@ -134,35 +134,37 @@ public class SwordScript : WeaponParent
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isAttacking)
+        if (collision.gameObject.tag == "Enemy" && IsPlayer)
         {
-            if (collision.gameObject.tag == "Enemy" && IsPlayer)
+            int DamageToDo = Damage;
+            int IsCrit = Random.Range(0, 101);
+            bool DidCrit = false;
+
+            if (IsCrit <= CritRate)
             {
-                int DamageToDo = Damage;
-                int IsCrit = Random.Range(0, 101);
-                bool DidCrit = false;
-
-                if (IsCrit <= CritRate)
-                {
-                    DidCrit = true;
-                    DamageToDo = (int)(DamageToDo * 1.5f);
-                }
-
-                collision.transform.GetComponent<EnemyMechanics>().MinusHP(DamageToDo);
-
-                GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
-
-                numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString(), DidCrit);
+                DidCrit = true;
+                DamageToDo = (int)(DamageToDo * 1.5f);
             }
-            else if (collision.transform.tag == "Player" && !IsPlayer)
-            {
-                collision.transform.GetComponent<PlayerMechanics>().MinusHP(Damage);
 
-                GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
+            collision.transform.GetComponent<EnemyMechanics>().MinusHP(DamageToDo);
 
-                numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString(), false);
-            }
+            GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
+
+            numberobject.GetComponent<DamageNumbers>().SetNumber(DamageToDo.ToString(), DidCrit);
         }
+        else if (collision.transform.tag == "Player" && !IsPlayer)
+        {
+            collision.transform.GetComponent<PlayerMechanics>().MinusHP(Damage);
+
+            GameObject numberobject = Instantiate(DamageNumber, transform.position, Quaternion.identity);
+
+            numberobject.GetComponent<DamageNumbers>().SetNumber(Damage.ToString(), false);
+        }
+    }
+
+    public void SetBoxActive(bool SetTo)
+    {
+        SwordCollider.enabled = SetTo;
     }
 
     private void Update()

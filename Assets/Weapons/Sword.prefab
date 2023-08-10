@@ -404,6 +404,7 @@ GameObject:
   - component: {fileID: 2005654232026256272}
   - component: {fileID: 7633086272126604659}
   - component: {fileID: 4888070607678384902}
+  - component: {fileID: 7523948499752681151}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Melee
@@ -475,3 +476,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aef8a90ace89de4eaeafd482df0f2c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7523948499752681151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8269321400050437038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77733125ad1d5f04b8ae4d44227a5d74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SwordScriptScript: {fileID: 4368723979730087118}

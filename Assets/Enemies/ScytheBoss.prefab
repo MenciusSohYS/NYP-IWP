@@ -242,6 +242,11 @@ MonoBehaviour:
   Player: {fileID: 0}
   Drops:
   - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
+  - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
+  - {fileID: 4575172184027129287, guid: 5c00fd7da75335543bca76f97ea8384b, type: 3}
+  - {fileID: 4575172184027129287, guid: 67a56eb6b555f9245aac9ea80e00b709, type: 3}
+  - {fileID: 4575172184027129287, guid: 53193b05a3381a44a96f40fea7596e6a, type: 3}
+  - {fileID: 4575172184027129287, guid: 8d05bfe46476b87408c051dd6e5424b6, type: 3}
   - {fileID: 4575172184027129287, guid: 3adaa26bdaaf2894bab5d6b7c9122b97, type: 3}
   PortalPrefab: {fileID: 1120737040449094889, guid: 0560940eba58cf5499e446512cb1ee18, type: 3}
   DamageReduction: 0
@@ -315,6 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23bb03c91edda32458afa98d27d9dd30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CircleCreatorScript: {fileID: 0}
   CurrentPhaseNumber: 0
   PreviousPhaseNumber: 0
 --- !u!1001 &1310253524252604776

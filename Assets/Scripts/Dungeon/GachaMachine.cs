@@ -44,6 +44,7 @@ public class GachaMachine : MonoBehaviour
                     PlayFabHandler.DeductCoins(200);
                     CVScript.SetCoins(CVScript.GetCoins() - 200);
                     BoughtGachaBall();
+                    AudioSourceField.Play();
                     Player.GetComponent<PlayerMechanics>().MessagePlayer("SPENT!");
                     foreach (BoxCollider2D collider in colliders)
                     {

@@ -11,11 +11,11 @@ public class RevolverScript : WeaponParent
         BulletsRemaining = 6;
         MaxMagSize = 6;
         ReloadTime = 1.5f;
+        CritRate = 70;
+        BulletVelocity = 60;
         HeatMax = 0.5f;
         PositionToParent = new Vector3(0, 0.6f, 0);
         Chambered = true;
-        CritRate = 70;
-        BulletVelocity = 60;
     }
     private float timeforonebullet;
 

@@ -12,11 +12,13 @@ public class WeaponParent : MonoBehaviour
     protected float CurrentReload = 0f; //this is for dynamic reloading, if player partially reloads and swaps weapons, the timer will just pause, no need to start from 0
     protected float HeatMax = 1f; //heat determines the spread of the gun
     protected float CurrentHeat = 0f; //current heat value
-    protected int BulletVelocity = 30; //current heat value
+    protected int BulletVelocity = 30; //speed of bullet
+    protected int CritRate = 40;
+    protected int Piercing = 1;
     protected Vector3 PositionToParent = new Vector3(0, 0.1f, 0);
     protected bool PickedUp = false;
     protected int CurrentUpgrade = 0;
-    protected bool Chambered = false;
+    protected bool Chambered = false; //chambered is for revolvers as they have a chambered reloading sequence
     protected bool isMelee = false;
     protected AudioSource AudioSourceField;
     public AudioClip ReloadSoundEffect;
@@ -24,9 +26,7 @@ public class WeaponParent : MonoBehaviour
     protected float ReloadSoundDuration;
     protected float ReloadPitch;
     protected bool CanUpdate = false;
-    protected int Piercing = 1;
     protected float ReduceNextReload = 0;
-    protected int CritRate = 40;
 
     private void Start()
     {

@@ -58,22 +58,6 @@ public class EnemyRangedScript : MonoBehaviour
             float CurrAngle = Mathf.Atan2(CenterPivot.x - currPosition.x, currPosition.y - CenterPivot.y);
             transform.rotation = Quaternion.Euler(0, 0, CurrAngle * Mathf.Rad2Deg);
 
-            //old code
-            {
-                //Vector3 CenterPivot = transform.parent.position;
-
-                //float PrevAngle = Mathf.Atan2(CenterPivot.x - prevposition.x, prevposition.y - CenterPivot.y);
-
-                //Vector3 currPosition = Player.transform.position;
-
-                //float CurrAngle = Mathf.Atan2(CenterPivot.x - currPosition.x, currPosition.y - CenterPivot.y);
-
-                //prevposition = currPosition;
-
-                //float AngleDiff = CurrAngle - PrevAngle;
-
-                //transform.Rotate(new Vector3(0, 0, AngleDiff * Mathf.Rad2Deg));
-            }
 
             if (currPosition.x < transform.position.x && !spriteRenderer.flipY)
             {

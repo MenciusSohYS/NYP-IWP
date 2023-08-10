@@ -162,7 +162,7 @@ public class Bullet : MonoBehaviour
                 GameObject Explosion = Instantiate(ExplosionEffect, transform.position, Quaternion.identity); //create an explosive if you can
                 if (Explosion.GetComponent<AOEScript>()) //if aoe script exists
                 {
-                    Explosion.GetComponent<AOEScript>().AssignDTD((int)(DamageToDo * 0.5f));
+                    Explosion.GetComponent<AOEScript>().AssignDTD((int)(DamageToDo * 0.5f + (Globalvariables.BulletPierce * 0.1f)));
                     //Debug.Log("Exists");
                 }
             }
