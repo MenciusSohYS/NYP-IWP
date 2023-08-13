@@ -343,6 +343,22 @@ public class PlayFabUserMgtTMP : MonoBehaviour
                 {
                     PlayFabHandler.InteractionSliderValue = float.Parse(result.Data["Interaction"].Value);
                 }
+                if (result.Data == null || !result.Data.ContainsKey("ShowFPS"))
+                {
+                    Debug.Log("No FPS");
+                    PlayFabHandler.ShowFPS = true;
+                }
+                else
+                {
+                    if ((result.Data["ShowFPS"].Value) == "True")
+                    {
+                        PlayFabHandler.ShowFPS = true;
+                    }
+                    else
+                    {
+                        PlayFabHandler.ShowFPS = false;
+                    }
+                }
                 GetPlayerHighScore();
             }
             , (error) =>

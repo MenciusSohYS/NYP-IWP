@@ -228,6 +228,11 @@ public class PlayerMechanics : MonoBehaviour
         Canvas.SetText(Message, 1);
     }
 
+    public void Win()
+    {
+        Canvas.ShowWin();
+    }
+
     void AssignBuffs(string name, int amount)
     {
         if (name == "Increase Health")

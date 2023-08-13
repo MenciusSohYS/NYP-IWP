@@ -8,6 +8,7 @@ public class PortalScript : MonoBehaviour
     private GameObject Player;
     private bool CanMoveOn;
     private PlayerMechanics PlayerMechs;
+    [SerializeField] AudioSource WinAudio;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +44,10 @@ public class PortalScript : MonoBehaviour
                     PlayFabHandler.PushScore(Globalvariables.EnemiesKilled);
                     Globalvariables.ForgetEverything();
                     Cursor.visible = true;
-                    SceneManager.LoadScene("LobbyScene");
+                    PlayerMechs.Win();
+                    WinAudio.Play();
+                    CanMoveOn = false;
+                    GetComponent<CircleCollider2D>().enabled = false;
                     return;
                 }
 

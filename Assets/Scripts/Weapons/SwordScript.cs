@@ -112,12 +112,19 @@ public class SwordScript : WeaponParent
         return FireRate + 0.1f;
     }
 
-    void MeleeSound()
+    public void MeleeSound()
     {
         if (AudioSourceField.clip != ShootingSoundEffects[AttackNumber])
         {
             AudioSourceField.clip = ShootingSoundEffects[AttackNumber];
             AudioSourceField.Play();
+            ++AttackNumber; //increase the value so that the next time we attack its the next pattern
+
+            if (AttackNumber > Animations.Count - 1)
+            {
+                AttackNumber = 0;
+                //Debug.Log("NumberOfAttacks[" + AttackNumber + "] out of " + NumberOfAttacks.Count);
+            }
         }
     }
 

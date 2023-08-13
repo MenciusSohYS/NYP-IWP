@@ -9,9 +9,14 @@ public class SwordScriptHandler : MonoBehaviour
     public void ActivateSword()
     {
         SwordScriptScript.SetBoxActive(true);
+        SwordScriptScript.MeleeSound();
     }
     public void DeactivateSword()
     {
         SwordScriptScript.SetBoxActive(false);
+    }
+    private void Update()
+    {
+        
     }
 }

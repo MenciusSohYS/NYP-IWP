@@ -20,7 +20,6 @@ public static class Globalvariables
     public static int HealthOrb = 0;
     public static int EnemiesKilled = 0;
     public static Color ColorForPlayer = Color.white;
-    public static bool ShowFPS;
 
     //Weapon stats
     public struct WeaponComponents
@@ -46,7 +45,6 @@ public static class Globalvariables
         Speed = 0;
         CurrentLevel = 1;
         FlamingBullet = false;
-        ShowFPS = true;
         BulletPierce = 0;
         RadialShield = false;
         SkillCooldown = 0;

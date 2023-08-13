@@ -11,6 +11,7 @@ public static class PlayFabHandler
     public static bool UnlockedBounty = true;
     public static bool UnlockedDwarf = false;
     public static bool UnlockedWizard = false;
+    public static bool ShowFPS = true;
 
 
     public static float BGMSliderValue = 1;
@@ -210,6 +211,7 @@ public static class PlayFabHandler
         BGMSliderValue = 1;
         WeaponSliderValue = 1;
         InteractionSliderValue = 1;
+        ShowFPS = true;
         HighScore = 0;
         PlayFabClientAPI.ForgetAllCredentials();
         Cursor.visible = true;
@@ -224,7 +226,8 @@ public static class PlayFabHandler
                 {
                     {"BGM", BGMSliderValue.ToString() },
                     {"Weapon", WeaponSliderValue.ToString() },
-                    {"Interaction", WeaponSliderValue.ToString() }
+                    {"Interaction", WeaponSliderValue.ToString() },
+                    {"ShowFPS", ShowFPS.ToString() }
                 }
         },
             result => Debug.Log("Pushed " + BGMSliderValue + " and "+ WeaponSliderValue + " and "+ InteractionSliderValue),

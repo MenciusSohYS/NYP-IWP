@@ -49,13 +49,16 @@ public class CanvasScript : MonoBehaviour
     [SerializeField] RectTransform UpgradeDescription;
     [SerializeField] RectTransform Crosshair;
     [SerializeField] RectTransform Base;
+    [SerializeField] Toggle FPSToggle;
     [SerializeField] TextMeshProUGUI FPSCounter;
+    [SerializeField] GameObject WinPanel;
     private Vector3 Offset;
     private Vector3 OffsetForUpgradeDescription;
     float TimeElapsed = 0;
     // Start is called before the first frame update
     void Awake()
     {
+        WinPanel.SetActive(false);
         UpgradePanel.SetActive(false);
         GunStats.gameObject.SetActive(false);
         BossHP.gameObject.SetActive(false);
@@ -77,6 +80,7 @@ public class CanvasScript : MonoBehaviour
         SliderForBGM.value = PlayFabHandler.BGMSliderValue;
         SliderForWeapon.value = PlayFabHandler.WeaponSliderValue;
         SliderForInteration.value = PlayFabHandler.InteractionSliderValue;
+        FPSToggle.isOn = PlayFabHandler.ShowFPS;
         MiniMap = GameObject.FindGameObjectWithTag("MiniMap");
 
         BigMapPanel.SetActive(false);
@@ -321,6 +325,12 @@ public class CanvasScript : MonoBehaviour
         BGHP.maxValue = Max;
         BGHP.value = Curr;
     }
+    public void ShowWin()
+    {
+        WinPanel.SetActive(true);
+        SetText("YOU WIN!!", -1);
+        SetTextSize(60);
+    }
 
     public void SetCurrentHP(int Curr)
     {
@@ -379,6 +389,7 @@ public class CanvasScript : MonoBehaviour
         PlayFabHandler.BGMSliderValue = SliderForBGM.value;
         PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
         PlayFabHandler.InteractionSliderValue = SliderForInteration.value;
+        PlayFabHandler.ShowFPS = FPSToggle.isOn;
         PlayFabHandler.LogOut();
     }
 
@@ -388,6 +399,11 @@ public class CanvasScript : MonoBehaviour
         SendScore();
         Globalvariables.ForgetEverything();
         Cursor.visible = true;
+        PlayFabHandler.BGMSliderValue = SliderForBGM.value;
+        PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
+        PlayFabHandler.InteractionSliderValue = SliderForInteration.value;
+        PlayFabHandler.ShowFPS = FPSToggle.isOn;
+        PlayFabHandler.PushAudioPreferences();
         UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
     }
 
@@ -423,6 +439,7 @@ public class CanvasScript : MonoBehaviour
             PlayFabHandler.BGMSliderValue = SliderForBGM.value;
             PlayFabHandler.WeaponSliderValue = SliderForWeapon.value;
             PlayFabHandler.InteractionSliderValue = SliderForInteration.value;
+            PlayFabHandler.ShowFPS = FPSToggle.isOn;
             PlayFabHandler.PushAudioPreferences();
             Time.timeScale = 1;
         }
